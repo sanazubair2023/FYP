@@ -1,0 +1,431 @@
+﻿@model MaidAndServantt.Models.Worker
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var mainCategories = (ViewBag.MainCategories as List<string>) ?? new List<string>();
+    var subSkills = (ViewBag.SubSkills as List<string>) ?? new List<string>();
+    double averageRating = (ViewBag.AverageRating as double?) ?? 0.0;
+    int reviewsCount = (ViewBag.TotalReviewsCount as int?) ?? 0;
+    var workerReviews = ViewBag.WorkerReviews as List<MaidAndServantt.Models.Review> ?? new List<MaidAndServantt.Models.Review>();
+
+    // Dividing skills sequentially
+    var primarySkills = subSkills.Take(2).ToList();
+    var partTimeSkills = subSkills.Skip(2).ToList();
+}
+
+<style>
+    .web-extended-wrapper {
+        max-width: 1100px; /* Fully expanded width for stunning desktop viewing */
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.04);
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        border: 1px solid #eaeaea;
+    }
+
+    /* Top Expanded Hero Banner Box */
+    .extended-hero-banner {
+        width: 100%;
+        height: 420px; /* Extended vertical visual range */
+        position: relative;
+        background: #f4f6f8;
+    }
+
+    .extended-banner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .extended-floating-badge {
+        position: absolute;
+        bottom: 25px;
+        left: 30px;
+        background: #ffffff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #2e7d32;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .extended-floating-badge.inactive {
+            color: #c62828;
+        }
+
+    /* Main Content Architecture */
+    .extended-content-body {
+        padding: 40px;
+    }
+
+    .extended-main-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: #111111;
+        margin: 0 0 8px 0;
+        text-transform: capitalize;
+    }
+
+    .extended-rating-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .extended-cat-text {
+        color: #1a73e8;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .extended-stars-box {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 700;
+        font-size: 17px;
+    }
+
+    .extended-star-icon {
+        color: #ffb300;
+        font-size: 20px;
+    }
+
+    .extended-meta-sub {
+        font-size: 14px;
+        color: #666666;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+
+    /* 3-Column Uniform Horizontal Parameter Metric Row */
+    .extended-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 20px 15px;
+        margin-bottom: 35px;
+        border: 1px solid #f0f0f0;
+        text-align: center;
+    }
+
+    .extended-grid-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .extended-grid-item:not(:last-child) {
+            border-right: 1px solid #e2e8f0;
+        }
+
+    .extended-grid-label {
+        font-size: 11px;
+        color: #999999;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .extended-grid-value {
+        font-size: 16px;
+        color: #111111;
+        font-weight: 700;
+    }
+
+    /* Uniform Structured Section Headers */
+    .extended-section-heading {
+        font-size: 22px;
+        font-weight: 700;
+        color: #111111;
+        margin: 40px 0 16px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f4f6f8;
+        padding-bottom: 8px;
+    }
+
+    .extended-body-desc {
+        font-size: 15.5px;
+        color: #444444;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Dynamic Chips Architecture */
+    .extended-chips-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .extended-badge-chip {
+        background: #eeeeee;
+        color: #444444;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .extended-parttime-blue-label {
+        color: #1a73e8;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Vertical Timeline Configuration */
+    .extended-timeline-container {
+        position: relative;
+        padding-left: 25px;
+    }
+
+        .extended-timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+    .extended-timeline-node {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+        .extended-timeline-node::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1a73e8;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 2px #1a73e8;
+        }
+
+        .extended-timeline-node.secondary-node::before {
+            background: #cbd5e1;
+            box-shadow: 0 0 0 2px #cbd5e1;
+        }
+
+    /* Large Layout Submission Control */
+    .extended-footer-control {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .extended-action-btn {
+        display: block;
+        max-width: 380px;
+        margin: 0 auto;
+        background: #1a73e8;
+        color: #ffffff;
+        text-align: center;
+        padding: 16px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 17px;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25);
+        transition: background 0.2s ease;
+    }
+
+        .extended-action-btn:hover {
+            background: #1557b0;
+            color: #ffffff;
+        }
+</style>
+
+<div class="web-extended-wrapper">
+
+    <!-- Top Full Width Banner Section (Pic 2 Layout Structure) -->
+    <div class="extended-hero-banner">
+        <img src="@(string.IsNullOrEmpty(Model.Picture) ? "/Images/logo.png" : Model.Picture)" class="extended-banner-img" alt="Worker Visual Avatar" />
+
+        @if (Model.AvailableStatus == true)
+        {
+            <div class="extended-floating-badge">
+                <span>●</span> ACTIVE
+            </div>
+        }
+        else
+        {
+            <div class="extended-floating-badge inactive">
+                <span>●</span> INACTIVE
+            </div>
+        }
+    </div>
+
+    <!-- Inner Data Presentation Space -->
+    <div class="extended-content-body">
+
+        <!-- Header Information Layout -->
+        <h1 class="extended-main-title">@Model.Name</h1>
+
+        <div class="extended-rating-row">
+            <span class="extended-cat-text">
+                @if (mainCategories.Any())
+                {
+                    @mainCategories.First()
+                }
+                else
+                {
+
+                    <span>Cleaning</span>
+                }
+            </span>
+            <div class="extended-stars-box">
+                <span class="extended-star-icon">★</span>
+                <span>@averageRating.ToString("F1")</span>
+                <span style="color: #777; font-size: 13px; font-weight: 500; margin-left: 2px;">(@reviewsCount Reviews)</span>
+            </div>
+        </div>
+
+        <div class="extended-meta-sub">
+            @Model.Gender.ToUpper() • @Model.Age Y/O
+        </div>
+
+        <!-- Horizontal Metric Board Columns Row (Pic 2 Design Blueprint) -->
+        <!-- Horizontal Metric Board Columns Row (Teen Boxes Wala Grid) -->
+        <div class="extended-info-grid">
+
+            <!-- 1. Experience Box (Yahan likhna hai) -->
+            <div class="extended-grid-item">
+                <span class="extended-grid-label">Experience</span>
+                <span class="extended-grid-value">
+                    @ViewBag.DisplayExperienceText
+                </span>
+            </div>
+
+            <!-- 2. Location Box -->
+            <div class="extended-grid-item">
+                <span class="extended-grid-label">Location</span>
+                <span class="extended-grid-value" style="text-transform: uppercase;">
+                    @(string.IsNullOrEmpty(Model.Address) ? "RAWALPINDI" : Model.Address)
+                </span>
+            </div>
+
+            <!-- 3. Salary Box -->
+            <div class="extended-grid-item">
+                <span class="extended-grid-label">Salary</span>
+                <span class="extended-grid-value">Rs. @(Model.Salary?.ToString("F2") ?? "0.00")</span>
+            </div>
+
+        </div>
+
+        <!-- Narrative Section -->
+        <h3 class="extended-section-heading">About</h3>
+        <p class="extended-body-desc">
+            @(string.IsNullOrEmpty(Model.Bio) ? "Professional Servant / Maid" : Model.Bio)
+        </p>
+
+        <!-- Dynamic Primary Tag Elements -->
+        <h3 class="extended-section-heading">Skills</h3>
+        <div class="extended-chips-wrapper">
+            @if (primarySkills.Any())
+            {
+                foreach (var skill in primarySkills)
+                {
+                    <span class="extended-badge-chip">@skill</span>
+                }
+            }
+            else
+            {
+                <span class="extended-badge-chip">General</span>
+            }
+        </div>
+
+        <!-- Dynamic Part-Time Tag Elements -->
+        @if (partTimeSkills.Any())
+        {
+            <h3 class="extended-section-heading">Part-Time</h3>
+            <div class="extended-parttime-blue-label">
+                @if (mainCategories.Count > 1)
+                {
+                    @mainCategories.Last()
+                }
+                else
+                {
+
+                    <span>Secondary Stack</span>
+                }
+            </div>
+            <div class="extended-chips-wrapper">
+                @foreach (var skill in partTimeSkills)
+                {
+                    <span class="extended-badge-chip">@skill</span>
+                }
+            </div>
+        }
+
+        <!-- Dynamic Chronological Tracking List -->
+        <h3 class="extended-section-heading">Work Experience</h3>
+        <div class="extended-timeline-container">
+            @if (ViewBag.WorkerExperiences is List<MaidAndServantt.Models.Experience> expList && expList.Any())
+            {
+                int index = 0;
+                foreach (var exp in expList)
+                {
+                    <div class="extended-timeline-node @(index > 0 ? "secondary-node" : "")">
+                        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; color: #111;">
+                            <span style="text-transform: uppercase;">@exp.WorkAt</span>
+                            <span style="color: #999; font-weight: 500; font-size: 13px;">@exp.Duration</span>
+                        </div>
+                        <div style="font-size: 14px; color: #555; margin-top: 4px;">• @exp.ExpDetail</div>
+                    </div>
+                    index++;
+                }
+            }
+            else
+            {
+                <div style="font-size: 14px; color: #777; font-style: italic;">No experience history listed yet.</div>
+            }
+        </div>
+
+        <!-- Verification Metrics Block -->
+        <div class="extended-section-heading">
+            <span>Recent Reviews</span>
+            <span style="font-size: 14px; color: #1a73e8; font-weight: 600; cursor: pointer;">View all</span>
+        </div>
+        <div style="font-size: 14.5px; color: #888; font-style: italic;">
+            No reviews yet
+        </div>
+
+        <!-- Methodologies Standard Guidelines -->
+        <h3 class="extended-section-heading">Booking Procedure</h3>
+        <div style="font-size: 14.5px; color: #555555; line-height: 2;">
+            <div>• Send a booking request with your preferred date.</div>
+            <div>• Wait for the worker to accept (usually within 30m).</div>
+            <div>• Confirm the location and start the service.</div>
+        </div>
+
+        <!-- Form Submission Interface Container -->
+        <div class="extended-footer-control">
+            <a href="@Url.Action("BookInterview", "Dashboard", new { workerId = Model.WorkerId })" class="extended-action-btn">
+                Call For Interview
+            </a>
+        </div>
+
+    </div>
+</div>

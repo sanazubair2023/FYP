@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servant Maid Online - Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+            body {
+                background-color: #f7f9fc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            }
+
+            .login-card {
+                background: #ffffff;
+                max-width: 380px;
+                width: 100%;
+                border-radius: 24px;
+                position: relative;
+                overflow: hidden;
+                padding: 2.5rem 2rem 2rem 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                border: none;
+            }
+
+            .bg-circle-1 {
+                position: absolute;
+                width: 150px;
+                height: 150px;
+                background: rgba(30, 116, 237, 0.08);
+                border-radius: 50%;
+                top: -40px;
+                left: -40px;
+                z-index: 0;
+            }
+
+            .bg-circle-2 {
+                position: absolute;
+                width: 120px;
+                height: 120px;
+                background: rgba(30, 116, 237, 0.05);
+                border-radius: 50%;
+                top: 20px;
+                left: -20px;
+                z-index: 0;
+            }
+
+            /* Clean wrapper for absolute safety */
+            .brand-wrapper {
+                position: relative;
+                z-index: 2;
+                margin-bottom: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Standardized transparent isolation filter */
+            .logo-img {
+                width: 100px;
+                height: auto;
+                display: block;
+                object-fit: contain;
+                /* Standard modern CSS implementation to blend image background seamlessly */
+                mix-blend-mode: multiply;
+            }
+
+            .brand-title {
+                color: #112663;
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-top: 0.75rem;
+                text-align: center;
+            }
+
+            .custom-input-group {
+                border: 1px solid #e2e8f0;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                padding: 6px 12px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+                background: white;
+            }
+
+            .icon-circle {
+                background-color: #f1f3f9;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                flex-shrink: 0;
+            }
+
+            .custom-input-group input, .custom-input-group select {
+                border: none;
+                outline: none;
+                width: 100%;
+                padding: 8px 12px;
+                font-size: 1rem;
+                background: transparent;
+            }
+
+            .custom-input-group select {
+                color: #4a5568;
+                cursor: pointer;
+            }
+
+            .options-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-pill-submit {
+                width: 100%;
+                background: #1e74ed;
+                border: none;
+                color: white;
+                padding: 12px;
+                border-radius: 30px;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(30, 116, 237, 0.3);
+                margin-bottom: 0.5rem;
+                transition: all 0.2s;
+            }
+
+                .btn-pill-submit:hover {
+                    background-color: #1663cc;
+                }
+
+            .btn-pill-outline {
+                display: block;
+                width: 100%;
+                background-color: #ffffff;
+                color: #1e74ed;
+                font-weight: 600;
+                border-radius: 30px;
+                padding: 12px;
+                text-decoration: none;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                border: 1px solid #e2e8f0;
+                transition: all 0.2s;
+            }
+
+                .btn-pill-outline:hover {
+                    background-color: #f1f3f9;
+                    color: #1e74ed;
+                }
+
+            .z-1 {
+                position: relative;
+                z-index: 1;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="bg-circle-1"></div>
+        <div class="bg-circle-2"></div>
+
+        <!-- Render target for image elements -->
+        <div class="brand-wrapper">
+            <img src="/Images/logo.png" alt="Servant Maid Online" class="logo-img" />
+            <div class="brand-title">Servant Maid Online</div>
+        </div>
+
+        <form action="@Url.Action("Login", "Auth")" method="post" class="z-1">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger p-2 text-center" style="border-radius: 15px; font-size: 0.85rem;">
+                    @Html.ValidationSummary(false, "")
+                </div>
+            }
+
+            <div class="custom-input-group">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-user-tag"></i>
+                </div>
+                <select name="Role" id="role-select" onchange="handleRoleChange()" required>
+                    <option value="" disabled selected>Select Your Role</option>
+                    <option value="Client">Client</option>
+                    <option value="Worker">Worker</option>
+                </select>
+            </div>
+
+            <div class="custom-input-group">
+                <div class="icon-circle">
+                    <i id="login-identifier-icon" class="fa-regular fa-envelope"></i>
+                </div>
+                <input type="text" name="LoginIdentifier" id="login-identifier-input" placeholder="Email / CNIC" required />
+            </div>
+
+            <div class="custom-input-group">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <input type="password" name="Password" id="password-field" placeholder="Password" required />
+                <div class="icon-circle" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+                    <i id="toggle-icon" class="fa-regular fa-eye-slash"></i>
+                </div>
+            </div>
+
+            <div class="options-row">
+                <label style="cursor: pointer; display: flex; align-items: center;">
+                    <input type="checkbox" name="RememberMe" id="RememberMe" value="true" style="margin-right: 6px; accent-color: #1e74ed;">
+                    Remember Me
+                </label>
+                <a href="#" style="color: #1e74ed; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-pill-submit">Sign in</button>
+
+            <div style="text-align: center; margin: 10px 0; font-size: 0.85rem; font-weight: bold; color: #4a5568;">OR</div>
+
+            <a href="@Url.Action("Signup", "Auth")" class="btn-pill-outline">Signup</a>
+        </form>
+    </div>
+
+    <script>
+            function togglePasswordVisibility() {
+                var passwordField = document.getElementById("password-field");
+                var toggleIcon = document.getElementById("toggle-icon");
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    toggleIcon.className = "fa-regular fa-eye";
+                } else {
+                    passwordField.type = "password";
+                    toggleIcon.className = "fa-regular fa-eye-slash";
+                }
+            }
+
+            function handleRoleChange() {
+                var roleSelect = document.getElementById("role-select");
+                var inputField = document.getElementById("login-identifier-input");
+                var icon = document.getElementById("login-identifier-icon");
+
+                if (roleSelect.value === "Worker") {
+                    inputField.type = "text";
+                    inputField.placeholder = "CNIC (e.g., 3740512345677)";
+                    inputField.setAttribute("maxlength", "15");
+                    icon.className = "fa-solid fa-id-card";
+                } else {
+                    inputField.type = "email";
+                    inputField.placeholder = "Email";
+                    inputField.removeAttribute("maxlength");
+                    icon.className = "fa-regular fa-envelope";
+                }
+                inputField.value = "";
+            }
+    </script>
+</body>
+</html>

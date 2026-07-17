@@ -1,0 +1,919 @@
+﻿@* @{
+    ViewBag.Title = "Create Account";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Servant Maid Online</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+            body {
+                background-color: #f7f9fc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            }
+
+            .register-card {
+                background: #ffffff;
+                max-width: 400px;
+                width: 100%;
+                border-radius: 24px;
+                position: relative;
+                overflow: hidden;
+                padding: 2rem 1.5rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                border: none;
+            }
+
+            .header-section {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #f1f3f9;
+                padding-bottom: 10px;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn-back-circle {
+                background: #f1f3f9;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                text-decoration: none;
+            }
+
+            .header-title {
+                color: #112663;
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .role-section-title {
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #1a202c;
+                letter-spacing: 0.5px;
+                margin-bottom: 0.75rem;
+            }
+
+            /* Role Switch Buttons */
+            .role-toggle-box {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn-role {
+                flex: 1;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 10px;
+                font-weight: 600;
+                color: #1a202c;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+                transition: all 0.2s ease;
+            }
+
+                .btn-role.active {
+                    background: #e2e8f0;
+                    border-color: #cbd5e1;
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+                }
+
+            /* Input Form Groups Same as Login */
+            .custom-input-group {
+                border: 1px solid #e2e8f0;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                padding: 4px 12px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+                background: white;
+            }
+
+            .icon-circle {
+                background-color: #f1f3f9;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                flex-shrink: 0;
+            }
+
+            .icon-circle-success {
+                background-color: #22c55e;
+                color: white !important;
+            }
+
+            .custom-input-group input, .custom-input-group select {
+                border: none;
+                outline: none;
+                width: 100%;
+                padding: 8px 12px;
+                font-size: 0.95rem;
+                background: transparent;
+            }
+
+            /* Navigation Buttons at bottom */
+            .action-row {
+                display: flex;
+                gap: 15px;
+                margin-top: 1.5rem;
+            }
+
+            .btn-action-blue {
+                flex: 1;
+                background-color: #1e74ed;
+                color: white;
+                font-weight: 600;
+                border-radius: 30px;
+                padding: 10px;
+                text-align: center;
+                text-decoration: none;
+                border: none;
+                box-shadow: 0 4px 12px rgba(30, 116, 237, 0.25);
+            }
+
+                .btn-action-blue:hover {
+                    background-color: #1663cc;
+                    color: white;
+                }
+
+            .step-panel {
+                display: none;
+            }
+
+                .step-panel.active {
+                    display: block;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="header-section">
+            <a href="@Url.Action("Login", "Auth")" class="btn-back-circle"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="header-title">Create Account</h2>
+            <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
+        </div>
+
+        @if (!Html.ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger p-2 text-center row g-0" style="border-radius: 15px; font-size: 0.85rem; list-style: none;">
+                @Html.ValidationSummary(true, "")
+            </div>
+        }
+
+        <div id="roleSelectionWrapper">
+            <div class="role-section-title">SELECT ROLE</div>
+            <div class="role-toggle-box">
+                <div class="btn-role active" id="roleClient" onclick="switchRole('Client')">
+                    <div class="icon-circle"><i class="fa-solid fa-user"></i></div> Client
+                </div>
+                <div class="btn-role" id="roleWorker" onclick="switchRole('Worker')">
+                    <div class="icon-circle"><i class="fa-solid fa-user-tie"></i></div> Worker
+                </div>
+            </div>
+        </div>
+
+        <form action="@Url.Action("Register", "Auth")" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="Role" id="selectedRole" value="Client" />
+
+            <div id="panelClient" class="step-panel active">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                    <input type="text" name="ClientName" placeholder="Full Name" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                    <input type="email" name="ClientEmail" placeholder="Email" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                    <input type="tel" name="ClientPhone" placeholder="Phone no" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                    <input type="file" name="ClientPicture" accept="image/*" class="form-control border-0 ps-2 fs-7" style="padding: 4px;" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
+                    <input type="text" name="ClientAddress" placeholder="Address" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientPass" name="ClientPassword" placeholder="Password" required />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('clientPass', 'clientPassIcon')">
+                        <i id="clientPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientConfirmPass" name="ClientConfirmPassword" placeholder="Confirm Password" required />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('clientConfirmPass', 'clientConfirmPassIcon')">
+                        <i id="clientConfirmPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <a href="@Url.Action("Login", "Auth")" class="btn-action-blue text-center">Back</a>
+                    <button type="submit" class="btn-action-blue">Signup</button>
+                </div>
+            </div>
+
+            <div id="panelWorkerStep1" class="step-panel">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                    <input type="text" name="WorkerName" placeholder="Full Name" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-calendar"></i></div>
+                    <input type="number" name="WorkerAge" placeholder="Age" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                    <input type="tel" name="WorkerPhone" placeholder="Phone no" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-id-card"></i></div>
+                    <input type="text" name="WorkerCNIC" placeholder="CNIC" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-dollar-sign"></i></div>
+                    <input type="number" name="WorkerSalary" placeholder="Salary" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-venus-mars"></i></div>
+                    <select name="WorkerGender">
+                        <option value="" disabled selected hidden>Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="btn-action-blue" onclick="goToLogin()">Home</button>
+                    <button type="button" class="btn-action-blue" onclick="nextWorkerStep()">Next</button>
+                </div>
+            </div>
+
+            <div id="panelWorkerStep2" class="step-panel">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                    <input type="file" name="WorkerPicture" accept="image/*" style="padding: 4px;" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                    <input type="email" name="WorkerEmail" placeholder="Email" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
+                    <input type="text" name="WorkerAddress" placeholder="Address" />
+                </div>
+
+                <div class="custom-input-group justify-content-between pe-1" style="cursor: pointer;" onclick="window.location.href='@Url.Action("AddSkills", "Auth")'">
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="icon-circle icon-circle-success"><i class="fa-solid fa-check"></i></div>
+                        <span class="ps-3 text-secondary fs-6">Add Skills</span>
+                    </div>
+                    <button type="button" class="icon-circle border-0 text-primary" style="background:#f1f3f9;">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="workerPass" name="WorkerPassword" placeholder="Password" />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('workerPass', 'workerPassIcon')">
+                        <i id="workerPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="workerConfirmPass" name="WorkerConfirmPassword" placeholder="Confirm Password" />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('workerConfirmPass', 'workerConfirmPassIcon')">
+                        <i id="workerConfirmPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="btn-action-blue" onclick="backToWorkerStep1()">Back</button>
+                    <button type="submit" class="btn-action-blue">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+            function switchRole(role) {
+                document.getElementById('selectedRole').value = role;
+
+                if(role === 'Client') {
+                    document.getElementById('roleClient').classList.add('active');
+                    document.getElementById('roleWorker').classList.remove('active');
+
+                    document.getElementById('panelClient').classList.add('active');
+                    document.getElementById('panelWorkerStep1').classList.remove('active');
+                    document.getElementById('panelWorkerStep2').classList.remove('active');
+                } else {
+                    document.getElementById('roleWorker').classList.add('active');
+                    document.getElementById('roleClient').classList.remove('active');
+
+                    document.getElementById('panelWorkerStep1').classList.add('active');
+                    document.getElementById('panelClient').classList.remove('active');
+                    document.getElementById('panelWorkerStep2').classList.remove('active');
+                }
+            }
+
+            function nextWorkerStep() {
+                document.getElementById('roleSelectionWrapper').style.display = 'none';
+                document.getElementById('panelWorkerStep1').classList.remove('active');
+                document.getElementById('panelWorkerStep2').classList.add('active');
+            }
+
+            function backToWorkerStep1() {
+                document.getElementById('roleSelectionWrapper').style.display = 'block';
+                document.getElementById('panelWorkerStep2').classList.remove('active');
+                document.getElementById('panelWorkerStep1').classList.add('active');
+            }
+
+            function goToLogin() {
+                window.location.href = '@Url.Action("Login", "Auth")';
+            }
+
+            function togglePass(fieldId, iconId) {
+                var field = document.getElementById(fieldId);
+                var icon = document.getElementById(iconId);
+                if (field.type === "password") {
+                    field.type = "text";
+                    icon.className = "fa-regular fa-eye";
+                } else {
+                    field.type = "password";
+                    icon.className = "fa-regular fa-eye-slash";
+                }
+            }
+    </script>
+</body>
+</html>*@
+@{
+    ViewBag.Title = "Create Account";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Servant Maid Online</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+            body {
+                background-color: #f7f9fc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            }
+
+            .register-card {
+                background: #ffffff;
+                max-width: 400px;
+                width: 100%;
+                border-radius: 24px;
+                position: relative;
+                overflow: hidden;
+                padding: 2rem 1.5rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                border: none;
+            }
+
+            .header-section {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #f1f3f9;
+                padding-bottom: 10px;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn-back-circle {
+                background: #f1f3f9;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                text-decoration: none;
+            }
+
+            .header-title {
+                color: #112663;
+                font-size: 1.25rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .role-section-title {
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #1a202c;
+                letter-spacing: 0.5px;
+                margin-bottom: 0.75rem;
+            }
+
+            /* Role Switch Buttons */
+            .role-toggle-box {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn-role {
+                flex: 1;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 10px;
+                font-weight: 600;
+                color: #1a202c;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+                transition: all 0.2s ease;
+            }
+
+                .btn-role.active {
+                    background: #e2e8f0;
+                    border-color: #cbd5e1;
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+                }
+
+            /* Input Form Groups Same as Login */
+            .custom-input-group {
+                border: 1px solid #e2e8f0;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                padding: 4px 12px;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+                background: white;
+            }
+
+            .icon-circle {
+                background-color: #f1f3f9;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                flex-shrink: 0;
+            }
+
+            .icon-circle-success {
+                background-color: #22c55e;
+                color: white !important;
+            }
+
+            .custom-input-group input, .custom-input-group select {
+                border: none;
+                outline: none;
+                width: 100%;
+                padding: 8px 12px;
+                font-size: 0.95rem;
+                background: transparent;
+            }
+
+            /* Navigation Buttons at bottom */
+            .action-row {
+                display: flex;
+                gap: 15px;
+                margin-top: 1.5rem;
+            }
+
+            .btn-action-blue {
+                flex: 1;
+                background-color: #1e74ed;
+                color: white;
+                font-weight: 600;
+                border-radius: 30px;
+                padding: 10px;
+                text-align: center;
+                text-decoration: none;
+                border: none;
+                box-shadow: 0 4px 12px rgba(30, 116, 237, 0.25);
+            }
+
+                .btn-action-blue:hover {
+                    background-color: #1663cc;
+                    color: white;
+                }
+
+            .step-panel {
+                display: none;
+            }
+
+                .step-panel.active {
+                    display: block;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="header-section">
+            <a href="@Url.Action("Login", "Auth")" class="btn-back-circle"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 class="header-title">Create Account</h2>
+            <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
+        </div>
+
+        @if (!Html.ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger p-2 text-center row g-0" style="border-radius: 15px; font-size: 0.85rem; list-style: none;">
+                @Html.ValidationSummary(true, "")
+            </div>
+        }
+
+        <div id="roleSelectionWrapper">
+            <div class="role-section-title">SELECT ROLE</div>
+            <div class="role-toggle-box">
+                <div class="btn-role active" id="roleClient" onclick="switchRole('Client')">
+                    <div class="icon-circle"><i class="fa-solid fa-user"></i></div> Client
+                </div>
+                <div class="btn-role" id="roleWorker" onclick="switchRole('Worker')">
+                    <div class="icon-circle"><i class="fa-solid fa-user-tie"></i></div> Worker
+                </div>
+            </div>
+        </div>
+
+        <form id="signupForm" action="@Url.Action("Register", "Auth")" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="Role" id="selectedRole" value="Client" />
+
+            <input type="hidden" id="TempPicturePath" name="TempPicturePath" />
+            <input type="hidden" id="SessionSkillsData" name="SessionSkillsData" />
+
+            <div id="panelClient" class="step-panel active">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                    <input type="text" name="ClientName" placeholder="Full Name" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                    <input type="email" name="ClientEmail" placeholder="Email" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                    <input type="tel" name="ClientPhone" placeholder="Phone no" required />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                    <input type="file" name="ClientPicture" accept="image/*" class="form-control border-0 ps-2 fs-7" style="padding: 4px;" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
+                    <input type="text" name="ClientAddress" placeholder="Address" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientPass" name="ClientPassword" placeholder="Password" required />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('clientPass', 'clientPassIcon')">
+                        <i id="clientPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientConfirmPass" name="ClientConfirmPassword" placeholder="Confirm Password" required />
+                    <div class="icon-circle" style="cursor: pointer;" onclick="togglePass('clientConfirmPass', 'clientConfirmPassIcon')">
+                        <i id="clientConfirmPassIcon" class="fa-regular fa-eye-slash"></i>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <a href="@Url.Action("Login", "Auth")" class="btn-action-blue text-center">Back</a>
+                    <button type="submit" class="btn-action-blue">Signup</button>
+                </div>
+            </div>
+
+            <div id="panelWorkerStep1" class="step-panel">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                    <input type="text" name="WorkerName" placeholder="Full Name" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-calendar"></i></div>
+                    <input type="number" name="WorkerAge" placeholder="Age" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
+                    <input type="tel" name="WorkerPhone" placeholder="Phone no" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-id-card"></i></div>
+                    <input type="text" name="WorkerCNIC" placeholder="CNIC" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-dollar-sign"></i></div>
+                    <input type="number" name="WorkerSalary" placeholder="Salary" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-venus-mars"></i></div>
+                    <select name="WorkerGender">
+                        <option value="" disabled selected hidden>Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="btn-action-blue" onclick="goToLogin()">Home</button>
+                    <button type="button" class="btn-action-blue" onclick="nextWorkerStep()">Next</button>
+                </div>
+            </div>
+
+            <div id="panelWorkerStep2" class="step-panel">
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                    <input type="file" name="WorkerPicture" id="workerPicInput" accept="image/*" style="padding: 4px;" />
+                </div>
+
+                <div class="text-center mb-2" id="tempImagePreviewContainer" style="display:none;">
+                    <img alt="Worker Image" class="img-thumbnail" id="tempImagePreview" src="" style="max-height: 80px;" />
+                    <div class="text-muted small">Previously uploaded picture cached</div>
+                </div>
+
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                    <input type="email" name="WorkerEmail" placeholder="Email" />
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
+                    <input type="text" name="WorkerAddress" placeholder="Address" />
+                </div>
+
+                <div class="custom-input-group justify-content-between pe-1" id="lnkAddSkills" style="cursor: pointer;">
+                    <div class="d-flex align-items-center flex-grow-1" style="gap: 8px;">
+                        <div class="icon-circle" id="skillsCheckIcon" style="background: #fee2e2; color: #dc2626; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.95rem;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                        <span class="text-secondary fs-6" id="skillsStatusText" style="font-weight: 500; margin: 0;">Add Skills and Experience</span>
+                    </div>
+                    <button class="icon-circle border-0 text-primary" style="background: #dbeafe; color: #1e74ed; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;" type="button" onclick="event.stopPropagation();">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input id="workerPass" name="WorkerPassword" placeholder="Password" type="password" />
+                    <div class="icon-circle" onclick="togglePass('workerPass', 'workerPassIcon')" style="cursor: pointer;">
+                        <i class="fa-regular fa-eye-slash" id="workerPassIcon"></i>
+                    </div>
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input id="workerConfirmPass" name="WorkerConfirmPassword" placeholder="Confirm Password" type="password" />
+                    <div class="icon-circle" onclick="togglePass('workerConfirmPass', 'workerConfirmPassIcon')" style="cursor: pointer;">
+                        <i class="fa-regular fa-eye-slash" id="workerConfirmPassIcon"></i>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-action-blue" onclick="backToWorkerStep1()" type="button">Back</button>
+                    <button class="btn-action-blue" id="btnFinalSubmit" type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Initial control sync based on default page landing state (Client)
+                manageRequiredAttributes('Client');
+
+                // Check if user is returning back into this context layout from AddSkills view state
+                if (localStorage.getItem("worker_form_backstate") === "true") {
+
+                    // Switch Context Panels to Worker view sequence
+                    switchRole('Worker');
+
+                    // Skip directly to Step 2 Panel
+                    document.getElementById('roleSelectionWrapper').style.display = 'none';
+                    document.getElementById('panelWorkerStep1').classList.remove('active');
+                    document.getElementById('panelWorkerStep2').classList.add('active');
+
+                    // Populating text fields values back out of tracking store
+                    document.getElementsByName("WorkerName")[0].value = localStorage.getItem("w_name") || "";
+                    document.getElementsByName("WorkerAge")[0].value = localStorage.getItem("w_age") || "";
+                    document.getElementsByName("WorkerPhone")[0].value = localStorage.getItem("w_phone") || "";
+                    document.getElementsByName("WorkerCNIC")[0].value = localStorage.getItem("w_cnic") || "";
+                    document.getElementsByName("WorkerSalary")[0].value = localStorage.getItem("w_salary") || "";
+                    document.getElementsByName("WorkerGender")[0].value = localStorage.getItem("w_gender") || "";
+                    document.getElementsByName("WorkerEmail")[0].value = localStorage.getItem("w_email") || "";
+                    document.getElementsByName("WorkerAddress")[0].value = localStorage.getItem("w_address") || "";
+                    document.getElementById("workerPass").value = localStorage.getItem("w_pass") || "";
+                    document.getElementById("workerConfirmPass").value = localStorage.getItem("w_cpass") || "";
+
+                    // Restoring dynamic skills submission block references
+                    var savedSkills = localStorage.getItem("worker_skills_json");
+
+                    // If no localStorage data, check sessionStorage (from AddSkills return)
+                    if (!savedSkills && sessionStorage.getItem("WorkerSignupData")) {
+                        var signupData = JSON.parse(sessionStorage.getItem("WorkerSignupData"));
+                        if (signupData && signupData.skillsData) {
+                            savedSkills = JSON.stringify(signupData.skillsData);
+                            localStorage.setItem("worker_skills_json", savedSkills);
+                        }
+                    }
+
+                    if (savedSkills) {
+                        document.getElementById("SessionSkillsData").value = savedSkills;
+                        document.getElementById("skillsStatusText").innerText = "Skills Added Successfully!";
+                        document.getElementById("skillsStatusText").classList.remove("text-secondary");
+                        document.getElementById("skillsStatusText").classList.add("text-success", "fw-bold");
+                        // Update icon from X to checkmark when skills are filled
+                        const skillsCheckIcon = document.getElementById("skillsCheckIcon");
+                        skillsCheckIcon.style.background = "#d1fae5";
+                        skillsCheckIcon.style.color = "#059669";
+                        skillsCheckIcon.innerHTML = '<i class="fa-solid fa-check" style="font-size: 1.1rem;"></i>';
+                    }
+
+                    // Restore image reference state safely if present
+                    var savedPicPath = localStorage.getItem("w_pic_temp");
+                    if (savedPicPath) {
+                        document.getElementById("TempPicturePath").value = savedPicPath;
+                        document.getElementById("tempImagePreview").src = savedPicPath;
+                        document.getElementById("tempImagePreviewContainer").style.display = "block";
+                    }
+
+                    // Remove tracking variables to clean context state loops
+                    localStorage.removeItem("worker_form_backstate");
+                }
+
+                // Intercepting navigation triggers to cache inputs locally before leaving view context bounds
+                document.getElementById("lnkAddSkills").addEventListener("click", async function(e) {
+                    e.preventDefault();
+
+                    // Save textual entries to storage block
+                    localStorage.setItem("w_name", document.getElementsByName("WorkerName")[0].value);
+                    localStorage.setItem("w_age", document.getElementsByName("WorkerAge")[0].value);
+                    localStorage.setItem("w_phone", document.getElementsByName("WorkerPhone")[0].value);
+                    localStorage.setItem("w_cnic", document.getElementsByName("WorkerCNIC")[0].value);
+                    localStorage.setItem("w_salary", document.getElementsByName("WorkerSalary")[0].value);
+                    localStorage.setItem("w_gender", document.getElementsByName("WorkerGender")[0].value);
+                    localStorage.setItem("w_email", document.getElementsByName("WorkerEmail")[0].value);
+                    localStorage.setItem("w_address", document.getElementsByName("WorkerAddress")[0].value);
+                    localStorage.setItem("w_pass", document.getElementById("workerPass").value);
+                    localStorage.setItem("w_cpass", document.getElementById("workerConfirmPass").value);
+                    localStorage.setItem("worker_form_backstate", "true");
+
+                    // Check and pass file targets across background pipelines asynchronously
+                    var fileInput = document.getElementById("workerPicInput");
+                    if (fileInput && fileInput.files.length > 0) {
+                        var formData = new FormData();
+                        formData.append("file", fileInput.files[0]);
+
+                        try {
+                            let response = await fetch('/Auth/UploadTemporaryPicture', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            let result = await response.json();
+                            if (result.success) {
+                                localStorage.setItem("w_pic_temp", result.filePath);
+                            }
+                        } catch (err) {
+                            console.error("Error standardizing temporary upload file streams:", err);
+                        }
+                    }
+
+                    window.location.href = '@Url.Action("AddSkills", "Auth")';
+                });
+
+                // Clean data persistence objects upon definitive submission runs
+                document.getElementById("signupForm").addEventListener("submit", function() {
+                    localStorage.clear();
+                });
+            });
+
+            // Dynamically add/remove standard validation markers depending on what role is active
+            function manageRequiredAttributes(role) {
+                const clientFields = ['ClientName', 'ClientEmail', 'ClientPhone', 'ClientPassword', 'ClientConfirmPassword'];
+                const workerFields = ['WorkerName', 'WorkerAge', 'WorkerPhone', 'WorkerCNIC', 'WorkerSalary', 'WorkerGender', 'WorkerEmail', 'WorkerPassword', 'WorkerConfirmPassword'];
+
+                if (role === 'Client') {
+                    // Turn client fields on
+                    clientFields.forEach(name => {
+                        let el = document.getElementsByName(name)[0];
+                        if(el) el.setAttribute('required', 'required');
+                    });
+                    // Remove worker constraints
+                    workerFields.forEach(name => {
+                        let el = document.getElementsByName(name)[0];
+                        if(el) el.removeAttribute('required');
+                    });
+                } else {
+                    // Remove client constraints
+                    clientFields.forEach(name => {
+                        let el = document.getElementsByName(name)[0];
+                        if(el) el.removeAttribute('required');
+                    });
+                    // Turn specific vital worker fields on
+                    const mandatoryWorker = ['WorkerName', 'WorkerPhone', 'WorkerCNIC', 'WorkerEmail', 'WorkerPassword', 'WorkerConfirmPassword'];
+                    mandatoryWorker.forEach(name => {
+                        let el = document.getElementsByName(name)[0];
+                        if(el) el.setAttribute('required', 'required');
+                    });
+                }
+            }
+
+            function switchRole(role) {
+                document.getElementById('selectedRole').value = role;
+                manageRequiredAttributes(role);
+
+                if(role === 'Client') {
+                    document.getElementById('roleClient').classList.add('active');
+                    document.getElementById('roleWorker').classList.remove('active');
+
+                    document.getElementById('panelClient').classList.add('active');
+                    document.getElementById('panelWorkerStep1').classList.remove('active');
+                    document.getElementById('panelWorkerStep2').classList.remove('active');
+                } else {
+                    document.getElementById('roleWorker').classList.add('active');
+                    document.getElementById('roleClient').classList.remove('active');
+
+                    document.getElementById('panelWorkerStep1').classList.add('active');
+                    document.getElementById('panelClient').classList.remove('active');
+                    document.getElementById('panelWorkerStep2').classList.remove('active');
+                }
+            }
+
+            function nextWorkerStep() {
+                document.getElementById('roleSelectionWrapper').style.display = 'none';
+                document.getElementById('panelWorkerStep1').classList.remove('active');
+                document.getElementById('panelWorkerStep2').classList.add('active');
+            }
+
+            function backToWorkerStep1() {
+                document.getElementById('roleSelectionWrapper').style.display = 'block';
+                document.getElementById('panelWorkerStep2').classList.remove('active');
+                document.getElementById('panelWorkerStep1').classList.add('active');
+            }
+
+            function goToLogin() {
+                window.location.href = '@Url.Action("Login", "Auth")';
+            }
+
+            function togglePass(fieldId, iconId) {
+                var field = document.getElementById(fieldId);
+                var icon = document.getElementById(iconId);
+                if (field.type === "password") {
+                    field.type = "text";
+                    icon.className = "fa-regular fa-eye";
+                } else {
+                    field.type = "password";
+                    icon.className = "fa-regular fa-eye-slash";
+                }
+            }
+    </script>
+</body>>

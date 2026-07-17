@@ -1,0 +1,499 @@
+﻿@model IEnumerable<MaidAndServantt.Models.Worker>
+@{
+    ViewBag.Title = "Find Service";
+    Layout = null;
+    string activeCategory = ViewBag.ActiveCategory ?? "Cleaning";
+    string currentSearch = ViewBag.SearchQuery ?? "";
+    string clientName = ViewBag.ClientName ?? "Guest";
+
+    // Client picture path fix logic
+    string clientPicture = ViewBag.ClientPicture ?? "";
+    if (!string.IsNullOrEmpty(clientPicture) && !clientPicture.StartsWith("/") && !clientPicture.StartsWith("http"))
+    {
+        clientPicture = "/Images/" + clientPicture;
+    }
+    if (string.IsNullOrEmpty(clientPicture))
+    {
+        clientPicture = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    }
+
+    // Dynamic Worker Ratings Map from Controller (Fallback to 4.0 if not found)
+    var workerRatingsMap = ViewBag.WorkerRatingsMap as Dictionary<int, double>;
+
+    // New: Interview and Hiring Status Map from Controller
+    var interviewStatusMap = ViewBag.WorkerInterviewStatusMap as Dictionary<int, string>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Service</title>
+    <!-- Bootstrap 5.3.2 Styling Core Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+            body {
+                background-color: #f7f9fc;
+                font-family: system-ui, -apple-system, sans-serif;
+                color: #112663;
+                margin: 0;
+                padding: 0;
+            }
+
+            .app-container {
+                width: 100%;
+                max-width: 1200px;
+                margin: 2rem auto;
+                background: #ffffff;
+                min-height: 85vh;
+                padding: 1.5rem;
+                border-radius: 24px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+                position: relative;
+                box-sizing: border-box;
+            }
+
+            @@media (max-width: 768px) {
+                .app-container {
+                    margin: 1rem auto;
+                    padding: 1rem;
+                    border-radius: 16px;
+                }
+            }
+
+            .header-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 1.5rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .profile-container {
+                position: relative;
+                display: inline-block;
+                flex-shrink: 0;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+                .profile-container:hover {
+                    transform: scale(1.05);
+                }
+
+            .profile-img {
+                width: 65px;
+                height: 65px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #1e74ed;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                background-color: #eef4fe;
+            }
+
+            .profile-badge {
+                position: absolute;
+                bottom: 0px;
+                right: 0px;
+                background: #1e74ed;
+                border-radius: 50%;
+                width: 22px;
+                height: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                font-size: 0.65rem;
+                color: #fff;
+            }
+
+            .search-bar-container {
+                position: relative;
+                width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+                padding: 14px 50px 14px 20px;
+                border: 1px solid #e2e8f0;
+                border-radius: 15px;
+                outline: none;
+                background-color: #fff;
+                font-size: 0.95rem;
+                color: #4a5568;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+                transition: border-color 0.2s;
+                box-sizing: border-box;
+            }
+
+                .search-input:focus {
+                    border-color: #1e74ed;
+                }
+
+            .search-btn {
+                position: absolute;
+                right: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #1e74ed;
+                font-size: 1.1rem;
+                cursor: pointer;
+            }
+
+            .category-wrapper {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .service-pill {
+                padding: 10px 18px;
+                border-radius: 12px;
+                border: 1px solid #e2e8f0;
+                background: #fff;
+                color: #4a5568;
+                font-weight: 600;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: all 0.2s;
+            }
+
+                .service-pill:hover {
+                    border-color: #1e74ed;
+                    color: #1e74ed;
+                }
+
+                .service-pill.active {
+                    background: #1e74ed;
+                    color: #fff;
+                    border-color: #1e74ed;
+                    box-shadow: 0 4px 12px rgba(30, 116, 237, 0.2);
+                }
+
+            .btn-utility {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px 16px;
+                color: #4a5568;
+                font-size: 0.85rem;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-decoration: none;
+                width: 100%;
+                transition: all 0.2s ease;
+            }
+
+                .btn-utility:hover {
+                    background-color: #f8fafc;
+                    border-color: #1e74ed;
+                    color: #1e74ed;
+                }
+
+            /* --- WORKER CARDS STYLING --- */
+            .worker-card {
+                background: #fff;
+                border-radius: 20px;
+                padding: 1.5rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+                .worker-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+                }
+
+            .card-flex-wrapper {
+                display: flex;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .worker-avatar-container {
+                position: relative;
+                width: 65px;
+                height: 65px;
+                background: #eef4fe;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .worker-avatar {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .card-profile-badge {
+                position: absolute;
+                bottom: 0px;
+                right: 0px;
+                background: #fff;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+                font-size: 0.65rem;
+            }
+
+            .rating-badge {
+                background: #fffdf0;
+                border: 1px solid #fef3c7;
+                color: #fbbf24;
+                font-size: 0.8rem;
+                font-weight: 700;
+                padding: 2px 8px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .main-category-text {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #64748b;
+            }
+
+            .text-salary {
+                color: #2ecc71;
+                font-weight: 700;
+            }
+
+            .btn-interview {
+                background: #1e74ed;
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 12px;
+                width: 100%;
+                font-weight: 600;
+                font-size: 0.95rem;
+                transition: background 0.2s;
+            }
+
+                .btn-interview:hover {
+                    background: #155cb8;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Header Section -->
+        <div class="header-section">
+            <div>
+                <h2 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Welcome, @clientName</h2>
+                <h6 class="text-uppercase text-muted fw-bold mb-0" style="letter-spacing: 0.5px; font-size: 0.75rem;">FIND SERVICE</h6>
+            </div>
+            <div>
+                <a href="@Url.Action("ClientProfile", "Dashboard")" class="profile-container text-decoration-none d-inline-block">
+                    <img src="@clientPicture" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" alt="Profile" class="profile-img" />
+                    <div class="profile-badge">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Controls Grid Layout -->
+        <div class="row g-3 mb-4 align-items-center">
+            <div class="col-12 col-md-4">
+                <form action="@Url.Action("SearchWorker", "Dashboard")" method="get" class="search-bar-container">
+                    <input type="hidden" name="category" value="@activeCategory" />
+                    <input type="text" name="searchName" class="search-input" placeholder="Search by Name..." value="@currentSearch" />
+                    <button type="submit" class="search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="col-12 col-md-5">
+                <div class="category-wrapper">
+                    <a href="@Url.Action("SearchWorker", "Dashboard", new { category = "All", searchName = currentSearch })"
+                       class="service-pill @(activeCategory == "All" ? "active" : "")">All</a>
+
+                    <a href="@Url.Action("SearchWorker", "Dashboard", new { category = "Cleaning", searchName = currentSearch })"
+                       class="service-pill @(activeCategory == "Cleaning" ? "active" : "")">Cleaning</a>
+
+                    <a href="@Url.Action("SearchWorker", "Dashboard", new { category = "Cooking", searchName = currentSearch })"
+                       class="service-pill @(activeCategory == "Cooking" ? "active" : "")">Cooking</a>
+
+                    <a href="@Url.Action("SearchWorker", "Dashboard", new { category = "Driving", searchName = currentSearch })"
+                       class="service-pill @(activeCategory == "Driving" ? "active" : "")">Driving</a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-3">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="@Url.Action("Filter", "Filter", new { category = activeCategory, searchName = currentSearch })" class="btn-utility">
+                            Filter <i class="fa-solid fa-sliders text-muted"></i>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#" class="btn-utility">Sort <i class="fa-solid fa-arrow-up text-muted"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Meta Count -->
+        <div class="mb-3 ps-1">
+            <span class="text-muted fw-semibold" style="font-size: 0.85rem;">@(Model?.Count() ?? 0) Total Results available</span>
+        </div>
+
+        <!-- Workers Dynamic Grid Container -->
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                var skillsMap = ViewBag.WorkerSkillsMap as Dictionary<int, List<string>>;
+
+                foreach (var worker in Model)
+                {
+                    var workerPic = worker.Picture;
+                    if (!string.IsNullOrEmpty(workerPic) && !workerPic.StartsWith("/") && !workerPic.StartsWith("http"))
+                    {
+                        workerPic = "/Images/" + workerPic;
+                    }
+                    if (string.IsNullOrEmpty(workerPic))
+                    {
+                        workerPic = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                    }
+
+                    var workerBio = string.IsNullOrEmpty(worker.Bio) ? "Professional worker" : worker.Bio;
+                    var workerAddress = string.IsNullOrEmpty(worker.Address) ? "Rawalpindi" : worker.Address;
+                    var displaySalary = worker.Salary.HasValue ? worker.Salary.Value.ToString("F0") : "25000";
+
+                    // Fetch Dynamic Rating from Reviews table via Controller (Fallback to 4.0 if not found)
+                    double finalRating = 4.0;
+                    if (workerRatingsMap != null && workerRatingsMap.ContainsKey(worker.WorkerId))
+                    {
+                        finalRating = workerRatingsMap[worker.WorkerId];
+                    }
+
+                    // Extract current worker's interview/hiring status
+                    string currentStatus = "";
+                    if (interviewStatusMap != null && interviewStatusMap.ContainsKey(worker.WorkerId))
+                    {
+                        currentStatus = interviewStatusMap[worker.WorkerId];
+                    }
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="worker-card">
+                            <div>
+                                <div class="card-flex-wrapper mb-3">
+                                    <div class="worker-avatar-container">
+                                        <img src="@workerPic" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" class="worker-avatar" alt="Worker" />
+                                        <div class="card-profile-badge">
+                                            <i class="fa-solid fa-user"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="worker-details flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h5 class="fw-bold mb-0 text-dark text-capitalize">@worker.Name</h5>
+                                            <div class="rating-badge">
+                                                <i class="fa-solid fa-star"></i> @finalRating.ToString("0.0")
+                                            </div>
+                                        </div>
+
+                                        <!-- Displays Main & Second Category perfectly -->
+                                        <div class="main-category-text mb-2 text-primary fw-bold text-capitalize" style="font-size: 0.88rem;">
+                                            @if (skillsMap != null && skillsMap.ContainsKey(worker.WorkerId) && skillsMap[worker.WorkerId].Any())
+                                            {
+                                                var cats = skillsMap[worker.WorkerId];
+                                                string mainCat = cats.First();
+                                                string secondCat = cats.Count > 1 ? cats[1] : "";
+
+                                                <span>@mainCat</span>
+                                                if (!string.IsNullOrEmpty(secondCat))
+                                                {
+                                                    <span class="text-muted fw-normal"> / @secondCat</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span>Professional @(activeCategory != "All" ? activeCategory : "Servant / Maid")</span>
+                                            }
+                                        </div>
+
+                                        <p class="text-muted small mb-0" style="font-size: 0.85rem; line-height: 1.3;">
+                                            @workerBio
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="row g-0 pt-2 pb-2 border-top border-light mb-3">
+                                    <div class="col-6">
+                                        <span class="text-muted d-block" style="font-size:0.75rem;">City</span>
+                                        <span class="text-dark fw-bold" style="font-size: 0.85rem;">@workerAddress</span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <span class="text-muted d-block" style="font-size:0.75rem;">Salary</span>
+                                        <span class="text-salary" style="font-size: 0.9rem;">Rs.@displaySalary</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- INTERVIEW STATUS LOGIC BUTTONS -->
+                            @if (currentStatus == "Hired")
+                            {
+                                <button class="btn btn-success text-center d-block w-100 fw-bold border-0" disabled style="border-radius: 12px; padding: 12px; background-color: #2ecc71; color: #fff;">
+                                    <i class="fa-solid fa-check-double me-1"></i> Hired
+                                </button>
+                            }
+                            else if (currentStatus == "Pending")
+                            {
+                                <button class="btn btn-warning text-dark text-center d-block w-100 fw-bold border-0" disabled style="border-radius: 12px; padding: 12px; background-color: #ffc107; color: #112663;">
+                                    <i class="fa-solid fa-clock me-1"></i> Interview Pending
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("WorkerProfile", "WorkerDashboard", new { workerId = worker.WorkerId })" class="btn btn-interview text-center d-block text-decoration-none">
+                                    Call for Interview
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="text-center p-5 card border-0 bg-light rounded-4">
+                        <i class="fa-solid fa-user-slash fa-2x text-muted mb-3"></i>
+                        <p class="text-muted mb-0 fw-medium">No professional workers found matching criteria.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Script assets JS dependencies -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

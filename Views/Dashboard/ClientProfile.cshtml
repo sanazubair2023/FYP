@@ -1,0 +1,334 @@
+﻿@model MaidAndServantt.Models.Client
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Profile Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+
+            /* 🔥 Web View Changes: Ab ye poori screen par sahi dikhega */
+            .web-container {
+                max-width: 1200px;
+                margin: 2rem auto;
+                background: #ffffff;
+                border-radius: 24px;
+                padding: 30px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                min-height: 85vh;
+            }
+
+            .profile-img {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .btn-custom-sm {
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                padding: 6px 18px;
+                text-decoration: none;
+            }
+
+            .btn-blue {
+                background-color: #1e74ed;
+                color: white;
+            }
+
+                .btn-blue:hover {
+                    background-color: #155cb8;
+                    color: white;
+                }
+
+            .info-card {
+                border: 1px solid #e5e7eb;
+                border-radius: 18px;
+                padding: 20px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+                height: 100%; /* Card height align karne ke liye */
+            }
+
+            .nav-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .btn-nav {
+                background: #1e74ed;
+                color: white;
+                font-weight: 700;
+                border-radius: 15px;
+                padding: 15px 10px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 0.95rem;
+                box-shadow: 0 4px 8px rgba(30,116,237,0.15);
+                transition: transform 0.2s;
+            }
+
+                .btn-nav:hover {
+                    color: white;
+                    transform: translateY(-2px);
+                    background: #155cb8;
+                }
+
+            .status-card {
+                border: 1px solid #e5e7eb;
+                border-radius: 15px;
+                padding: 15px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                background: #fdfdfd;
+            }
+
+            .worker-card {
+                border: 1px solid #e5e7eb;
+                border-radius: 20px;
+                padding: 20px;
+                margin-bottom: 15px;
+                background: #ffffff;
+                transition: box-shadow 0.2s;
+            }
+
+                .worker-card:hover {
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+                }
+
+            .worker-avatar {
+                width: 65px;
+                height: 65px;
+                border-radius: 50%;
+                object-fit: cover;
+                background: #e2e8f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .badge-role {
+                border: 1px solid #706fd3;
+                color: #706fd3;
+                font-size: 0.75rem;
+                border-radius: 10px;
+                padding: 4px 12px;
+                font-weight: 600;
+            }
+
+            .badge-status {
+                border: 1px solid #706fd3;
+                color: #706fd3;
+                font-size: 0.8rem;
+                border-radius: 12px;
+                padding: 5px 18px;
+                font-weight: 600;
+            }
+
+            .btn-action {
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 0.85rem;
+                padding: 6px 15px;
+                min-width: 105px;
+                text-align: center;
+            }
+    </style>
+</head>
+<body>
+    <!-- Main container changed to web view wrapper -->
+    <div class="container-fluid px-4">
+        <div class="web-container">
+
+            <!-- Header Section (Uses Bootstrap row for layout) -->
+            <div class="row align-items-center mb-4 g-3">
+                <div class="col-md-8 col-7">
+                    <span class="text-muted small d-block">Good Morning</span>
+                    <h2 class="fw-bold m-0 text-dark">@Model.Name</h2>
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <a href="@Url.Action("EditProfile", "Dashboard")" class="btn btn-blue btn-custom-sm"><i class="fa-solid fa-pen me-1"></i> Edit Profile</a>
+
+                        <!-- ================= UPDATED LOGOUT BUTTON ================= -->
+                        <a href="@Url.Action("Login", "Dashboard")" class="btn btn-outline-danger btn-custom-sm">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                        </a>
+                        <!-- ========================================================= -->
+                    </div>
+                </div>
+                <div class="col-md-4 col-5 text-end">
+                    @if (Model.Picture != null && !string.IsNullOrEmpty(Model.Picture.ToString()))
+                    {
+                        <img src="@Model.Picture" class="profile-img border shadow-sm" alt="Profile" />
+                    }
+                    else
+                    {
+                        <div class="profile-img bg-secondary d-inline-flex align-items-center justify-content-center text-white shadow-sm">
+                            <i class="fa-solid fa-user fs-2"></i>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Dashboard Content Grid -->
+            <div class="row g-4 mb-4">
+                <!-- Left: Contact Info -->
+                <div class="col-md-6">
+                    <div class="info-card d-flex flex-column justify-content-center">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <i class="fa-solid fa-location-dot text-danger fs-5" style="width:25px; text-align:center;"></i>
+                            <span class="fw-semibold text-secondary">@(Model.Address ?? "No Address Added")</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-phone text-success fs-5" style="width:25px; text-align:center;"></i>
+                            <span class="fw-semibold text-secondary">@Model.Phone</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Status Snapshot -->
+                <div class="col-md-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="status-card h-100">
+                                <i class="fa-solid fa-users text-primary fs-4"></i>
+                                <div class="w-100 d-flex justify-content-between align-items-center">
+                                    <span class="small fw-bold text-muted">Active Workers</span>
+                                    <span class="fw-bold fs-4 text-dark">@ViewBag.ActiveWorkersCount</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="status-card h-100">
+                                <i class="fa-regular fa-calendar-check text-warning fs-4"></i>
+                                <div class="w-100 d-flex justify-content-between align-items-center">
+                                    <span class="small fw-bold text-muted" style="line-height:1.2;">Interviews<br>Pending</span>
+                                    <span class="fw-bold fs-4 text-dark">@ViewBag.PendingInterviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links Section -->
+            <div class="mb-5">
+                <h5 class="fw-bold text-dark mb-3">Quick Navigation</h5>
+                <div class="nav-grid">
+                    <a href="@Url.Action("SearchWorker", "Dashboard")" class="btn-nav"><i class="fa-solid fa-briefcase d-block mb-1 fs-5"></i> Services</a>
+                    <a href="@Url.Action("InterviewList", "Dashboard")" class="btn-nav"><i class="fa-solid fa-clipboard-question d-block mb-1 fs-5"></i> Interview Requests</a>
+                    <a href="@Url.Action("JobRequests", "WorkerDecision")" class="btn-nav"><i class="fa-solid fa-file-invoice d-block mb-1 fs-5"></i> Job Requests</a>
+
+                    <!-- Sahi link (Resignations ki main screen par bhejne ke liye) -->
+                    <!-- Client ke liye sahi screen jo login par nahi bheje gi -->
+                    <a href="@Url.Action("ClientViewResignationsList", "ResignationDetail")" class="btn-nav">
+                        <i class="fa-solid fa-door-open d-block mb-1 fs-5"></i> Resignations
+                    </a>
+                </div>
+            </div>
+
+            <!-- List Section (Workers Grid) -->
+            <h5 class="fw-bold text-dark mb-3">Current Workers Under Contract</h5>
+
+            @if (ViewBag.CurrentWorkers != null && ((IEnumerable<dynamic>)ViewBag.CurrentWorkers).Any())
+            {
+                <div class="row g-3">
+                    @foreach (var worker in ViewBag.CurrentWorkers)
+                    {
+                        <div class="col-lg-6 col-12" id="w-card-@worker.WorkerId">
+                            <div class="worker-card h-100 d-flex flex-column justify-content-between">
+                                <div class="d-flex gap-3 align-items-start mb-3">
+                                    @if (worker.Picture != null && !string.IsNullOrEmpty(worker.Picture.ToString()))
+                                    {
+                                        <img src="@worker.Picture" class="worker-avatar" alt="Worker Profile" />
+                                    }
+                                    else
+                                    {
+                                        <div class="worker-avatar">
+                                            <i class="fa-solid fa-user-tie text-secondary fs-3"></i>
+                                        </div>
+                                    }
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                            <h6 class="fw-bold m-0 text-dark fs-5">@worker.Name</h6>
+                                            <span class="badge-role">@worker.SkillName</span>
+                                        </div>
+                                        <p class="text-muted small m-0 mt-2">
+                                            <i class="fa-solid fa-location-dot text-danger me-1"></i> @(worker.Address ?? "Not Provided")
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                    @if (worker.DutyStatus.ToString().Trim().Equals("Resigned", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="badge-status text-warning border-warning bg-light">Resigned</span>
+                                        <div class="d-flex gap-2">
+                                            <!-- 🔥 DYNAMIC RESIGNATION DETAILS BUTTON FOR CLIENT -->
+                                            <a href="@Url.Action("ClientViewResignation", "ResignationDetail", new { workerId = worker.WorkerId })" class="btn btn-warning btn-action text-white">
+                                                Resignation
+                                            </a>
+                                            <button class="btn btn-danger btn-action" onclick="removeWorkerIndex(@worker.WorkerId)">Delete</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status text-success border-success bg-light">On Work</span>
+                                        <button class="btn btn-primary btn-action" onclick="terminateContract(@worker.WorkerId)">Terminate</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5 border rounded-3 bg-light">
+                    <i class="fa-solid fa-folder-open text-muted fs-1 mb-2"></i>
+                    <p class="text-muted mb-0">No workers currently under active service contracts.</p>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function removeWorkerIndex(id) {
+        if(confirm("Confirm removal of this record?")) {
+        $.ajax({
+        url: '/Dashboard/RemoveWorkerRecord',
+        type: 'POST',
+        data: { workerId: id },
+        success: function(response) {
+        if(response.success) {
+        $("#w-card-" + id).fadeOut(500, function() { $(this).remove(); });
+        } else {
+        alert(response.message || "Could not remove the record.");
+        }
+        },
+        error: function() {
+        alert("Error contacting the server.");
+        }
+        });
+        }
+        }
+
+        function terminateContract(workerId) {
+        window.location.href = '/Termination/Terminate?interviewId=' + workerId;
+        }
+    </script>
+</body>
+</html>

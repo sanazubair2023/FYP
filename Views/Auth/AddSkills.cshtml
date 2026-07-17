@@ -1,0 +1,651 @@
+﻿@{
+    ViewBag.Title = "Add Skills";
+    Layout = null;
+
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    var skills = ViewBag.Skills as List<Skill> ?? new List<Skill>();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Skills - Maid servant</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+            body {
+                background-color: #f7f9fc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+                padding: 20px 0;
+            }
+
+            .skills-card {
+                background: #ffffff;
+                max-width: 460px;
+                width: 100%;
+                border-radius: 28px;
+                position: relative;
+                padding: 1.5rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+                border: none;
+            }
+
+            .header-section {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #f1f3f9;
+                padding-bottom: 12px;
+                margin-bottom: 1.25rem;
+            }
+
+            .btn-back-circle {
+                background: #f1f3f9;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #4a5568;
+                text-decoration: none;
+            }
+
+            .header-title {
+                color: #1a202c;
+                font-size: 1.2rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .section-title {
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: #1a202c;
+                margin-top: 1rem;
+                margin-bottom: 0.75rem;
+            }
+
+                .section-title span {
+                    color: #a0aec0;
+                    font-weight: 500;
+                    font-size: 0.85rem;
+                }
+
+            .skills-grid {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .skill-select-box {
+                flex: 1;
+                min-width: 100px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                border-radius: 16px;
+                padding: 12px 6px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #1a202c;
+                text-align: center;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+                transition: all 0.2s ease;
+            }
+
+                .skill-select-box .icon-circle {
+                    background-color: #f1f3f9;
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #4a5568;
+                    margin: 0 auto 8px auto;
+                }
+
+                .skill-select-box.primary-active {
+                    background: #e2e8f0;
+                    border-color: #cbd5e1;
+                }
+
+                .skill-select-box.secondary-active {
+                    background: #008711;
+                    color: white !important;
+                    border-color: #00700e;
+                }
+
+                    .skill-select-box.secondary-active .icon-circle {
+                        background-color: rgba(255, 255, 255, 0.2);
+                        color: white;
+                    }
+
+                .skill-select-box.disabled-selection {
+                    opacity: 0.3;
+                    pointer-events: none;
+                    background: #f7f9fc;
+                }
+
+            .expertise-container {
+                border: 1px solid #e2e8f0;
+                border-radius: 24px;
+                padding: 1.25rem;
+                margin-bottom: 1.25rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+                background: #ffffff;
+                display: none;
+            }
+
+            .expertise-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 1rem;
+            }
+
+                .expertise-header .title {
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: #1a202c;
+                }
+
+            .tags-wrapper {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .tag-item {
+                background: #e2e8f0;
+                color: #4a5568;
+                padding: 4px 14px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                cursor: pointer;
+                border: 1px solid transparent;
+                user-select: none;
+            }
+
+                .tag-item.active {
+                    background: #4a5568;
+                    color: white;
+                }
+
+            .meta-label {
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: #718096;
+                letter-spacing: 0.5px;
+                margin-bottom: 0.5rem;
+                text-transform: uppercase;
+            }
+
+            .experience-form-block {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .custom-input-group {
+                border: 1px solid #e2e8f0;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                padding: 4px 12px;
+                margin-bottom: 0.5rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+                background: white;
+            }
+
+                .custom-input-group input {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    padding: 6px 10px;
+                    font-size: 0.9rem;
+                    background: transparent;
+                }
+
+            .input-icon-left {
+                color: #4a5568;
+                font-size: 0.9rem;
+                background: #f1f3f9;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-submit-exp {
+                background: #4a5568;
+                color: white;
+                border: none;
+                padding: 6px 16px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                border-radius: 20px;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 4px;
+                transition: background 0.2s;
+            }
+
+                .btn-submit-exp:hover {
+                    background: #2d3748;
+                }
+
+            .added-experience-list {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .experience-chip {
+                background: #f0fdf4;
+                border: 1px solid #bbf7d0;
+                border-radius: 12px;
+                padding: 8px 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 0.8rem;
+            }
+
+            .experience-chip-details {
+                color: #166534;
+                font-weight: 500;
+            }
+
+            .btn-delete-chip {
+                background: none;
+                border: none;
+                color: #dc2626;
+                cursor: pointer;
+                padding: 0 4px;
+            }
+
+            .btn-continue {
+                background: #008711;
+                color: white;
+                font-weight: 700;
+                border-radius: 30px;
+                padding: 12px;
+                width: 85%;
+                display: block;
+                margin: 1.5rem auto 0 auto;
+                border: none;
+                box-shadow: 0 4px 15px rgba(0, 135, 17, 0.3);
+                text-align: center;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="skills-card">
+        <div class="header-section">
+            <a href="/Auth/Signup?role=Worker" class="btn-back-circle">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h2 class="header-title">Add Skills</h2>
+            <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
+        </div>
+
+        <form id="skillsForm">
+            <div class="section-title">Select Your Primary Skills</div>
+            <div class="skills-grid" id="primaryGrid">
+                @foreach (var cat in categories)
+                {
+                    <div class="skill-select-box primary-box" data-type="primary" data-id="@cat.CategoryId">
+                        <div class="icon-circle">
+                            @if (cat.CategoryName.ToLower().Contains("clean"))
+                            {
+                                <i class="fa-solid fa-user"></i>
+                            }
+                            else if (cat.CategoryName.ToLower().Contains("cook"))
+                            {
+                                <i class="fa-solid fa-mug-hot"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-car"></i>
+                            }
+                        </div>
+                        @cat.CategoryName
+                    </div>
+                }
+            </div>
+
+            <div class="section-title">Select Your Secondary Skills <span>(Optional)</span></div>
+            <div class="skills-grid" id="secondaryGrid">
+                @foreach (var cat in categories)
+                {
+                    <div class="skill-select-box secondary-box" data-type="secondary" data-id="@cat.CategoryId">
+                        <div class="icon-circle">
+                            @if (cat.CategoryName.ToLower().Contains("clean"))
+                            {
+                                <i class="fa-solid fa-user"></i>
+                            }
+                            else if (cat.CategoryName.ToLower().Contains("cook"))
+                            {
+                                <i class="fa-solid fa-mug-hot"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-car"></i>
+                            }
+                        </div>
+                        @cat.CategoryName
+                    </div>
+                }
+            </div>
+
+            <div id="expertisePanelsContainer">
+                @foreach (var cat in categories)
+                {
+                    var subSkills = skills.Where(s => s.CategoryId == cat.CategoryId).ToList();
+
+                    <div class="expertise-container" id="panel-@cat.CategoryId" data-category-id="@cat.CategoryId">
+                        <div class="expertise-header">
+                            <div class="icon-circle bg-primary-subtle text-primary" style="width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                @if (cat.CategoryName.ToLower().Contains("clean"))
+                                {
+                                    <i class="fa-solid fa-user"></i>
+                                }
+                                else if (cat.CategoryName.ToLower().Contains("cook"))
+                                {
+                                    <i class="fa-solid fa-mug-hot"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-car"></i>
+                                }
+                            </div>
+                            <div class="title">@cat.CategoryName Expertise</div>
+                        </div>
+
+                        <div class="meta-label">Sub Categories</div>
+                        <div class="tags-wrapper">
+                            @foreach (var subSkill in subSkills)
+                            {
+                                <div class="tag-item subskill-tag" data-skill-id="@subSkill.SkillsId">@subSkill.SkillName</div>
+                            }
+                        </div>
+
+                        <div class="meta-label">Add Experience</div>
+                        <div class="experience-form-block" id="form-block-@cat.CategoryId">
+                            <div class="custom-input-group">
+                                <input type="date" class="exp-date-input" value="2026-06-21" />
+                            </div>
+                            <div class="custom-input-group">
+                                <div class="input-icon-left"><i class="fa-regular fa-building"></i></div>
+                                <input type="text" class="exp-place-input" placeholder="Where did you work?" />
+                            </div>
+                            <div class="custom-input-group">
+                                <div class="input-icon-left"><i class="fa-regular fa-file-text"></i></div>
+                                <input type="text" class="exp-desc-input" placeholder="What did you do there?" />
+                            </div>
+                            <button type="button" class="btn-submit-exp" onclick="submitSingleExperience('@cat.CategoryId')">
+                                <i class="fa-solid fa-check"></i> Submit Experience
+                            </button>
+                        </div>
+
+                        <div class="meta-label">Submitted Experiences</div>
+                        <div class="added-experience-list" id="exp-list-@cat.CategoryId">
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button type="submit" class="btn-continue">Save and Continue</button>
+        </form>
+    </div>
+
+    <script>
+            let globalExperienceState = {};
+
+            function submitSingleExperience(categoryId) {
+                const formBlock = document.getElementById(`form-block-${categoryId}`);
+                const dateInput = formBlock.querySelector('.exp-date-input');
+                const placeInput = formBlock.querySelector('.exp-place-input');
+                const descInput = formBlock.querySelector('.exp-desc-input');
+
+                const placeVal = placeInput.value.trim();
+                const descVal = descInput.value.trim();
+                const dateVal = dateInput.value;
+
+                if (!placeVal || !descVal) {
+                    alert("Please fill 'Where did you work' and 'Description' before submitting this experience.");
+                    return;
+                }
+
+                const year = dateVal ? dateVal.split('-')[0] : "2026";
+                const slotId = Date.now().toString();
+
+                if (!globalExperienceState[categoryId]) {
+                    globalExperienceState[categoryId] = [];
+                }
+
+                globalExperienceState[categoryId].push({
+                    id: slotId,
+                    workingSince: year,
+                    workedAt: placeVal,
+                    description: descVal
+                });
+
+                const listContainer = document.getElementById(`exp-list-${categoryId}`);
+                const chipHtml = `
+                    <div class="experience-chip" id="chip-${slotId}">
+                        <div class="experience-chip-details">
+                            <strong>${placeVal}</strong> (${year}) - <span>${descVal}</span>
+                        </div>
+                        <button type="button" class="btn-delete-chip" onclick="removeExperienceChip('${categoryId}', '${slotId}')">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', chipHtml);
+
+                placeInput.value = "";
+                descInput.value = "";
+            }
+
+            function removeExperienceChip(categoryId, slotId) {
+                if (globalExperienceState[categoryId]) {
+                    globalExperienceState[categoryId] = globalExperienceState[categoryId].filter(slot => slot.id !== slotId);
+                }
+                const chip = document.getElementById('chip-' + slotId);
+                if (chip) chip.remove();
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const primaryBoxes = document.querySelectorAll('.primary-box');
+                const secondaryBoxes = document.querySelectorAll('.secondary-box');
+                const subSkillTags = document.querySelectorAll('.subskill-tag');
+                const form = document.getElementById('skillsForm');
+
+                function updateUI() {
+                    let selectedPrimaryId = null;
+                    let selectedSecondaryId = null;
+
+                    primaryBoxes.forEach(box => {
+                        if (box.classList.contains('primary-active')) {
+                            selectedPrimaryId = box.getAttribute('data-id');
+                        }
+                    });
+
+                    secondaryBoxes.forEach(box => {
+                        if (box.classList.contains('secondary-active')) {
+                            selectedSecondaryId = box.getAttribute('data-id');
+                        }
+                    });
+
+                    secondaryBoxes.forEach(box => {
+                        if (box.getAttribute('data-id') === selectedPrimaryId) {
+                            box.classList.add('disabled-selection');
+                            box.classList.remove('secondary-active');
+                        } else {
+                            box.classList.remove('disabled-selection');
+                        }
+                    });
+
+                    primaryBoxes.forEach(box => {
+                        if (box.getAttribute('data-id') === selectedSecondaryId) {
+                            box.classList.add('disabled-selection');
+                            box.classList.remove('primary-active');
+                        } else {
+                            box.classList.remove('disabled-selection');
+                        }
+                    });
+
+                    document.querySelectorAll('.expertise-container').forEach(panel => {
+                        const panelId = panel.getAttribute('data-category-id');
+                        if (panelId === selectedPrimaryId || panelId === selectedSecondaryId) {
+                            panel.style.display = "block";
+                        } else {
+                            panel.style.display = "none";
+                        }
+                    });
+                }
+
+                primaryBoxes.forEach(box => {
+                    box.addEventListener('click', function () {
+                        if (this.classList.contains('primary-active')) {
+                            this.classList.remove('primary-active');
+                        } else {
+                            primaryBoxes.forEach(b => b.classList.remove('primary-active'));
+                            this.classList.add('primary-active');
+                        }
+                        updateUI();
+                    });
+                });
+
+                secondaryBoxes.forEach(box => {
+                    box.addEventListener('click', function () {
+                        if (this.classList.contains('secondary-active')) {
+                            this.classList.remove('secondary-active');
+                        } else {
+                            secondaryBoxes.forEach(b => b.classList.remove('secondary-active'));
+                            this.classList.add('secondary-active');
+                        }
+                        updateUI();
+                    });
+                });
+
+                subSkillTags.forEach(tag => {
+                    tag.addEventListener('click', function () {
+                        this.classList.toggle('active');
+                    });
+                });
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    let primaryCategory = null;
+                    let secondaryCategory = null;
+                    let activePanelsData = [];
+
+                    const activePrimary = document.querySelector('.primary-box.primary-active');
+                    if (activePrimary) primaryCategory = activePrimary.getAttribute('data-id');
+
+                    const activeSecondary = document.querySelector('.secondary-box.secondary-active');
+                    if (activeSecondary) secondaryCategory = activeSecondary.getAttribute('data-id');
+
+                    if (!primaryCategory) {
+                        alert('Please select your Primary Skill before continuing.');
+                        return;
+                    }
+
+                    let hasErrors = false;
+                    document.querySelectorAll('.expertise-container').forEach(panel => {
+                        if (panel.style.display === "block") {
+                            const catId = panel.getAttribute('data-category-id');
+
+                            let selectedSubSkills = [];
+                            panel.querySelectorAll('.subskill-tag.active').forEach(tag => {
+                                selectedSubSkills.push(tag.getAttribute('data-skill-id'));
+                            });
+
+                            let slotsData = globalExperienceState[catId] || [];
+
+                            // Validation: At least one sub-skill must be selected
+                            if (selectedSubSkills.length === 0) {
+                                alert('Please select at least one sub-skill for the selected category.');
+                                hasErrors = true;
+                                return;
+                            }
+
+                            // Validation: At least one experience must be added
+                            if (slotsData.length === 0) {
+                                alert('Please add at least one experience for the selected category.');
+                                hasErrors = true;
+                                return;
+                            }
+
+                            activePanelsData.push({
+                                categoryId: catId,
+                                subSkills: selectedSubSkills,
+                                slots: slotsData.map(s => ({
+                                    workingSince: s.workingSince,
+                                    workedAt: s.workedAt,
+                                    description: s.description,
+                                    duration: s.monthsDuration
+                                }))
+                            });
+                        }
+                    });
+
+                    if (hasErrors) return;
+
+                    // Validation: Check for sub-skill overlap between primary and secondary categories
+                    if (activePanelsData.length > 1) {
+                        let firstCategorySkills = activePanelsData[0]?.subSkills || [];
+                        let secondCategorySkills = activePanelsData[1]?.subSkills || [];
+
+                        let overlappingSkills = firstCategorySkills.filter(skill => 
+                            secondCategorySkills.includes(skill)
+                        );
+
+                        if (overlappingSkills.length > 0) {
+                            alert('Sub-skills cannot overlap between Primary and Secondary categories. Please select different sub-skills for each category.');
+                            return;
+                        }
+                    }
+
+                    let existingSignupData = JSON.parse(sessionStorage.getItem('WorkerSignupData')) || {};
+
+                    existingSignupData.skillsData = {
+                        primaryCategory: primaryCategory,
+                        secondaryCategory: secondaryCategory,
+                        expertiseDetails: activePanelsData
+                    };
+
+                    sessionStorage.setItem('WorkerSignupData', JSON.stringify(existingSignupData));
+                    window.location.href = '/Auth/Signup?role=Worker';
+                });
+
+                updateUI();
+            });
+    </script>
+</body>
+</html>

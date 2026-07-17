@@ -1,0 +1,461 @@
+﻿@model IEnumerable<MaidAndServantt.Models.Worker>
+@{
+    ViewBag.Title = "FilterScreen";
+    var selectedGender = ViewBag.SelectedGender as string;
+    var selectedCity = ViewBag.SelectedCity as string;
+
+    // Database se dynamic collections jo Controller se aa rahi hain
+    var categories = ViewBag.Categories as List<MaidAndServantt.Models.Category> ?? new List<MaidAndServantt.Models.Category>();
+    var allSkills = ViewBag.Skills as List<MaidAndServantt.Models.Skill> ?? new List<MaidAndServantt.Models.Skill>();
+    var cities = ViewBag.Cities as List<string> ?? new List<string>();
+
+    var selectedCategories = ViewBag.SelectedCategories as List<string> ?? new List<string>();
+    var selectedSubs = ViewBag.SelectedSubs as List<string> ?? new List<string>();
+}
+
+<div class="container-fluid py-4" style="max-width: 1400px; font-family: 'Segoe UI', system-ui, sans-serif;">
+
+    <!-- Header Controls -->
+    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+        <h2 class="fw-bold m-0 text-dark">Filteration</h2>
+        <button id="toggleFilterBtn" class="btn btn-filter-toggle shadow-sm d-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#desktopFilterPanel" aria-expanded="true">
+            <i class="fa-solid fa-sliders text-primary"></i> <span id="toggleText" class="fw-bold">Hide</span>
+        </button>
+    </div>
+
+    <!-- Main Filter Panel -->
+    <div class="collapse show" id="desktopFilterPanel">
+        <div class="web-filter-card bg-white p-4 mb-4 border-0 shadow-sm">
+
+            <!-- Live Badges Row -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between border-bottom pb-3 mb-4 gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h4 class="fw-bold text-dark m-0 tracking-wide text-uppercase" style="font-size: 1.1rem;">FILTERATION</h4>
+                    <div id="selectedChips" class="d-flex flex-wrap gap-2 ms-2"></div>
+                </div>
+            </div>
+
+            <!-- FIX: Action target ko badal kar Worker controller ke SearchWorkers screen par set kar diya -->
+            <form id="filterForm" action="@Url.Action("SearchWorker", "Dashboard")" method="get">
+                <div class="row g-4">
+
+                    <!-- GENDER BOX -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="filter-box-wrapper h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-user text-secondary me-2"></i>GENDER</h6>
+                            <div class="d-flex gap-2">
+                                <input type="radio" class="btn-check" name="gender" id="genderMale" value="Male" @(selectedGender == "Male" ? "checked" : "")>
+                                <label class="btn btn-filter-opt flex-fill text-center" for="genderMale">Male</label>
+
+                                <input type="radio" class="btn-check" name="gender" id="genderFemale" value="Female" @(selectedGender == "Female" ? "checked" : "")>
+                                <label class="btn btn-filter-opt flex-fill text-center" for="genderFemale">FeMale</label>
+
+                                <input type="radio" class="btn-check" name="gender" id="genderOther" value="Other" @(selectedGender == "Other" ? "checked" : "")>
+                                <label class="btn btn-filter-opt flex-fill text-center" for="genderOther">Other</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORIES MAIN BOX -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="filter-box-wrapper h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-layer-group text-secondary me-2"></i>CATEGORIES</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                @foreach (var cat in categories)
+                                {
+                                    var safeCatName = cat.CategoryName.Replace(" ", "");
+                                    // FIX: Robust state check that covers both raw names and stripped strings safely
+                                    bool isSelected = selectedCategories.Any(c => c.Equals(safeCatName, StringComparison.OrdinalIgnoreCase) || c.Equals(cat.CategoryName, StringComparison.OrdinalIgnoreCase));
+
+                                    <input type="checkbox" class="btn-check cat-main-trigger" name="category" id="cat_@safeCatName" value="@cat.CategoryName" data-display-name="@cat.CategoryName" @(isSelected ? "checked" : "")>
+                                    <label class="btn btn-filter-opt px-4 rounded-pill" for="cat_@safeCatName">@cat.CategoryName</label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @* <!-- CATEGORIES MAIN BOX -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="filter-box-wrapper h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-layer-group text-secondary me-2"></i>CATEGORIES</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                @foreach (var cat in categories)
+                                {
+                                    var safeCatName = cat.CategoryName.Replace(" ", "");
+                                    <input type="checkbox" class="btn-check cat-main-trigger" name="category" id="cat_@safeCatName" value="@safeCatName" data-display-name="@cat.CategoryName" @(selectedCategories.Contains(safeCatName) ? "checked" : "")>
+                                    <label class="btn btn-filter-opt px-4 rounded-pill" for="cat_@safeCatName">@cat.CategoryName</label>
+                                }
+                            </div>
+                        </div>
+                    </div> *@
+
+                    <!-- LOCATION (DYNAMIC CITY SELECTOR) -->
+                    <div class="col-xl-4 col-md-12">
+                        <div class="filter-box-wrapper h-100">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-map-location-dot text-secondary me-2"></i>LOCATION</h6>
+                            <select class="form-select filter-select-input w-100" name="city" id="citySelect">
+                                <option value="">Select City</option>
+                                @foreach (var cityName in cities)
+                                {
+                                    <option value="@cityName" selected="@(selectedCity == cityName ? "selected" : null)">@cityName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SUB CATEGORIES DYNAMIC SECTION -->
+                <div class="row mt-4" id="skillsOptionBox" style="display: none;">
+                    <div class="col-12">
+                        <div class="filter-box-wrapper sub-category-panel p-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-circle-nodes text-primary me-2"></i>Sub Categories</h6>
+
+                            <div class="row g-3">
+                                @foreach (var cat in categories)
+                                {
+                                    var safeCatName = cat.CategoryName.Replace(" ", "");
+
+                                    <div class="col-lg-4 sub-group border-end-desktop" id="subGroup_@safeCatName" style="display: none;">
+                                        <span class="text-decoration-underline fw-bold text-secondary small mb-3 d-block">@cat.CategoryName Sub Categories</span>
+                                        <div class="d-flex flex-wrap gap-2">
+
+                                            <!-- All Option -->
+                                            <input type="checkbox" class="btn-check sub-opt parent-all-check" name="subCategories" id="@(safeCatName)All" value="@(safeCatName)All" @(selectedSubs.Contains(safeCatName + "All") ? "checked" : "")>
+                                            <label class="btn btn-sub-opt" for="@(safeCatName)All">All</label>
+
+                                            <!-- Dynamic Skills strict mapping under specific Category ID -->
+                                            @{
+                                                var categorySkills = allSkills.Where(s => s.CategoryId == cat.CategoryId).ToList();
+                                            }
+
+                                            @foreach (var skill in categorySkills)
+                                            {
+                                                var safeSkillId = "sub_" + safeCatName + "_" + skill.SkillsId;
+                                                <input type="checkbox" class="btn-check sub-opt child-skill-check" name="subCategories" id="@safeSkillId" value="@skill.SkillName" data-display-name="@skill.SkillName" @(selectedSubs.Contains(skill.SkillName) ? "checked" : "")>
+                                                <label class="btn btn-sub-opt" for="@safeSkillId">@skill.SkillName</label>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Panel Actions Footer Row -->
+                <div class="d-flex justify-content-end gap-3 pt-3 mt-4 border-top">
+                    <button type="button" class="btn btn-web-reset px-5 rounded-pill fw-bold" id="btnReset">Reset</button>
+                    <button type="submit" class="btn btn-web-apply px-5 rounded-pill fw-bold text-white shadow-sm" id="btnApply">Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Web UI Layout Styling Stylesheet -->
+<style>
+    .web-filter-card {
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+        border: 1px solid #f1f2f6;
+    }
+
+    .filter-box-wrapper {
+        background-color: #fcfdfe;
+        border: 1px solid #f1f3f7;
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .sub-category-panel {
+        background-color: #f7f9ff !important;
+        border: 1px dashed #1e74ed !important;
+    }
+
+    .btn-filter-opt {
+        background-color: #fff;
+        border: 1px solid #dcdde1;
+        color: #2f3640;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-check:checked + .btn-filter-opt {
+        background-color: #1e74ed !important;
+        border-color: #1e74ed !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(30,116,237,0.2);
+    }
+
+    .btn-sub-opt {
+        background-color: #fff;
+        border: 1px solid #dcdde1;
+        color: #57606f;
+        border-radius: 30px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-check:checked + .btn-sub-opt {
+        background-color: #1e74ed !important;
+        border-color: #1e74ed !important;
+        color: #fff !important;
+    }
+
+    .filter-select-input {
+        border-radius: 10px;
+        padding: 11px 15px;
+        border: 1px solid #dcdde1;
+        font-size: 0.95rem;
+    }
+
+    .btn-filter-toggle {
+        background-color: #fff;
+        border: 1px solid #e1e4eb;
+        padding: 10px 20px;
+        border-radius: 12px;
+    }
+
+    .btn-web-reset {
+        background-color: #747d8c;
+        color: white;
+        border: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-web-apply {
+        background-color: #1e74ed !important;
+        color: #ffffff !important;
+        border: none !important;
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transition: all 0.2s ease;
+    }
+
+        .btn-web-apply:hover {
+            background-color: #155cb8 !important;
+            color: #ffffff !important;
+        }
+
+    .chip-badge {
+        background-color: #e8f2ff;
+        border: 1px solid #b3d4ff;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e74ed;
+    }
+
+    @@media(min-width: 992px) {
+        .border-end-desktop {
+            border-right: 1px solid #dcdde1;
+        }
+    }
+</style>
+
+<!-- Script Configurations -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+    function checkActiveCategories() {
+    var anyChecked = false;
+
+    $('.cat-main-trigger').each(function () {
+    var val = $(this).val();
+    var targetBox = '#subGroup_' + val;
+
+    if ($(this).is(':checked')) {
+    $(targetBox).show();
+    anyChecked = true;
+    } else {
+    $(targetBox).hide();
+    // FIX: Uncheck hidden child options so they don't contaminate filter inputs
+    $(targetBox).find('.sub-opt').prop('checked', false);
+    }
+    });
+
+    if (anyChecked) {
+    $('#skillsOptionBox').show();
+    } else {
+    $('#skillsOptionBox').hide();
+    }
+    renderLiveBadges();
+    }
+
+    // Event listener for parent categories
+    $('.cat-main-trigger').on('change', function () {
+    checkActiveCategories();
+    });
+
+    // Event listener for remaining selection filters
+    $('input[type=radio], select, .sub-opt').on('change', function() {
+    renderLiveBadges();
+    });
+
+    // "All" constraint selection rules
+    $('.parent-all-check').on('change', function() {
+    var $parentGroup = $(this).closest('.sub-group');
+    if($(this).is(':checked')) {
+    $parentGroup.find('.child-skill-check').prop('checked', false);
+    }
+    renderLiveBadges();
+    });
+
+    $('.child-skill-check').on('change', function() {
+    var $parentGroup = $(this).closest('.sub-group');
+    if($(this).is(':checked')) {
+    $parentGroup.find('.parent-all-check').prop('checked', false);
+    }
+    renderLiveBadges();
+    });
+
+    function renderLiveBadges() {
+    $('#selectedChips').empty();
+
+    var gender = $('input[name="gender"]:checked').val();
+    if(gender) $('#selectedChips').append('<span class="chip-badge">' + gender + '</span>');
+
+    var city = $('#citySelect').val();
+    if(city) $('#selectedChips').append('<span class="chip-badge">' + city + '</span>');
+
+    $('.cat-main-trigger:checked').each(function() {
+    var catVal = $(this).val();
+    var displayName = $(this).data('display-name');
+    var subs = [];
+
+    $('#subGroup_' + catVal + ' .sub-opt:checked').each(function() {
+    var val = $(this).val();
+    if(val.endsWith('All')) {
+    subs.push("All");
+    } else {
+    subs.push($(this).data('display-name') || val);
+    }
+    });
+
+    var text = displayName + (subs.length > 0 ? " (" + subs.join(', ') + ")" : "");
+    $('#selectedChips').append('<span class="chip-badge">' + text + '</span>');
+    });
+    }
+
+    $('#desktopFilterPanel').on('hidden.bs.collapse', function () {
+    $('#toggleText').text('Show');
+    }).on('shown.bs.collapse', function () {
+    $('#toggleText').text('Hide');
+    });
+
+    // FIX: Clear all filters completely and return to standard search screen
+    $('#btnReset').on('click', function () {
+    window.location.href = '@Url.Action("SearchWorker", "Dashboard")';
+    });
+
+    // Initialize elements based on postback structure state
+    checkActiveCategories();
+    renderLiveBadges();
+    });
+    @* $(document).ready(function () {
+
+    function checkActiveCategories() {
+    var anyChecked = false;
+    $('.cat-main-trigger').each(function () {
+    var val = $(this).val();
+    var targetBox = '#subGroup_' + val;
+
+    if ($(this).is(':checked')) {
+    $(targetBox).show();
+    anyChecked = true;
+    } else {
+    $(targetBox).hide();
+    $(targetBox).find('.sub-opt').prop('checked', false);
+    }
+    });
+
+    if (anyChecked) {
+    $('#skillsOptionBox').show();
+    } else {
+    $('#skillsOptionBox').hide();
+    }
+    renderLiveBadges();
+    }
+
+    // Event listener for parent categories
+    $('.cat-main-trigger').on('change', function () {
+    checkActiveCategories();
+    });
+
+    // Event listener for remaining selection filters
+    $('input[type=radio], select, .sub-opt').on('change', function() {
+    renderLiveBadges();
+    });
+
+    // "All" constraint selection rules
+    $('.parent-all-check').on('change', function() {
+    var $parentGroup = $(this).closest('.sub-group');
+    if($(this).is(':checked')) {
+    $parentGroup.find('.child-skill-check').prop('checked', false);
+    }
+    renderLiveBadges();
+    });
+
+    $('.child-skill-check').on('change', function() {
+    var $parentGroup = $(this).closest('.sub-group');
+    if($(this).is(':checked')) {
+    $parentGroup.find('.parent-all-check').prop('checked', false);
+    }
+    renderLiveBadges();
+    });
+
+    function renderLiveBadges() {
+    $('#selectedChips').empty();
+
+    var gender = $('input[name="gender"]:checked').val();
+    if(gender) $('#selectedChips').append('<span class="chip-badge">' + gender + '</span>');
+
+    var city = $('#citySelect').val();
+    if(city) $('#selectedChips').append('<span class="chip-badge">' + city + '</span>');
+
+    $('.cat-main-trigger:checked').each(function() {
+    var catVal = $(this).val();
+    var displayName = $(this).data('display-name');
+    var subs = [];
+
+    $('#subGroup_' + catVal + ' .sub-opt:checked').each(function() {
+    var val = $(this).val();
+    if(val.endsWith('All')) {
+    subs.push("All");
+    } else {
+    subs.push($(this).data('display-name') || val);
+    }
+    });
+
+    var text = displayName + (subs.length > 0 ? " (" + subs.join(', ') + ")" : "");
+    $('#selectedChips').append('<span class="chip-badge">' + text + '</span>');
+    });
+    }
+
+    // Hide/Show Button text changer engine
+    $('#desktopFilterPanel').on('hidden.bs.collapse', function () {
+    $('#toggleText').text('Show');
+    }).on('shown.bs.collapse', function () {
+    $('#toggleText').text('Hide');
+    });
+
+    // Reset Button Action Routing (Mazaafi tor par isko bhi badal sakti hain)
+    $('#btnReset').on('click', function () {
+    window.location.href = '@Url.Action("filter", "filter")';
+    });
+
+    // Initialize elements based on postback structure state
+    checkActiveCategories();
+    renderLiveBadges();
+    }); *@
+</script>

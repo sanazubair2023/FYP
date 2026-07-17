@@ -1,0 +1,310 @@
+﻿@model MaidAndServantt.Controllers.LeaveJobViewModel
+@{
+    Layout = null;
+
+    // Controller se bheja gaya dynamic data
+    var remainingDays = ViewBag.RemainingDays ?? 30; //
+    var totalNoticeDays = ViewBag.TotalNoticeDays ?? 30; //
+    var lastWorkingDay = ViewBag.LastWorkingDay ?? "N/A"; //
+    var reasonForLeaving = ViewBag.ReasonForLeaving ?? ""; //
+
+    // Progress Bar ki percentage calculation (Dynamic)
+    double progressPercent = totalNoticeDays > 0 ? ((double)remainingDays / totalNoticeDays) * 100 : 0; //
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resignation Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+
+    <style>
+            body {
+                background-color: #eedcd8;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 40px 15px;
+            }
+
+            .resignation-panel {
+                background: #ffffff;
+                border-radius: 40px;
+                box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.08);
+                padding: 30px 25px;
+                width: 100%;
+                max-width: 420px;
+                margin: auto;
+            }
+
+            .back-nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+
+            .btn-back-circle {
+                background-color: #dbeafe;
+                color: #4f46e5;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                text-decoration: none;
+                transition: background 0.2s;
+            }
+
+                .btn-back-circle:hover {
+                    background-color: #bfdbfe;
+                }
+
+            .logo-img {
+                width: 60px;
+                height: auto;
+                object-fit: contain;
+            }
+
+            .profile-section {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+            .profile-img {
+                width: 75px;
+                height: 75px;
+                object-fit: cover;
+                border-radius: 50%;
+                box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            }
+
+            .notice-card {
+                border: 1.5px solid #e2e8f0;
+                border-radius: 20px;
+                overflow: hidden;
+                background-color: #ffffff;
+                box-shadow: 0px 4px 12px rgba(0,0,0,0.02);
+                margin-bottom: 25px;
+            }
+
+            .notice-header {
+                background-color: #5c7cfa;
+                color: #ffffff;
+                padding: 12px;
+                text-align: center;
+            }
+
+            .notice-body {
+                padding: 15px;
+                text-align: center;
+            }
+
+            .custom-progress {
+                background-color: #e9ecef;
+                border-radius: 10px;
+                height: 8px;
+                overflow: hidden;
+                margin-top: 10px;
+            }
+
+            .custom-progress-bar {
+                background-color: #4c6ef5;
+                height: 100%;
+                border-radius: 10px;
+            }
+
+            .section-label {
+                font-weight: 800;
+                color: #1a1a1a;
+                font-size: 1.05rem;
+                margin-bottom: 8px;
+            }
+
+            .custom-input {
+                width: 100%;
+                padding: 10px 15px;
+                border: 1.5px solid #cbd5e1;
+                border-radius: 14px;
+                background-color: #ffffff;
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+                margin-bottom: 22px;
+            }
+
+            .custom-textarea {
+                width: 100%;
+                height: 120px;
+                padding: 15px;
+                border: 1.5px solid #cbd5e1;
+                border-radius: 18px;
+                background-color: #ffffff;
+                color: #6c757d;
+                font-size: 0.85rem;
+                line-height: 1.4;
+                resize: none;
+                margin-bottom: 22px;
+            }
+
+            .remarks-container {
+                border: 1.5px solid #cbd5e1;
+                border-radius: 20px;
+                padding: 15px;
+                background-color: #ffffff;
+                margin-bottom: 25px;
+            }
+
+            .stars-container {
+                color: #ffc107;
+                font-size: 0.9rem;
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 8px;
+            }
+
+            .remarks-input {
+                width: 100%;
+                border: 1px solid #dee2e6;
+                border-radius: 12px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                color: #495057;
+                margin-bottom: 10px;
+            }
+
+            .btn-submit-remarks {
+                background-color: #1c7ed6;
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 0.85rem;
+                border-radius: 12px;
+                padding: 6px 20px;
+                border: none;
+                float: right;
+                box-shadow: 0 4px 6px rgba(28, 126, 214, 0.2);
+                transition: background 0.2s;
+            }
+
+                .btn-submit-remarks:hover {
+                    background-color: #1a74c5;
+                }
+
+            .btn-confirm-resignation {
+                background-color: #008000;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 1rem;
+                width: 100%;
+                padding: 12px;
+                border-radius: 14px;
+                border: none;
+                box-shadow: 0px 4px 12px rgba(0, 128, 0, 0.3);
+                transition: all 0.2s;
+            }
+
+                .btn-confirm-resignation:hover {
+                    background-color: #006600;
+                    transform: translateY(-1px);
+                }
+    </style>
+</head>
+<body>
+
+    <div class="resignation-panel">
+
+        <!-- Header Navigation -->
+        <div class="back-nav">
+            <!-- Yeh redirect client dashboard ya worker dashboard par bhej dega history check ke zariye -->
+            <a href="javascript:history.back()" class="btn-back-circle">
+                <i class="bi bi-arrow-left fs-5"></i>
+            </a>
+            <h4 class="fw-bold text-dark mb-0 ms-2 flex-grow-1" style="font-size: 1.35rem; font-weight: 800;">Resignation</h4>
+            <img src="/Images/logo.png" class="logo-img" alt="Logo" onerror="this.src='https://placehold.co/60x40?text=Logo'" />
+        </div>
+
+        <!-- Dynamic Profile Section -->
+        <div class="profile-section">
+            <img src="@(string.IsNullOrEmpty(Model.WorkerImage) ? "/Images/default-avatar.png" : Model.WorkerImage)" class="profile-img" alt="Profile" />
+            <div>
+                <h4 class="fw-bold text-dark mb-0" style="font-size: 1.25rem;">@Model.WorkerName</h4>
+                <!-- Dynamic Category / Title -->
+                <span class="text-primary fw-bold" style="font-size: 0.95rem;">@Model.JobRole</span>
+            </div>
+        </div>
+
+        <!-- Notice Period Card (Dynamic Days & Progress Bar) -->
+        <div class="notice-card">
+            <div class="notice-header">
+                <span class="d-block text-uppercase tracking-wider fw-semibold" style="font-size: 0.75rem; opacity: 0.9;">Official Notice Period</span>
+                <span class="fw-bold" style="font-size: 1.15rem;">@totalNoticeDays Days Total</span>
+            </div>
+            <div class="notice-body">
+                <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">Notice Period Status</span>
+                <span class="text-muted" style="font-size: 0.85rem;">Remaining Days: <strong class="text-primary">@remainingDays</strong></span>
+
+                <div class="custom-progress">
+                    <div class="custom-progress-bar" style="width: @progressPercent%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Elements with Database Values -->
+        <form asp-action="SubmitResignation" method="post">
+            <input type="hidden" asp-for="WorkerId" />
+
+            <!-- Last Working Day (Dynamic) -->
+            <div class="section-label">Last Working Day</div>
+            <input type="text" class="custom-input" readonly name="LastWorkingDay" value="@lastWorkingDay" />
+
+            <!-- Reason for Leaving (Dynamic) -->
+            <div class="section-label">Reason for Leaving</div>
+
+            @if (string.IsNullOrEmpty(reasonForLeaving))
+            {
+                <!-- Worker Submit mode -->
+                <textarea class="custom-textarea" asp-for="Reason" placeholder="Please type why you are leaving..."></textarea>
+
+                <!-- Remarks Panel -->
+                <div class="remarks-container clearfix">
+                    <div class="stars-container">
+                        <i class="bi bi-star-fill me-1"></i>
+                        <i class="bi bi-star-fill me-1"></i>
+                        <i class="bi bi-star-fill me-1"></i>
+                        <i class="bi bi-star-fill me-1"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <input type="text" class="remarks-input" name="remarks" placeholder="Enter your remarks here" required />
+                    <button type="button" class="btn-submit-remarks">Submit</button>
+                </div>
+
+                <!-- Confirm Resignation Button -->
+                <button type="submit" class="btn-confirm-resignation">
+                    Confirm Resignation
+                </button>
+            }
+            else
+            {
+                <!-- Client View-Only mode -->
+                <textarea class="custom-textarea" readonly name="Reason">@reasonForLeaving</textarea>
+                <div class="alert alert-info text-center fw-bold" style="border-radius:14px;">
+                    This resignation has been submitted.
+                </div>
+            }
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

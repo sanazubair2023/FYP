@@ -1,0 +1,274 @@
+﻿@model MaidAndServantt.Models.WorkerReviewsViewModel
+@{
+    ViewData["Title"] = "Ratings & Reviews";
+}
+
+<!-- Bootstrap Icons Setup CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!-- Bootstrap 5 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+<style>
+    body {
+        background-color: #f4e3e3; /* Pinkish-grey background from your dashboard */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 40px 0;
+    }
+
+    /* Web view wrapper with clean desktop spacing */
+    .web-reviews-container {
+        max-width: 800px; /* Perfect desktop reading width */
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Overall Rating Top Card styled exactly like the screenshot */
+    .overall-rating-card {
+        background-color: #ffffff;
+        border-radius: 20px;
+        border: 1.5px solid #dbdbdb;
+        padding: 20px 30px;
+        margin-bottom: 25px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .rating-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .rating-flex-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .rating-big-num {
+        font-size: 44px;
+        font-weight: 800;
+        color: #1a73e8; /* Exact blue color */
+        line-height: 1;
+    }
+
+    .header-stars-list {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+        /* Circular background stars matching the screenshot */
+        .header-stars-list i {
+            font-size: 13px;
+            background-color: #f5f5f7;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #e0e0e0;
+        }
+
+    .star-filled {
+        color: #FFC107;
+    }
+
+    .star-empty {
+        color: #222222; /* Dark outline stars for empty states */
+    }
+
+    .reviews-count-text {
+        font-size: 12px;
+        color: #777;
+        font-weight: 500;
+        display: block;
+        margin-top: 4px;
+    }
+
+    /* Web Friendly Review List Container */
+    .review-list-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    /* Desktop Cards mimicking the precise styles from the image */
+    .custom-review-card {
+        background-color: #ffffff;
+        border-radius: 18px;
+        padding: 18px 24px;
+        border: 1.5px solid #dbdbdb;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .custom-review-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+    .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .reviewer-name-txt {
+        font-size: 14px;
+        font-weight: 700;
+        color: #000000;
+        margin: 0;
+    }
+
+    .duration-txt {
+        font-size: 11px;
+        color: #888888;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .card-stars-row {
+        display: flex;
+        gap: 3px;
+    }
+
+        .card-stars-row i {
+            font-size: 11px;
+        }
+
+    .comment-desc-text {
+        font-size: 12px;
+        color: #666666;
+        line-height: 1.5;
+        font-style: italic;
+        margin-top: 8px;
+        margin-bottom: 0;
+    }
+
+    /* Rounded Pill Back Button positioned nicely on Web */
+    .btn-bottom-back {
+        background-color: #1a73e8;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 14px;
+        width: 140px;
+        padding: 10px 20px;
+        border-radius: 25px; /* Perfect rounded pill shape */
+        border: none;
+        text-align: center;
+        display: inline-block;
+        text-decoration: none;
+        box-shadow: 0px 4px 10px rgba(26, 115, 232, 0.25);
+        transition: all 0.2s ease;
+    }
+
+        .btn-bottom-back:hover {
+            background-color: #155cb4;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0px 6px 15px rgba(26, 115, 232, 0.35);
+        }
+
+    .empty-placeholder {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        border: 1.5px dashed #cccccc;
+    }
+
+        .empty-placeholder i {
+            font-size: 40px;
+            color: #cccccc;
+        }
+
+        .empty-placeholder p {
+            font-size: 13px;
+            color: #888888;
+            font-weight: 600;
+        }
+</style>
+
+<div class="web-reviews-container">
+
+    <!-- Overall Rating Top Card[cite: 3] -->
+    <div class="overall-rating-card">
+        <span class="rating-title">Overall Rating</span>
+        <div class="rating-flex-container">
+            <div class="rating-big-num">@Model.AverageRating</div>
+            <div>
+                <div class="header-stars-list">
+                    @{
+                        double avgScore = 0.0;
+                        double.TryParse(Model.AverageRating, out avgScore);
+                        int roundedAvg = (int)Math.Round(avgScore);
+
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= roundedAvg)
+                            {
+                                <i class="bi bi-star-fill star-filled"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star-fill star-empty"></i>
+                            }
+                        }
+                    }
+                </div>
+                <span class="reviews-count-text">(@Model.ReviewCount Reviews)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed List[cite: 3] -->
+    <div class="review-list-wrapper">
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            foreach (var item in Model.Reviews)
+            {
+                <div class="custom-review-card">
+                    <div class="card-header-row">
+                        <div>
+                            <h4 class="reviewer-name-txt">@item.Name</h4>
+                            <div class="duration-txt">@item.Date</div>
+                        </div>
+                        <div class="card-stars-row">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= item.Rating)
+                                {
+                                    <i class="bi bi-star-fill star-filled"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star-fill star-empty"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <p class="comment-desc-text">"@item.Comment"</p>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-placeholder">
+                <i class="bi bi-chat-left-heart mb-2 d-block"></i>
+                <p class="mb-0">No reviews available for this profile yet.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Action Back Button[cite: 3] -->
+    <div class="text-start">
+        <a href="javascript:window.history.back();" class="btn-bottom-back">
+            Back
+        </a>
+    </div>
+
+</div>

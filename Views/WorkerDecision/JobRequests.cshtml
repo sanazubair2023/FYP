@@ -1,0 +1,244 @@
+﻿@model IEnumerable<MaidAndServantt.Controllers.WorkerDecisionViewModel>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    body {
+        background-color: #FFF;
+        font-family: 'Segoe UI', sans-serif;
+        position: relative;
+    }
+
+    .blue-circle {
+        position: absolute;
+        top: -40px;
+        left: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background-color: #E3F2FD;
+        z-index: -1;
+    }
+
+    .header-title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #000;
+        margin-top: 10px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: #FFF;
+        border-radius: 25px;
+        border: 1px solid #CCC;
+        padding: 6px 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+
+    .search-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        padding-left: 10px;
+        font-size: 14px;
+    }
+
+    .job-card {
+        background-color: #FFF;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 2px solid #4CAF50;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .offer-header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .client-avatar {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #F0F0F0;
+        border: 1px solid #E0E0E0;
+    }
+
+    .worker-name {
+        font-size: 19px;
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 2px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 1px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .detail-item {
+        font-size: 14px;
+        color: #000;
+        margin-bottom: 3px;
+    }
+
+    .message-text {
+        font-size: 13.5px;
+        color: #111;
+        line-height: 1.4;
+        margin-top: 5px;
+    }
+
+    .btn-custom-reject {
+        background-color: #B0BEC5;
+        color: #C62828;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 5px 25px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-accept {
+        background-color: #1976D2;
+        color: #FFF;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 5px 25px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-delete {
+        background-color: #B0BEC5;
+        color: #C62828;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 5px 25px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-hired {
+        background-color: #008000;
+        color: #FFF;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 6px 30px;
+        border: none;
+    }
+</style>
+
+<div class="blue-circle"></div>
+<div class="container py-3" style="max-width: 410px;">
+    <div class="d-flex justify-content-end mb-1">
+        <img src="/Images/logo.png" alt="Logo" style="height: 40px; object-fit: contain;" onerror="this.style.display='none'">
+    </div>
+    <div class="text-center mb-3">
+        <div class="header-title">Job Confirmation</div>
+    </div>
+    <div class="search-bar mb-4">
+        <i class="bi bi-search" style="color: #888;"></i>
+        <input type="text" id="decisionSearchInput" class="search-input" placeholder="Search by worker name...">
+    </div>
+
+    <div id="decisionsContainer">
+        @foreach (var item in Model)
+        {
+            string cardBorderColor = "#4CAF50";
+            string titleText = "Job Offered!";
+            string badgeText = "Accepted";
+            string badgeBg = "#C8E6C9";
+            string badgeTextColor = "#2E7D32";
+            string descriptionMsg = "Great interview! We'd like to proceed with a 3-month contract.";
+            string cardState = "offered";
+
+            // FIXED STATE MANAGEMENT BASED ON YOUR DB SCREENSHOT
+            if (item.HiringDecision == "Pending" && item.WorkerDecision == "Accepted")
+            {
+                cardBorderColor = "#4CAF50"; // Green Border (State 1)
+                titleText = "Job Offered!";
+                badgeText = "Accepted";
+                badgeBg = "#C8E6C9";
+                badgeTextColor = "#2E7D32";
+                cardState = "offered"; // Enables Reject & Accept Buttons
+            }
+            else if (item.HiringDecision == "Approved" || item.HiringDecision == "Accepted" || item.InterviewStatus == "Approved")
+            {
+                cardBorderColor = "#29B6F6"; // Blue Border (State 3)
+                titleText = "Job Offered!";
+                badgeText = "Confirm";
+                badgeBg = "#C8E6C9";
+                badgeTextColor = "#2E7D32";
+                cardState = "approved"; // Shows solid green "Accepted" button
+            }
+            else if (item.HiringDecision == "Rejected" || item.WorkerDecision == "Rejected" || item.InterviewStatus == "Rejected")
+            {
+                cardBorderColor = "#FF5252"; // Red Border (State 2)
+                titleText = "Job Rejected!";
+                badgeText = "Rejected";
+                badgeBg = "#FFCDD2";
+                badgeTextColor = "#C62828";
+                descriptionMsg = "Thankyou for your time. After careful consideration we have decided not to proceed.";
+                cardState = "rejected"; // Shows Delete button
+            }
+
+            <div class="job-card card-item" style="border-color: @cardBorderColor !important;" data-name="@(item.WorkerName?.ToLower())">
+                <div class="offer-header" style="color: @cardBorderColor;">@titleText</div>
+                <div class="d-flex align-items-center mb-2">
+                    <img src="@item.WorkerImage" class="client-avatar me-3" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                    <div>
+                        <div class="worker-name">@item.WorkerName</div>
+                        <div class="status-badge" style="background-color: @badgeBg; color: @badgeTextColor;">@badgeText</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="detail-item"><strong>Interview Date:</strong> @item.InterviewDate</div>
+                    <div class="detail-item"><strong>Job Rule:</strong> @item.WorkerSkill</div>
+                    <div class="detail-item"><strong>Address:</strong> @item.Address</div>
+                    <div class="message-text">@descriptionMsg</div>
+                </div>
+                <div class="d-flex justify-content-center gap-3 pt-1">
+                    @if (cardState == "offered")
+                    {
+                        <button type="button" class="btn btn-custom-reject w-50" onclick="fireStatusUpdate('/WorkerDecision/RejectWorkerDecision', @item.InterviewId)">Reject</button>
+                        <button type="button" class="btn btn-custom-accept w-50" onclick="fireStatusUpdate('/WorkerDecision/AcceptWorkerDecision', @item.InterviewId)">Accept</button>
+                    }
+                    else if (cardState == "rejected")
+                    {
+                        <div class="w-100 d-flex justify-content-end">
+                            <button type="button" class="btn btn-custom-delete px-4">Delete</button>
+                        </div>
+                    }
+                    else if (cardState == "approved")
+                    {
+                        <div class="w-100 d-flex justify-content-end">
+                            <button type="button" class="btn btn-custom-hired px-4" disabled>Accepted</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    async function fireStatusUpdate(targetUrl, interviewId) {
+        try {
+            let response = await fetch(`${targetUrl}?interviewId=${interviewId}`, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            let data = await response.json();
+            if (data.success) { window.location.reload(); }
+        } catch (err) { console.error(err); }
+    }
+</script>

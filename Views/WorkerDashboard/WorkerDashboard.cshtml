@@ -1,0 +1,442 @@
+﻿@model MaidAndServantt.Models.Worker
+@{
+    Layout = null;
+    var pendingInterviews = ViewBag.PendingInterviews ?? 0;
+    var jobNotifications = ViewBag.JobNotifications ?? 0;
+    var rating = ViewBag.Rating ?? 0.0;
+    var experienceYears = ViewBag.ExperienceYears ?? 0;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Worker Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+
+    <style>
+            body {
+                background-color: #eedcd8; /* Tasveer jaisa background */
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 40px 15px;
+            }
+
+            /* Web View wide single column panel */
+            .web-dashboard-panel {
+                background: #ffffff;
+                border-radius: 40px;
+                box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.08);
+                padding: 35px;
+                width: 100%;
+                max-width: 750px;
+                margin: auto;
+            }
+
+            /* Header customization */
+            .header-container {
+                position: relative;
+                background: radial-gradient(circle at top left, #dbeafe 25%, transparent 60%);
+                border-radius: 20px;
+                padding: 15px 0;
+            }
+
+            .profile-img {
+                width: 90px;
+                height: 90px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 3px solid #fff;
+                box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+            }
+
+            .btn-custom-blue {
+                background-color: #0d6efd;
+                color: white;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                padding: 6px 18px;
+                font-weight: 700;
+                border: none;
+                text-decoration: none;
+                display: inline-block;
+                box-shadow: 0px 4px 10px rgba(13, 110, 253, 0.35);
+                transition: all 0.2s;
+            }
+
+                .btn-custom-blue:hover {
+                    background-color: #0b5ed7;
+                    color: white;
+                    transform: translateY(-1px);
+                }
+
+            /* Employment Actions Card */
+            .action-card {
+                background-color: #e9ebed;
+                border-radius: 24px;
+                padding: 22px;
+                text-align: center;
+            }
+
+            .btn-terminate {
+                background: white;
+                color: #dc3545;
+                border: 2px solid #f5b5b5;
+                border-radius: 30px;
+                font-weight: 700;
+                width: 100%;
+                max-width: 450px;
+                padding: 10px;
+                font-size: 0.95rem;
+                box-shadow: 0px 3px 8px rgba(0,0,0,0.05);
+                transition: all 0.2s;
+                margin: 0 auto;
+                display: block;
+            }
+
+                .btn-terminate:hover {
+                    background-color: #fff5f5;
+                    transform: translateY(-1px);
+                }
+
+            /* Status boxes */
+            .status-box {
+                border: 1.5px solid #e2e8f0;
+                border-radius: 20px;
+                padding: 16px 24px;
+                background-color: #ffffff;
+                transition: all 0.2s ease-in-out;
+                box-shadow: 0px 2px 5px rgba(0,0,0,0.02);
+            }
+
+            .status-box-clickable {
+                cursor: pointer;
+            }
+
+                .status-box-clickable:hover {
+                    border-color: #cbd5e1;
+                    transform: translateY(-1px);
+                    background-color: #fafafa;
+                }
+
+            .badge-count {
+                background-color: #c92a2a;
+                color: white;
+                border-radius: 50%;
+                width: 26px;
+                height: 26px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                font-weight: bold;
+            }
+
+            /* Red Status Button */
+            .btn-check-status {
+                background-color: #ff0000;
+                color: white;
+                font-weight: bold;
+                font-size: 1.05rem;
+                border-radius: 18px;
+                padding: 12px;
+                border: none;
+                width: 100%;
+                box-shadow: 0px 4px 12px rgba(255, 0, 0, 0.3);
+                margin-top: 15px;
+                transition: all 0.2s;
+            }
+
+                .btn-check-status:hover {
+                    background-color: #cc0000;
+                    transform: translateY(-1px);
+                }
+
+            /* Details Section */
+            .details-title {
+                font-weight: 800;
+                font-size: 1.2rem;
+                margin-top: 30px;
+                color: #212529;
+                border-bottom: 2.5px solid #f1f3f5;
+                padding-bottom: 6px;
+            }
+
+            .details-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 5px;
+                border-bottom: 1.5px solid #f1f3f5;
+                font-size: 0.9rem;
+            }
+
+                .details-row span:first-child {
+                    color: #495057;
+                }
+
+                .details-row span:last-child {
+                    font-weight: 700;
+                    color: #000;
+                }
+
+            /* Timeline */
+            .timeline-container {
+                border-left: 2px solid #e2e8f0;
+                position: relative;
+                padding-left: 18px;
+            }
+
+            .timeline-item {
+                position: relative;
+                margin-bottom: 18px;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: -23px;
+                top: 5px;
+                width: 8px;
+                height: 8px;
+                background-color: #0d6efd;
+                border-radius: 50%;
+            }
+
+            .timeline-dot-past {
+                background-color: #6c757d;
+            }
+
+            /* Skills Tags */
+            .skill-tag {
+                background-color: #e9ebed;
+                color: #212529;
+                border-radius: 20px;
+                padding: 6px 18px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                display: inline-block;
+                margin: 4px;
+            }
+
+            .btn-add-skill {
+                border: 1.5px solid #5c7cfa;
+                color: #5c7cfa;
+                background: transparent;
+                border-radius: 20px;
+                padding: 5px 18px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                text-decoration: none;
+                display: inline-block;
+                margin: 4px;
+                transition: all 0.2s;
+            }
+
+                .btn-add-skill:hover {
+                    background-color: #5c7cfa;
+                    color: white;
+                }
+
+            /* Reviews */
+            .rating-star-icon {
+                font-size: 1.5rem;
+                color: #ffc107;
+            }
+
+            .btn-view-reviews {
+                background-color: #1c7ed6;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 0.85rem;
+                padding: 10px 24px;
+                border-radius: 18px;
+                text-decoration: none;
+                box-shadow: 0px 4px 12px rgba(28, 126, 214, 0.2);
+                transition: all 0.2s;
+            }
+
+                .btn-view-reviews:hover {
+                    background-color: #1a74c5;
+                    color: white;
+                    transform: translateY(-1px);
+                }
+    </style>
+</head>
+<body>
+
+    <div class="web-dashboard-panel">
+
+        <!-- Header Section -->
+        <div class="header-container d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="text-muted d-block mb-0" style="font-size: 0.85rem; font-weight: 600;">Good Morning,</span>
+                <h4 class="fw-bold text-dark mb-0" style="font-size: 1.3rem; line-height: 1.1;">@Model.Name</h4>
+                <h3 class="fw-bold text-primary mb-3" style="font-size: 1.9rem; line-height: 1.1;">Professional Servant / Maid</h3>
+
+                <div class="d-flex gap-2">
+                    <!-- Logout Button linked properly -->
+                    <a href="@Url.Action("Login", "Auth")" id="btnLogout" class="btn-custom-blue">Logout</a>
+                    <a href="#" class="btn-custom-blue">Edit Profile</a>
+                </div>
+            </div>
+            <div>
+                <img src="@(string.IsNullOrEmpty(Model.Picture) ? "/Images/default-avatar.png" : Model.Picture)" class="profile-img" alt="Profile Picture" />
+            </div>
+        </div>
+
+        <!-- Employment Actions Card -->
+        <div class="action-card mb-4">
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                <i class="bi bi-person-fill-dash text-danger fs-4"></i>
+                <h6 class="fw-bold mb-0 text-dark" style="font-size: 1.1rem;">Employment Actions</h6>
+            </div>
+            <p class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.4;">Access your rights to end job or access termination options</p>
+
+            <!-- ✅ Click action added directly to the existing button layout -->
+            <button class="btn-terminate" onclick="window.location.href='@Url.Action("LeaveJob", "WorkerLeaveJob")'">
+                <i class="bi bi-x-circle me-1"></i> Terminate Contract
+            </button>
+        </div>
+
+        <!-- Live Status Bars -->
+        <div class="d-flex flex-column gap-3 mb-4">
+
+            <!-- Duty Status Bar -->
+            <div class="status-box d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">Duty Status</h6>
+                    <span class="text-muted" style="font-size: 0.8rem;">Your are visible to customers</span>
+                </div>
+                <div class="form-check form-switch mb-0 fs-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="dutyToggle" @(Model.AvailableStatus == true ? "checked" : "") style="cursor: pointer;">
+                </div>
+            </div>
+
+            <!-- Interview Requests Box -->
+            <div class="status-box status-box-clickable d-flex justify-content-between align-items-center"
+                 onclick="window.location.href='@Url.Action("ActiveRequests", "WorkerDashboard")'">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-envelope text-dark fs-4"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">Interview Requests</h6>
+                        <span class="text-muted" style="font-size: 0.8rem;">You have @pendingInterviews new pending requests.</span>
+                    </div>
+                </div>
+                <span class="badge-count">@pendingInterviews</span>
+            </div>
+
+            <!-- Job Notifications Box -->
+            <div class="status-box status-box-clickable d-flex justify-content-between align-items-center"
+                 onclick="window.location.href='@Url.Action("JobConfirmation", "JobConfirmation")'">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-bell text-dark fs-4"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">Job Notifications</h6>
+                        <span class="text-muted" style="font-size: 0.8rem;">You have @jobNotifications new Job Notifications.</span>
+                    </div>
+                </div>
+                <span class="badge-count">@jobNotifications</span>
+            </div>
+        </div>
+
+        <!-- Profile Details Section -->
+        <h5 class="details-title">Profile Details</h5>
+        <div class="details-row">
+            <span>Monthly salary</span>
+            <span>PKR @(Model.Salary?.ToString("F0") ?? "0")/month</span>
+        </div>
+        <div class="details-row">
+            <span>Experience</span>
+            <span>@experienceYears years</span>
+        </div>
+        <div class="details-row">
+            <span>City</span>
+            <span>@(Model.Address ?? "Rawalpindi")</span>
+        </div>
+
+        <!-- My Experience Section -->
+        <h5 class="details-title">My Experience</h5>
+        <div class="mt-3">
+            @if (ViewBag.ExperienceList != null && ((List<MaidAndServantt.Models.Experience>)ViewBag.ExperienceList).Any())
+            {
+                <div class="timeline-container ms-2">
+                    @{
+                        var expList = (List<MaidAndServantt.Models.Experience>)ViewBag.ExperienceList;
+                        for (int i = 0; i < expList.Count; i++)
+                        {
+                            var exp = expList[i];
+                            <div class="timeline-item">
+                                <div class="timeline-dot @(i > 0 ? "timeline-dot-past" : "")"></div>
+                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.95rem;">@exp.WorkAt</h6>
+                                <p class="text-secondary small mb-0" style="font-size: 0.8rem; font-style: italic;">@exp.ExpDetail</p>
+                                <span class="text-muted d-block text-end" style="font-size: 0.7rem;">@exp.Duration</span>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <span class="text-muted small">No employment history timeline added yet.</span>
+            }
+        </div>
+
+        <!-- My Skills Section -->
+        <h5 class="details-title">My Skills</h5>
+        <div class="my-2 d-flex flex-wrap align-items-center">
+            @if (ViewBag.Skills != null && ((List<string>)ViewBag.Skills).Any())
+            {
+                foreach (var skill in (List<string>)ViewBag.Skills)
+                {
+                    <span class="skill-tag">@skill</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted d-block mb-2" style="font-size: 0.8rem;">No skills added yet.</span>
+            }
+            <a href="@Url.Action("AddSkill", "Worker")" class="btn-add-skill">+ Add Skill</a>
+        </div>
+
+        <!-- Recent Reviews Section -->
+        <h5 class="details-title mb-3">Recent Reviews</h5>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-star-fill rating-star-icon"></i>
+                <span class="fw-bold text-dark fs-3">@rating.ToString("0.0")</span>
+            </div>
+            <a href="@Url.Action("Reviews", "WorkerReviews", new { workerId = Model.WorkerId })" class="btn-view-reviews">
+                View Reviews
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Scripting -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Duty toggle update in DB
+        $("#dutyToggle").change(function () {
+        var isChecked = $(this).is(':checked');
+        $.ajax({
+        url: '/WorkerDashboard/UpdateDutyStatus',
+        type: 'POST',
+        data: { status: isChecked },
+        success: function (response) {
+        console.log("Status synced successfully.");
+        },
+        error: function () {
+        alert("Synchronization failed.");
+        }
+        });
+        });
+    </script>
+
+</body>
+</html>

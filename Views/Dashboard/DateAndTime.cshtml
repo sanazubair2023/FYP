@@ -1,0 +1,434 @@
+﻿@model MaidAndServantt.Models.Interview
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Date and Time</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+            body {
+                background-color: #f3f4f6;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+
+            .mobile-frame {
+                max-width: 430px;
+                margin: 1.5rem auto;
+                background: #ffffff;
+                border-radius: 40px;
+                padding: 25px;
+                box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+                min-height: 92vh;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .top-bubble {
+                position: absolute;
+                top: -60px;
+                left: -40px;
+                width: 200px;
+                height: 200px;
+                background: rgba(30, 116, 237, 0.12);
+                border-radius: 50%;
+                z-index: 0;
+            }
+
+            .content-container {
+                position: relative;
+                z-index: 1;
+            }
+
+            .main-title {
+                font-size: 2rem;
+                font-weight: 800;
+                color: #000000;
+            }
+
+            .sub-title {
+                color: #4b5563;
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+
+            .section-heading {
+                font-weight: 700;
+                font-size: 1.3rem;
+                color: #000000;
+                margin-bottom: 1rem;
+            }
+
+            .custom-input-wrapper {
+                position: relative;
+                border: 2.5px solid #706fd3;
+                border-radius: 12px;
+                padding: 8px 14px;
+                margin-bottom: 1.5rem;
+            }
+
+            .custom-label {
+                position: absolute;
+                top: -12px;
+                left: 15px;
+                background: #ffffff;
+                padding: 0 6px;
+                font-size: 0.75rem;
+                color: #706fd3;
+                font-weight: 700;
+            }
+
+            .custom-field {
+                border: none;
+                outline: none;
+                width: 100%;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                background: transparent;
+            }
+
+            /* Styling for readonly state */
+            .readonly-wrapper {
+                background-color: #f4f3f9 !important;
+                border-color: #a3a1bc !important;
+            }
+
+                .readonly-wrapper .custom-label {
+                    background: #f4f3f9 !important;
+                    color: #727187 !important;
+                }
+
+                .readonly-wrapper .custom-field {
+                    color: #555555 !important;
+                    cursor: not-allowed;
+                }
+
+            .time-picker-container {
+                background-color: #f1eef6;
+                border-radius: 28px;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+                margin-bottom: 1.5rem;
+            }
+
+            .clock-display-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .time-box {
+                background: #e2dff0;
+                border-radius: 12px;
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #3b2c73;
+                width: 80px;
+                height: 75px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+                .time-box.active {
+                    background: #e6e2ff;
+                    border: 2px solid #706fd3;
+                }
+
+            .time-divider {
+                font-size: 2.5rem;
+                font-weight: bold;
+                color: #000;
+            }
+
+            .am-pm-toggle {
+                border: 2px solid #a3a1bc;
+                border-radius: 10px;
+                overflow: hidden;
+                background: #fff;
+            }
+
+            .toggle-btn {
+                padding: 4px 14px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #555;
+                cursor: pointer;
+                border: none;
+                background: transparent;
+                display: block;
+                width: 100%;
+            }
+
+                .toggle-btn.selected {
+                    background: #f7d6e0;
+                    color: #a13d63;
+                }
+
+            .visual-clock-face {
+                width: 170px;
+                height: 170px;
+                border-radius: 50%;
+                background: #e2dff0;
+                margin: 15px auto 5px auto;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .clock-number {
+                position: absolute;
+                font-weight: bold;
+                color: #3b2c73;
+                font-size: 0.95rem;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+            }
+
+                .clock-number:hover {
+                    background: rgba(112, 111, 211, 0.2);
+                }
+
+            .clock-center-dot {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 8px;
+                height: 8px;
+                background: #5a4ca6;
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 3;
+            }
+
+            .clock-hand {
+                position: absolute;
+                bottom: 50%;
+                left: 50%;
+                width: 3px;
+                height: 55px;
+                background: #5a4ca6;
+                transform-origin: bottom center;
+                transform: rotate(210deg);
+                z-index: 1;
+                transition: transform 0.2s ease;
+            }
+
+            .clock-selected-hour {
+                position: absolute;
+                width: 26px;
+                height: 26px;
+                background: #5a4ca6;
+                border-radius: 50%;
+                color: white;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+                z-index: 2;
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+            }
+
+            .btn-confirm-booking {
+                background: #1e74ed;
+                color: white;
+                font-weight: 700;
+                font-size: 1.2rem;
+                border-radius: 25px;
+                padding: 12px;
+                width: 100%;
+                border: none;
+                margin-top: 1rem;
+                box-shadow: 0 5px 15px rgba(30,116,237,0.4);
+            }
+    </style>
+</head>
+<body>
+    <div class="mobile-frame">
+        <div class="top-bubble"></div>
+
+        <div class="content-container">
+            <!-- Fixed URL targeting specific HTTP POST action method -->
+            <form action="/Dashboard/ConfirmInterview" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Hidden Fields for IDs to carry data to database -->
+                <input type="hidden" name="WorkerId" value="@Model?.WorkerId" />
+                <input type="hidden" name="ClientId" value="@Model?.ClientId" />
+
+                <h1 class="main-title">Select Date and Time</h1>
+                <p class="sub-title">When do you need to interview</p>
+
+                <h3 class="section-heading">Select Details</h3>
+
+                <!-- Date Input -->
+                <div class="custom-input-wrapper">
+                    <span class="custom-label">Date</span>
+                    <input type="date" name="InterviewDate" class="custom-field" required
+                           value="@(Model?.InterviewDate.HasValue == true ? Model.InterviewDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd"))" />
+                </div>
+
+                <!-- Client Address Input (Readonly / Non-Editable) -->
+                <div class="custom-input-wrapper readonly-wrapper">
+                    <span class="custom-label">Interview Address</span>
+                    <input type="text" name="Address" class="custom-field"
+                           value="@(Model != null ? Model.Address : "")"
+                           readonly required />
+                </div>
+
+                <h3 class="section-heading">Available Slots</h3>
+                <div class="time-picker-container">
+                    <div class="text-start text-muted small mb-2 fw-semibold">Select time</div>
+
+                    <div class="clock-display-row">
+                        <div class="time-box active" id="hourBox">07</div>
+                        <div class="time-divider">:</div>
+                        <div class="time-box" id="minuteBox">00</div>
+
+                        <div class="am-pm-toggle">
+                            <button type="button" class="toggle-btn selected" id="amBtn">AM</button>
+                            <button type="button" class="toggle-btn" id="pmBtn">PM</button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Clock Face -->
+                    <div class="visual-clock-face" id="clockFace">
+                        <div class="clock-center-dot"></div>
+                        <div class="clock-hand" id="clockHand"></div>
+                        <div class="clock-selected-hour" id="movingIndicator">7</div>
+                    </div>
+                </div>
+
+                <!-- Time capture hidden field for submit -->
+                <input type="hidden" name="customTime" id="hiddenTimeInput" value="07:00 AM" />
+
+                <button type="submit" class="btn-confirm-booking">Confirm Interview</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+            const amBtn = document.getElementById('amBtn');
+            const pmBtn = document.getElementById('pmBtn');
+            const hiddenTimeInput = document.getElementById('hiddenTimeInput');
+            const hourBox = document.getElementById('hourBox');
+            const minuteBox = document.getElementById('minuteBox');
+            const clockFace = document.getElementById('clockFace');
+            const clockHand = document.getElementById('clockHand');
+            const movingIndicator = document.getElementById('movingIndicator');
+
+            let currentMode = 'hours';
+            let selectedHour = 7;
+            let selectedMinute = 0;
+
+            function populateClock() {
+                document.querySelectorAll('.clock-number').forEach(el => el.remove());
+                const radius = 68;
+
+                for (let i = 1; i <= 12; i++) {
+                    const numDiv = document.createElement('div');
+                    numDiv.className = 'clock-number';
+
+                    let displayVal = currentMode === 'hours' ? i : (i === 12 ? '00' : String(i * 5).padStart(2, '0'));
+                    numDiv.innerText = displayVal;
+
+                    const angle = (i * 30) * Math.PI / 180;
+                    const x = 170 / 2 + radius * Math.sin(angle) - 12;
+                    const y = 170 / 2 - radius * Math.cos(angle) - 12;
+
+                    numDiv.style.left = `${x}px`;
+                    numDiv.style.top = `${y}px`;
+
+                    numDiv.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (currentMode === 'hours') {
+                            selectedHour = i;
+                            hourBox.innerText = String(i).padStart(2, '0');
+                            currentMode = 'minutes';
+                            hourBox.classList.remove('active');
+                            minuteBox.classList.add('active');
+                            populateClock();
+                        } else {
+                            selectedMinute = i === 12 ? 0 : i * 5;
+                            minuteBox.innerText = String(selectedMinute).padStart(2, '0');
+                            currentMode = 'hours';
+                            minuteBox.classList.remove('active');
+                            hourBox.classList.add('active');
+                            populateClock();
+                        }
+                        updateHandUI();
+                        updateHiddenTime();
+                    });
+
+                    clockFace.appendChild(numDiv);
+                }
+                updateHandUI();
+            }
+
+            function updateHandUI() {
+                let activeVal = currentMode === 'hours' ? selectedHour : (selectedMinute === 0 ? 12 : selectedMinute / 5);
+                let degrees = activeVal * 30;
+                clockHand.style.transform = `rotate(${degrees}deg)`;
+
+                const radius = 68;
+                const angle = degrees * Math.PI / 180;
+                const x = 170 / 2 + radius * Math.sin(angle);
+                const y = 170 / 2 - radius * Math.cos(angle);
+
+                movingIndicator.style.left = `${x}px`;
+                movingIndicator.style.top = `${y}px`;
+                movingIndicator.innerText = currentMode === 'hours' ? selectedHour : String(selectedMinute).padStart(2, '0');
+            }
+
+            function updateHiddenTime() {
+                const hourStr = String(selectedHour).padStart(2, '0');
+                const minStr = String(selectedMinute).padStart(2, '0');
+                const period = amBtn.classList.contains('selected') ? 'AM' : 'PM';
+                hiddenTimeInput.value = `${hourStr}:${minStr} ${period}`;
+            }
+
+            hourBox.addEventListener('click', () => {
+                currentMode = 'hours';
+                minuteBox.classList.remove('active');
+                hourBox.classList.add('active');
+                populateClock();
+            });
+
+            minuteBox.addEventListener('click', () => {
+                currentMode = 'minutes';
+                hourBox.classList.remove('active');
+                minuteBox.classList.add('active');
+                populateClock();
+            });
+
+            amBtn.addEventListener('click', () => {
+                amBtn.classList.add('selected');
+                pmBtn.classList.remove('selected');
+                updateHiddenTime();
+            });
+
+            pmBtn.addEventListener('click', () => {
+                pmBtn.classList.add('selected');
+                amBtn.classList.remove('selected');
+                updateHiddenTime();
+            });
+
+            populateClock();
+            updateHiddenTime();
+    </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+﻿@model MaidAndServantt.Controllers.TerminationDetailsViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Worker Termination Status - Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+
+    <style>
+            body {
+                background-color: #f3f4f6; /* Modern light web background */
+                font-family: 'Segoe UI', Arial, sans-serif;
+                min-height: 100vh;
+                padding: 40px 15px;
+                margin: 0;
+            }
+
+            /* Responsive Web Dashboard Card Wrapper */
+            .web-dashboard-card {
+                background-color: #ffffff;
+                width: 100%;
+                max-width: 950px;
+                margin: 0 auto;
+                border-radius: 16px;
+                box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+                padding: 35px;
+                position: relative;
+                overflow: hidden;
+                border: 1px solid #e5e7eb;
+            }
+
+            /* Decorative Header Backgrounds */
+            .decor-bubble-left {
+                position: absolute;
+                top: -40px;
+                left: -40px;
+                width: 160px;
+                height: 160px;
+                background-color: #eff6ff;
+                border-radius: 50%;
+                z-index: 1;
+            }
+
+            .main-content-area {
+                position: relative;
+                z-index: 10;
+            }
+
+            .breadcrumb-text {
+                font-size: 0.9rem;
+                color: #6b7280;
+                margin-bottom: 15px;
+            }
+
+                .breadcrumb-text strong {
+                    color: #4f46e5;
+                }
+
+            /* Terminated Red/Yellow Banner */
+            .terminated-banner {
+                background-color: #fef2f2;
+                border: 1px solid #fee2e2;
+                border-radius: 10px;
+                padding: 15px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+                .terminated-banner span {
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    color: #991b1b;
+                    letter-spacing: 0.5px;
+                }
+
+            /* Details Outer Box Grid Style */
+            .details-outer-box {
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                background-color: #f9fafb;
+                margin-bottom: 30px;
+                overflow: hidden;
+            }
+
+            .details-header {
+                background-color: #f3f4f6;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 12px 20px;
+                font-size: 0.85rem;
+                font-weight: bold;
+                color: #374151;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .worker-profile-info {
+                display: flex;
+                align-items: center;
+                padding: 24px;
+                gap: 25px;
+                flex-wrap: wrap;
+            }
+
+            .worker-pic {
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #ffffff;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .worker-info-list {
+                font-size: 0.95rem;
+                color: #4b5563;
+                line-height: 1.6;
+            }
+
+                .worker-info-list strong {
+                    color: #111827;
+                }
+
+            .status-fields-block {
+                padding: 20px 24px;
+                font-size: 0.95rem;
+                color: #111827;
+                background-color: #ffffff;
+                border-top: 1px solid #e5e7eb;
+            }
+
+                .status-fields-block div {
+                    margin-bottom: 6px;
+                }
+
+            .alert-subtext {
+                font-size: 0.9rem;
+                color: #9ca3af;
+                text-align: center;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+
+            .guideline-list {
+                font-size: 0.85rem;
+                font-style: italic;
+                color: #6b7280;
+                padding-left: 20px;
+                margin-bottom: 30px;
+            }
+
+            .section-title {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #1f2937;
+                margin-bottom: 15px;
+                border-left: 4px solid #4f46e5;
+                padding-left: 10px;
+            }
+
+            /* Client Card design */
+            .client-card-curved {
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                background-color: #ffffff;
+                margin-bottom: 40px;
+            }
+
+            .client-pic {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #ffffff;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .client-info-text {
+                font-size: 0.9rem;
+                line-height: 1.6;
+                color: #4b5563;
+            }
+
+            .client-status-badge {
+                color: #4f46e5;
+                font-weight: 700;
+                font-size: 0.9rem;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            /* Web Pill Shape primary button */
+            .btn-blue-pill {
+                background-color: #2563eb;
+                color: #ffffff;
+                font-weight: 700;
+                font-size: 0.95rem;
+                border-radius: 8px;
+                padding: 12px 30px;
+                border: none;
+                display: inline-block;
+                text-align: center;
+                text-decoration: none;
+                box-shadow: 0px 4px 12px rgba(37, 99, 235, 0.2);
+                transition: all 0.2s;
+            }
+
+                .btn-blue-pill:hover {
+                    background-color: #1d4ed8;
+                    color: #ffffff;
+                    transform: translateY(-1px);
+                }
+    </style>
+</head>
+<body>
+
+    <div class="web-dashboard-card">
+        <!-- Blue bubble decorations -->
+        <div class="decor-bubble-left"></div>
+
+        <div class="main-content-area">
+
+            <!-- Responsive Header row -->
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <p class="breadcrumb-text mb-0">Contract &gt; Worker <strong>Terminated</strong></p>
+                <img src="/Images/logo.png" alt="Servant Maid Online" style="height: 48px; object-fit: contain;" />
+            </div>
+
+            <hr class="my-3" style="border-top: 1px solid #e5e7eb;" />
+
+            <!-- Yellow/Red ALERT BANNER -->
+            <div class="terminated-banner">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>
+                <span>WORKER TERMINATED STATUS</span>
+            </div>
+
+            <!-- WORKER DETAILS Container box -->
+            <div class="details-outer-box">
+
+                <!-- Box Title bar -->
+                <div class="details-header">
+                    <i class="bi bi-person-fill"></i> WORKER PROFILE DETAILS
+                </div>
+
+                <!-- Profile Info Row -->
+                <div class="worker-profile-info">
+                    <img class="worker-pic" src="@Model.WorkerImage" alt="@Model.WorkerName" />
+                    <div class="worker-info-list">
+                        <div>Name: <strong>@Model.WorkerName</strong></div>
+                        <div>Job Role: <strong>@Model.JobRole</strong></div>
+                        <div>Address: @Model.WorkerAddress</div>
+                        <div>Phone: @Model.WorkerPhone</div>
+                        <div>Experience: @Model.WorkerExperience</div>
+                    </div>
+                </div>
+
+                <!-- Status, Date & Reasons Section -->
+                <div class="status-fields-block">
+                    <div><strong>Status :</strong> <span class="text-danger font-semibold">@Model.Status</span></div>
+                    <div><strong>Termination Date:</strong> @Model.TerminationDate</div>
+                    <div><strong>Reason:</strong> @Model.Reason</div>
+                </div>
+
+            </div>
+
+            <!-- Client Details Section Header -->
+            <h6 class="section-title">Associated Client Details</h6>
+
+            <!-- Client Details Card with real DB data -->
+            <div class="client-card-curved">
+                <img class="client-pic" src="@Model.ClientImage" alt="@Model.ClientName" />
+                <div class="client-info-text">
+                    <span class="client-status-badge"><i class="bi bi-patch-exclamation-fill"></i> Client Terminated Worker</span>
+                    <div>Name: <strong>@Model.ClientName</strong></div>
+                    <div>Address: @Model.ClientAddress</div>
+                </div>
+            </div>
+
+            <p class="alert-subtext">You are terminated and no longer active under this contract.</p>
+
+            <!-- Dynamic bullet instructions list -->
+            <ul class="guideline-list">
+                <li>No further access to services for this client.</li>
+                <li>Account blocked and contract officially closed in the database.</li>
+            </ul>
+
+            <!-- Button Redirect -->
+            <div class="text-center pt-3">
+                <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn-blue-pill">
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i> Go To Profile Dashboard
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

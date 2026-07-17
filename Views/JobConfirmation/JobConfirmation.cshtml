@@ -1,0 +1,307 @@
+﻿@model IEnumerable<MaidAndServantt.Controllers.JobConfirmationViewModel>
+@{
+    ViewData["Title"] = "Job Confirmation Dashboard";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+@Html.AntiForgeryToken()
+
+<style>
+    body {
+        background-color: #FFF;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+    }
+
+    .blue-circle {
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        border-radius: 100px;
+        background-color: #E3F2FD;
+        z-index: -1;
+    }
+
+    .header-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: #FFF;
+        border-radius: 25px;
+        border: 1px solid #CCC;
+        padding: 5px 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .search-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        padding-left: 10px;
+        font-size: 14px;
+    }
+
+    .job-card {
+        background-color: #FFF;
+        border-radius: 15px;
+        padding: 18px;
+        margin-bottom: 20px;
+        border: 2px solid #CCC;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        transition: 0.3s;
+    }
+
+    .offer-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    .avatar-container {
+        position: relative;
+        width: 75px;
+        height: 75px;
+    }
+
+    .client-avatar {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #E3F2FD;
+        border: 1px solid #E0E0E0;
+    }
+
+    .client-name {
+        font-size: 22px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 2px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .detail-item {
+        font-size: 15px;
+        color: #000;
+        margin-bottom: 4px;
+    }
+
+        .detail-item strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+    .message-text {
+        font-size: 14px;
+        color: #222;
+        line-height: 1.4;
+        margin-top: 6px;
+    }
+
+    /* Target Buttons matching iPhone Mockup UI colors exactly */
+    .btn-custom-reject {
+        background-color: #B0BEC5;
+        color: #C62828;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 6px 30px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-accept {
+        background-color: #1976D2;
+        color: #FFF;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 6px 30px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-delete {
+        background-color: #B0BEC5;
+        color: #C62828;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 6px 25px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .btn-custom-hired {
+        background-color: #008000;
+        color: #FFF;
+        font-weight: bold;
+        border-radius: 20px;
+        padding: 6px 30px;
+        border: none;
+    }
+</style>
+
+<div class="blue-circle"></div>
+
+<div class="container py-4" style="max-width: 450px;">
+    <!-- Logo & Layout Brand Integration -->
+    <div class="d-flex justify-content-end mb-2">
+        <img src="/Images/logo.png" alt="Brand Logo" style="height: 45px; object-fit: contain;" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Top Screen Header -->
+    <div class="d-flex align-items-center mb-3">
+        <button class="btn p-0 me-2" onclick="window.history.back();" type="button">
+            <i class="bi bi-arrow-left fs-4" style="color: #000;"></i>
+        </button>
+        <span class="header-title">Job Confirmation</span>
+    </div>
+
+    <!-- Live Client Filter Box -->
+    <div class="search-bar mb-4">
+        <i class="bi bi-search" style="color: #666; font-size: 16px;"></i>
+        <input type="text" id="clientSearch" class="search-input" placeholder="Search by client name...">
+    </div>
+
+    <!-- Jobs Cards Wrapper Container -->
+    <div id="jobsListContainer">
+        @if (Model == null || !Model.Any())
+        {
+            <p class="text-center text-muted mt-5 font-italic">No job confirmations available.</p>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                // Dynamic Color & Layout Configurator corresponding to specific rules
+                string borderColor = "#4CAF50"; // Green
+                string statusBg = "#C8E6C9"; // Light Green
+                string statusTextColor = "#2E7D32";
+                string statusHeaderText = "Job Offered!";
+
+                if (item.Type == "rejected")
+                {
+                    borderColor = "#FF5252"; // Red
+                    statusBg = "#FFCDD2"; // Light Red
+                    statusTextColor = "#C62828";
+                    statusHeaderText = "Job Rejected!";
+                }
+                else if (item.Type == "accepted")
+                {
+                    borderColor = "#0091EA"; // Blue border for selection target active state
+                    statusBg = "#C8E6C9"; // Still green badge display for text "Confirm"
+                    statusTextColor = "#2E7D32";
+                    statusHeaderText = "Job Offered!";
+                }
+
+                string avatarUrl = !string.IsNullOrEmpty(item.ClientImage) ? item.ClientImage : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+                <div class="job-card data-card-item" style="border-color: @borderColor !important;" data-name="@(item.ClientName?.ToLower() ?? "")">
+                    <div class="offer-header" style="color: @borderColor;">@statusHeaderText</div>
+
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar-container me-3">
+                            <img src="@avatarUrl" class="client-avatar" alt="Client Picture">
+                        </div>
+                        <div>
+                            <div class="client-name">@(item.ClientName ?? "Client Profile")</div>
+                            <div class="status-badge" style="background-color: @statusBg; color: @statusTextColor;">
+                                @item.Status
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Body Data Mapping Area -->
+                    <div class="mb-3">
+                        <div class="detail-item"><strong>Interview Date:</strong> @item.Date</div>
+                        <div class="detail-item"><strong>Job Role:</strong> @item.Role</div>
+                        <div class="detail-item"><strong>Address:</strong> @item.Address</div>
+                        @if (!string.IsNullOrEmpty(item.Message))
+                        {
+                            <div class="message-text">@item.Message</div>
+                        }
+                    </div>
+
+                    <!-- Action Buttons Logic -->
+                    <div class="d-flex justify-content-center gap-3 pt-1">
+                        @if (item.Type == "offered")
+                        {
+                            <button type="button" class="btn btn-custom-reject w-50" onclick="processAction('/JobConfirmation/RejectJob', @item.Id)">Reject</button>
+                            <button type="button" class="btn btn-custom-accept w-50" onclick="processAction('/JobConfirmation/AcceptJob', @item.Id)">Accept</button>
+                        }
+                        else if (item.Type == "rejected")
+                        {
+                            <div class="w-100 d-flex justify-content-end">
+                                <button type="button" class="btn btn-custom-delete px-4" onclick="processAction('/JobConfirmation/DeleteJob', @item.Id)">Delete</button>
+                            </div>
+                        }
+                        else if (item.Type == "accepted")
+                        {
+                            <div class="w-100 d-flex justify-content-end">
+                                <button type="button" class="btn btn-custom-hired px-4" disabled>Accepted</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<script>
+    // Live Search Filter Handler
+    document.getElementById('clientSearch').addEventListener('input', function (e) {
+        let keyword = e.target.value.toLowerCase().trim();
+        let cards = document.querySelectorAll('.data-card-item');
+
+        cards.forEach(card => {
+            let name = card.getAttribute('data-name');
+            if (name.includes(keyword)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+
+    // Reusable Async AJAX operation core
+    async function processAction(url, recordId) {
+        if(url.includes("DeleteJob") && !confirm("Are you sure you want to delete this job confirmation record?")) return;
+
+        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+        const token = tokenElement ? tokenElement.value : '';
+
+        try {
+            let response = await fetch(`${url}?id=${recordId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': token
+                }
+            });
+            let result = await response.json();
+
+            if (result.success) {
+                window.location.reload();
+            } else {
+                alert(result.message || "Something went wrong during backend processing.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Network connectivity error while contacting server endpoints.");
+        }
+    }
+</script>

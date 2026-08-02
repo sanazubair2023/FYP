@@ -4,6 +4,14 @@
 
     var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
     var skills = ViewBag.Skills as List<Skill> ?? new List<Skill>();
+
+    string dbWorkedAt = ViewBag.WorkedAt ?? "";
+    string dbExpDetail = ViewBag.ExpDetail ?? "";
+    string dbDuration = ViewBag.Duration ?? "12";
+
+    // Database se aayi hui selected categories ki IDs
+    int primaryCatId = ViewBag.PrimaryCategoryId ?? 0;
+    int secondaryCatId = ViewBag.SecondaryCategoryId ?? 0;
 }
 
 <!DOCTYPE html>
@@ -399,11 +407,11 @@
                             </div>
                             <div class="custom-input-group">
                                 <div class="input-icon-left"><i class="fa-regular fa-building"></i></div>
-                                <input type="text" class="exp-place-input" placeholder="Where did you work?" />
+                                <input type="text" class="exp-place-input" placeholder="Where did you work?" value="@dbWorkedAt" />
                             </div>
                             <div class="custom-input-group">
                                 <div class="input-icon-left"><i class="fa-regular fa-file-text"></i></div>
-                                <input type="text" class="exp-desc-input" placeholder="What did you do there?" />
+                                <input type="text" class="exp-desc-input" placeholder="What did you do there?" value="@dbExpDetail" />
                             </div>
                             <button type="button" class="btn-submit-exp" onclick="submitSingleExperience('@cat.CategoryId')">
                                 <i class="fa-solid fa-check"></i> Submit Experience
@@ -423,6 +431,7 @@
 
     <script>
             let globalExperienceState = {};
+            const dbDurationValue = "@dbDuration";
 
             function submitSingleExperience(categoryId) {
                 const formBlock = document.getElementById(`form-block-${categoryId}`);
@@ -439,9 +448,16 @@
                     return;
                 }
 
-                const year = dateVal ? dateVal.split('-')[0] : "2026";
+                const year = dateVal ? dateVal.split('-')[0] : new Date().getFullYear().toString();
                 const slotId = Date.now().toString();
 
+                addExperienceToStateAndUI(categoryId, slotId, year, placeVal, descVal, dbDurationValue);
+
+                placeInput.value = "";
+                descInput.value = "";
+            }
+
+            function addExperienceToStateAndUI(categoryId, slotId, year, placeVal, descVal, duration) {
                 if (!globalExperienceState[categoryId]) {
                     globalExperienceState[categoryId] = [];
                 }
@@ -450,7 +466,8 @@
                     id: slotId,
                     workingSince: year,
                     workedAt: placeVal,
-                    description: descVal
+                    description: descVal,
+                    monthsDuration: duration || "12"
                 });
 
                 const listContainer = document.getElementById(`exp-list-${categoryId}`);
@@ -465,9 +482,6 @@
                     </div>
                 `;
                 listContainer.insertAdjacentHTML('beforeend', chipHtml);
-
-                placeInput.value = "";
-                descInput.value = "";
             }
 
             function removeExperienceChip(categoryId, slotId) {
@@ -483,6 +497,48 @@
                 const secondaryBoxes = document.querySelectorAll('.secondary-box');
                 const subSkillTags = document.querySelectorAll('.subskill-tag');
                 const form = document.getElementById('skillsForm');
+
+                // Database se aayi hui selected sub-skills ki IDs ko read karna
+                const dbSavedSkillIds = @Html.Raw(Json.Serialize(ViewBag.SavedSkillIds ?? new List<int>()));
+
+                // Agar database mein sub-skills save hain toh unhe active (highlight) karein
+                if (dbSavedSkillIds && dbSavedSkillIds.length > 0) {
+                    subSkillTags.forEach(tag => {
+                        const skillId = parseInt(tag.getAttribute('data-skill-id'));
+                        if (dbSavedSkillIds.includes(skillId)) {
+                            tag.classList.add('active');
+                        }
+                    });
+                }
+
+                // Database dynamically loaded selection parameters
+                const dbPrimaryCatId = parseInt("@primaryCatId") || 0;
+                const dbSecondaryCatId = parseInt("@secondaryCatId") || 0;
+
+                // Pre-populating database values into UI nodes
+                if (dbPrimaryCatId > 0) {
+                    primaryBoxes.forEach(box => {
+                        if (parseInt(box.getAttribute('data-id')) === dbPrimaryCatId) {
+                            box.classList.add('primary-active');
+                        }
+                    });
+                }
+
+                if (dbSecondaryCatId > 0) {
+                    secondaryBoxes.forEach(box => {
+                        if (parseInt(box.getAttribute('data-id')) === dbSecondaryCatId) {
+                            box.classList.add('secondary-active');
+                        }
+                    });
+                }
+
+                // Initial load: Dynamic experience populator for pre-filled DB values
+                const initialPlace = "@dbWorkedAt";
+                const initialDesc = "@dbExpDetail";
+                if (dbPrimaryCatId > 0 && initialPlace.trim() !== "" && initialDesc.trim() !== "") {
+                    const slotId = Date.now().toString();
+                    addExperienceToStateAndUI(dbPrimaryCatId.toString(), slotId, "2026", initialPlace, initialDesc, dbDurationValue);
+                }
 
                 function updateUI() {
                     let selectedPrimaryId = null;
@@ -588,16 +644,29 @@
 
                             let slotsData = globalExperienceState[catId] || [];
 
-                            // Validation: At least one sub-skill must be selected
+                            if(slotsData.length === 0) {
+                                const placeVal = panel.querySelector('.exp-place-input').value.trim();
+                                const descVal = panel.querySelector('.exp-desc-input').value.trim();
+                                const dateVal = panel.querySelector('.exp-date-input').value;
+                                if(placeVal && descVal) {
+                                    const year = dateVal ? dateVal.split('-')[0] : "2026";
+                                    slotsData.push({
+                                        workingSince: year,
+                                        workedAt: placeVal,
+                                        description: descVal,
+                                        duration: dbDurationValue
+                                    });
+                                }
+                            }
+
                             if (selectedSubSkills.length === 0) {
                                 alert('Please select at least one sub-skill for the selected category.');
                                 hasErrors = true;
                                 return;
                             }
 
-                            // Validation: At least one experience must be added
                             if (slotsData.length === 0) {
-                                alert('Please add at least one experience for the selected category.');
+                                alert('Please add or submit at least one experience.');
                                 hasErrors = true;
                                 return;
                             }
@@ -609,7 +678,7 @@
                                     workingSince: s.workingSince,
                                     workedAt: s.workedAt,
                                     description: s.description,
-                                    duration: s.monthsDuration
+                                    duration: s.duration || s.monthsDuration
                                 }))
                             });
                         }
@@ -617,33 +686,18 @@
 
                     if (hasErrors) return;
 
-                    // Validation: Check for sub-skill overlap between primary and secondary categories
-                    if (activePanelsData.length > 1) {
-                        let firstCategorySkills = activePanelsData[0]?.subSkills || [];
-                        let secondCategorySkills = activePanelsData[1]?.subSkills || [];
-
-                        let overlappingSkills = firstCategorySkills.filter(skill => 
-                            secondCategorySkills.includes(skill)
-                        );
-
-                        if (overlappingSkills.length > 0) {
-                            alert('Sub-skills cannot overlap between Primary and Secondary categories. Please select different sub-skills for each category.');
-                            return;
-                        }
-                    }
-
-                    let existingSignupData = JSON.parse(sessionStorage.getItem('WorkerSignupData')) || {};
-
-                    existingSignupData.skillsData = {
+                    let currentSignupData = JSON.parse(sessionStorage.getItem('WorkerSignupData')) || {};
+                    currentSignupData.skillsData = {
                         primaryCategory: primaryCategory,
                         secondaryCategory: secondaryCategory,
                         expertiseDetails: activePanelsData
                     };
-
-                    sessionStorage.setItem('WorkerSignupData', JSON.stringify(existingSignupData));
-                    window.location.href = '/Auth/Signup?role=Worker';
+sessionStorage.setItem('WorkerSignupData', JSON.stringify(currentSignupData));
+// step=worker pass karne se Signup page direct Worker tab open karega
+window.location.href = '/Auth/Signup?role=Worker&tab=worker';
                 });
 
+                // Update configuration instantly to respect base model binding values
                 updateUI();
             });
     </script>

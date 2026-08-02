@@ -3,8 +3,20 @@
     Layout = null;
     var pendingInterviews = ViewBag.PendingInterviews ?? 0;
     var jobNotifications = ViewBag.JobNotifications ?? 0;
-    var rating = ViewBag.Rating ?? 0.0;
     var experienceYears = ViewBag.ExperienceYears ?? 0;
+
+    // FIX: Controller se aane walay ViewBag.Rating ko read karein
+    double rawRating = 0.0;
+    if (ViewBag.Rating != null)
+    {
+        double.TryParse(ViewBag.Rating.ToString(), out rawRating);
+    }
+    else if (ViewBag.AverageRating != null)
+    {
+        double.TryParse(ViewBag.AverageRating.ToString(), out rawRating);
+    }
+
+    string ratingText = rawRating.ToString("0.0");
 }
 
 <!DOCTYPE html>
@@ -139,26 +151,6 @@
                 font-weight: bold;
             }
 
-            /* Red Status Button */
-            .btn-check-status {
-                background-color: #ff0000;
-                color: white;
-                font-weight: bold;
-                font-size: 1.05rem;
-                border-radius: 18px;
-                padding: 12px;
-                border: none;
-                width: 100%;
-                box-shadow: 0px 4px 12px rgba(255, 0, 0, 0.3);
-                margin-top: 15px;
-                transition: all 0.2s;
-            }
-
-                .btn-check-status:hover {
-                    background-color: #cc0000;
-                    transform: translateY(-1px);
-                }
-
             /* Details Section */
             .details-title {
                 font-weight: 800;
@@ -280,9 +272,8 @@
                 <h3 class="fw-bold text-primary mb-3" style="font-size: 1.9rem; line-height: 1.1;">Professional Servant / Maid</h3>
 
                 <div class="d-flex gap-2">
-                    <!-- Logout Button linked properly -->
                     <a href="@Url.Action("Login", "Auth")" id="btnLogout" class="btn-custom-blue">Logout</a>
-                    <a href="#" class="btn-custom-blue">Edit Profile</a>
+                    <a href="@Url.Action("EditWorkerProfile", "WorkerDashboard")" class="btn-custom-blue">Edit Profile</a>
                 </div>
             </div>
             <div>
@@ -298,7 +289,6 @@
             </div>
             <p class="text-muted mb-3" style="font-size: 0.85rem; line-height: 1.4;">Access your rights to end job or access termination options</p>
 
-            <!-- ✅ Click action added directly to the existing button layout -->
             <button class="btn-terminate" onclick="window.location.href='@Url.Action("LeaveJob", "WorkerLeaveJob")'">
                 <i class="bi bi-x-circle me-1"></i> Terminate Contract
             </button>
@@ -344,6 +334,15 @@
                 <span class="badge-count">@jobNotifications</span>
             </div>
         </div>
+
+        <!-- Check Termination Status Button -->
+        <a href="@Url.Action("TerminationDetails", "WorkerTermination")"
+           class="btn btn-danger w-100 fw-bold py-2 mb-4"
+           style="border-radius: 25px; background-color: #ff0000; border: none; box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.3); text-decoration: none; display: block; text-align: center; color: white;">
+            Check Termination Status
+        </a>
+
+        
 
         <!-- Profile Details Section -->
         <h5 class="details-title">Profile Details</h5>
@@ -401,19 +400,68 @@
             {
                 <span class="text-muted d-block mb-2" style="font-size: 0.8rem;">No skills added yet.</span>
             }
-            <a href="@Url.Action("AddSkill", "Worker")" class="btn-add-skill">+ Add Skill</a>
+            <a href="@Url.Action("AddSkills", "Auth")" class="btn-add-skill">+ Add Skill</a>
         </div>
-
         <!-- Recent Reviews Section -->
         <h5 class="details-title mb-3">Recent Reviews</h5>
-        <div class="d-flex justify-content-between align-items-center">
+
+        @{
+            double avgRating = 0.0;
+            if (ViewBag.Rating != null)
+            {
+                double.TryParse(ViewBag.Rating.ToString(), out avgRating);
+            }
+            int totalCount = ViewBag.TotalReviewsFound ?? 0;
+        }
+
+        <!-- Total Average Rating Display Block -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-star-fill rating-star-icon"></i>
-                <span class="fw-bold text-dark fs-3">@rating.ToString("0.0")</span>
+                <i class="bi bi-star-fill text-warning fs-4"></i>
+                <span class="fw-bold text-dark fs-3">@avgRating.ToString("0.0")</span>
+                <span class="text-muted fs-6">(@totalCount reviews)</span>
             </div>
-            <a href="@Url.Action("Reviews", "WorkerReviews", new { workerId = Model.WorkerId })" class="btn-view-reviews">
+            <a href="@Url.Action("Reviews", "WorkerReviews", new { workerId = Model.WorkerId })" class="btn btn-primary rounded-pill px-3">
                 View Reviews
             </a>
+        </div>
+
+        <!-- First/Recent Review Item Card -->
+        <div class="reviews-content-list">
+            @if (ViewBag.FirstReview != null)
+            {
+                dynamic review = ViewBag.FirstReview;
+                int ratingStars = review.Rating != null ? Convert.ToInt32(review.Rating) : 0;
+
+                <div class="p-3 mb-2" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="fw-bold text-dark mb-0">@review.ClientName</h6>
+                        <small class="text-muted">
+                            @(review.ReviewDate != null ? Convert.ToDateTime(review.ReviewDate).ToString("dd MMM yyyy") : "")
+                        </small>
+                    </div>
+                    <div class="text-warning mb-1">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= ratingStars)
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-star text-muted"></i>
+                            }
+                        }
+                    </div>
+                    <p class="mb-0 text-secondary" style="font-style: italic; font-size: 0.9rem;">
+                        "@review.Comment"
+                    </p>
+                </div>
+            }
+            else
+            {
+                <span class="text-muted small d-block" style="font-style: italic;">No specific database review logs available yet.</span>
+            }
         </div>
 
     </div>

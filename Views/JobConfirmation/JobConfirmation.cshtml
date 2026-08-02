@@ -3,6 +3,7 @@
     ViewData["Title"] = "Job Confirmation Dashboard";
 }
 
+<!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 @Html.AntiForgeryToken()
@@ -25,10 +26,46 @@
         z-index: -1;
     }
 
+    /* Header Container Adjustment */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-top: 10px;
+    }
+
+    /* Reference Image ke mutabiq Circular Back Arrow Button */
+    .btn-back-arrow {
+        border: 1px solid #D0D5DD;
+        background: #FFFFFF;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #344054;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1);
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+        .btn-back-arrow:hover {
+            background-color: #F8F9FA;
+            border-color: #98A2B3;
+            color: #101828;
+            transform: scale(1.03);
+        }
+
     .header-title {
         font-size: 24px;
-        font-weight: bold;
-        color: #000;
+        font-weight: 700;
+        color: #101828;
+        margin: 0;
     }
 
     .search-bar {
@@ -37,8 +74,8 @@
         background-color: #FFF;
         border-radius: 25px;
         border: 1px solid #CCC;
-        padding: 5px 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 8px 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     }
 
     .search-input {
@@ -113,7 +150,6 @@
         margin-top: 6px;
     }
 
-    /* Target Buttons matching iPhone Mockup UI colors exactly */
     .btn-custom-reject {
         background-color: #B0BEC5;
         color: #C62828;
@@ -156,24 +192,29 @@
 
 <div class="blue-circle"></div>
 
-<div class="container py-4" style="max-width: 450px;">
-    <!-- Logo & Layout Brand Integration -->
-    <div class="d-flex justify-content-end mb-2">
-        <img src="/Images/logo.png" alt="Brand Logo" style="height: 45px; object-fit: contain;" onerror="this.style.display='none'">
+<div class="container py-3" style="max-width: 450px;">
+
+    <!-- Top Right Brand Logo -->
+    <div class="d-flex justify-content-end mb-1">
+        <img src="/Images/logo.png" alt="Brand Logo" style="height: 40px; object-fit: contain;" onerror="this.style.display='none'">
     </div>
 
-    <!-- Top Screen Header -->
-    <div class="d-flex align-items-center mb-3">
-        <button class="btn p-0 me-2" onclick="window.history.back();" type="button">
-            <i class="bi bi-arrow-left fs-4" style="color: #000;"></i>
+    <!-- Header Section with Clean Back Arrow SVG -->
+    <div class="header-container">
+        <button class="btn-back-arrow" onclick="window.history.back();" type="button" title="Back">
+            <!-- Precise Vector Arrow SVG (Exact design match with your reference image) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
         </button>
-        <span class="header-title">Job Confirmation</span>
+        <h1 class="header-title">Job Confirmation</h1>
     </div>
 
     <!-- Live Client Filter Box -->
     <div class="search-bar mb-4">
         <i class="bi bi-search" style="color: #666; font-size: 16px;"></i>
-        <input type="text" id="clientSearch" class="search-input" placeholder="Search by client name...">
+        <input type="text" id="clientSearch" class="search-input" placeholder="Search by worker name...">
     </div>
 
     <!-- Jobs Cards Wrapper Container -->
@@ -186,23 +227,22 @@
         {
             foreach (var item in Model)
             {
-                // Dynamic Color & Layout Configurator corresponding to specific rules
-                string borderColor = "#4CAF50"; // Green
-                string statusBg = "#C8E6C9"; // Light Green
+                string borderColor = "#4CAF50";
+                string statusBg = "#C8E6C9";
                 string statusTextColor = "#2E7D32";
                 string statusHeaderText = "Job Offered!";
 
                 if (item.Type == "rejected")
                 {
-                    borderColor = "#FF5252"; // Red
-                    statusBg = "#FFCDD2"; // Light Red
+                    borderColor = "#FF5252";
+                    statusBg = "#FFCDD2";
                     statusTextColor = "#C62828";
                     statusHeaderText = "Job Rejected!";
                 }
                 else if (item.Type == "accepted")
                 {
-                    borderColor = "#0091EA"; // Blue border for selection target active state
-                    statusBg = "#C8E6C9"; // Still green badge display for text "Confirm"
+                    borderColor = "#0091EA";
+                    statusBg = "#C8E6C9";
                     statusTextColor = "#2E7D32";
                     statusHeaderText = "Job Offered!";
                 }
@@ -262,7 +302,6 @@
 </div>
 
 <script>
-    // Live Search Filter Handler
     document.getElementById('clientSearch').addEventListener('input', function (e) {
         let keyword = e.target.value.toLowerCase().trim();
         let cards = document.querySelectorAll('.data-card-item');
@@ -277,7 +316,6 @@
         });
     });
 
-    // Reusable Async AJAX operation core
     async function processAction(url, recordId) {
         if(url.includes("DeleteJob") && !confirm("Are you sure you want to delete this job confirmation record?")) return;
 

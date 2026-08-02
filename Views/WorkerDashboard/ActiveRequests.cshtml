@@ -118,7 +118,13 @@
             <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                 <div>
                     <h2 class="fw-bold text-dark mb-1" style="font-size: 2rem;">Active Requests</h2>
-                    <p class="text-muted small mb-0">Request pending &bull; <span class="text-primary" style="text-decoration: underline; cursor:pointer;">Goto Accepted</span></p>
+                    <p class="text-muted small mb-0">
+                        Request pending &bull;
+                        <!-- Yahan link set kar diya hai naye page ke liye -->
+                        <a href="@Url.Action("Dashboard", "AcceptRequest")" class="text-primary fw-semibold" style="text-decoration: underline; cursor:pointer;">
+                            Goto Accepted
+                        </a>
+                    </p>
                 </div>
                 <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn-back">
                     <i class="bi bi-arrow-left me-1"></i> Back to Dashboard

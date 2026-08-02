@@ -1,0 +1,111 @@
+﻿@model MaidAndServantt.Controllers.ResignationDetailController.ResignationDetailViewModel
+@{
+    ViewData["Title"] = "Resignation Details";
+}
+
+<div class="container py-4" style="max-width: 600px;">
+
+    <!-- Back Arrow Header -->
+    <div class="d-flex align-items-center mb-3">
+        <a asp-action="GetResignationDetails" class="text-decoration-none me-3" style="color: #5B4CF2; font-size: 1.5rem; font-weight: bold;">
+            &#8592;
+        </a>
+        <h4 class="mb-0 fw-bold">Resignation Details</h4>
+    </div>
+
+    <!-- Header Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Profile Row -->
+    <div class="d-flex align-items-center mb-4 mt-2">
+        <img src="@(string.IsNullOrEmpty(Model.WorkerAvatar) ? "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" : Model.WorkerAvatar)"
+             class="rounded-circle me-3" style="width: 70px; height: 70px; object-fit: cover;" alt="Worker Avatar" />
+        <div>
+            <h4 class="mb-0 fw-bold">@Model.WorkerName</h4>
+            <span class="fw-bold" style="color: #5B4CF2;">@Model.WorkerRole</span>
+        </div>
+    </div>
+
+    <!-- Notice Period Card -->
+    <div class="card mb-4 border shadow-sm rounded-3 overflow-hidden">
+        <div class="p-3 text-white" style="background-color: #6289F4;">
+            <div class="fw-bold">Official Notice Period</div>
+            <div class="h5 mb-0 fw-bold">@Model.TotalNoticeDays Days Total</div>
+        </div>
+        <div class="card-body">
+            <h6 class="fw-bold">Notice Period Status</h6>
+            <p class="text-muted mb-2">Remaining Days: <strong style="color: #5B4CF2;">@Model.RemainingDays</strong></p>
+
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar" role="progressbar" style="width: @Model.ProgressPercentage%; background-color: #6289F4;"
+                     aria-valuenow="@Model.ProgressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last Working Day -->
+    <div class="mb-3">
+        <label class="form-label fw-bold h5">Last Working Day</label>
+        <div class="form-control bg-light">@Model.LastWorkingDate</div>
+    </div>
+
+    <!-- Reason Section -->
+    <div class="mb-4">
+        <label class="form-label fw-bold h5">Reason for Leaving</label>
+        <div class="form-control bg-light" style="min-height: 80px;">@Model.Reason</div>
+    </div>
+
+    <!-- Confirmation & Feedback Form -->
+    <form asp-action="ConfirmResignation" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="InterviewId" />
+        <input type="hidden" asp-for="ResignationId" />
+
+        <div class="card p-3 mb-4 border rounded-3">
+            <!-- Rating Section -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <label class="fw-bold m-0">Rating:</label>
+                <select asp-for="Rating" class="form-select w-auto" disabled="@Model.IsConfirmed">
+                    <option value="1">⭐ 1 Star</option>
+                    <option value="2">⭐⭐ 2 Stars</option>
+                    <option value="3">⭐⭐⭐ 3 Stars</option>
+                    <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                </select>
+            </div>
+
+            <!-- Remarks Section -->
+            <div>
+                @if (Model.IsConfirmed)
+                {
+                    <div class="text-success fw-bold p-2 bg-light rounded border">
+                        This resignation has already been confirmed and is now readonly.
+                    </div>
+                }
+                else
+                {
+                    <textarea asp-for="Comment" class="form-control" rows="3" placeholder="Enter your remarks here..."></textarea>
+                    <span asp-validation-for="Comment" class="text-danger small"></span>
+                }
+            </div>
+        </div>
+
+        <!-- Confirm Button -->
+        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold" disabled="@Model.IsConfirmed">
+            @(Model.IsConfirmed ? "Resignation Confirmed" : "Confirm Resignation")
+        </button>
+    </form>
+</div>

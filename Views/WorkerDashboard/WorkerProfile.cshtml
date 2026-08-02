@@ -14,7 +14,7 @@
 
 <style>
     .web-extended-wrapper {
-        max-width: 1100px; /* Fully expanded width for stunning desktop viewing */
+        max-width: 1100px;
         margin: 40px auto;
         background: #ffffff;
         border-radius: 24px;
@@ -24,10 +24,9 @@
         border: 1px solid #eaeaea;
     }
 
-    /* Top Expanded Hero Banner Box */
     .extended-hero-banner {
         width: 100%;
-        height: 420px; /* Extended vertical visual range */
+        height: 420px;
         position: relative;
         background: #f4f6f8;
     }
@@ -37,6 +36,32 @@
         height: 100%;
         object-fit: cover;
     }
+
+    .extended-back-btn {
+        position: absolute;
+        top: 25px;
+        left: 30px;
+        background: #ffffff;
+        color: #111111;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        font-size: 20px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+        z-index: 10;
+    }
+
+        .extended-back-btn:hover {
+            background: #f8f9fa;
+            transform: scale(1.05);
+            color: #1a73e8;
+        }
 
     .extended-floating-badge {
         position: absolute;
@@ -58,7 +83,6 @@
             color: #c62828;
         }
 
-    /* Main Content Architecture */
     .extended-content-body {
         padding: 40px;
     }
@@ -104,7 +128,6 @@
         font-weight: 600;
     }
 
-    /* 3-Column Uniform Horizontal Parameter Metric Row */
     .extended-info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -142,7 +165,6 @@
         font-weight: 700;
     }
 
-    /* Uniform Structured Section Headers */
     .extended-section-heading {
         font-size: 22px;
         font-weight: 700;
@@ -162,7 +184,6 @@
         margin: 0;
     }
 
-    /* Dynamic Chips Architecture */
     .extended-chips-wrapper {
         display: flex;
         flex-wrap: wrap;
@@ -189,7 +210,6 @@
         letter-spacing: 0.5px;
     }
 
-    /* Vertical Timeline Configuration */
     .extended-timeline-container {
         position: relative;
         padding-left: 25px;
@@ -228,7 +248,6 @@
             box-shadow: 0 0 0 2px #cbd5e1;
         }
 
-    /* Large Layout Submission Control */
     .extended-footer-control {
         margin-top: 50px;
         padding-top: 20px;
@@ -255,12 +274,33 @@
             background: #1557b0;
             color: #ffffff;
         }
+
+    /* New Styling for View All Button */
+    .extended-btn-view-all {
+        color: #1a73e8;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        border: 1.5px solid #1a73e8;
+        padding: 6px 16px;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    }
+
+        .extended-btn-view-all:hover {
+            background: #1a73e8;
+            color: #ffffff;
+        }
 </style>
 
 <div class="web-extended-wrapper">
 
-    <!-- Top Full Width Banner Section (Pic 2 Layout Structure) -->
+    <!-- Top Full Width Banner Section -->
     <div class="extended-hero-banner">
+        <a href="javascript:void(0);" onclick="history.back();" class="extended-back-btn" title="Go Back">
+            &#8592;
+        </a>
+
         <img src="@(string.IsNullOrEmpty(Model.Picture) ? "/Images/logo.png" : Model.Picture)" class="extended-banner-img" alt="Worker Visual Avatar" />
 
         @if (Model.AvailableStatus == true)
@@ -291,8 +331,7 @@
                 }
                 else
                 {
-
-                    <span>Cleaning</span>
+                    <span>General Worker</span>
                 }
             </span>
             <div class="extended-stars-box">
@@ -303,22 +342,18 @@
         </div>
 
         <div class="extended-meta-sub">
-            @Model.Gender.ToUpper() • @Model.Age Y/O
+            @(Model.Gender?.ToUpper() ?? "N/A") • @Model.Age Y/O
         </div>
 
-        <!-- Horizontal Metric Board Columns Row (Pic 2 Design Blueprint) -->
-        <!-- Horizontal Metric Board Columns Row (Teen Boxes Wala Grid) -->
+        <!-- Horizontal Metric Board Columns Row -->
         <div class="extended-info-grid">
-
-            <!-- 1. Experience Box (Yahan likhna hai) -->
             <div class="extended-grid-item">
                 <span class="extended-grid-label">Experience</span>
                 <span class="extended-grid-value">
-                    @ViewBag.DisplayExperienceText
+                    @(ViewBag.DisplayExperienceText ?? "1 Year")
                 </span>
             </div>
 
-            <!-- 2. Location Box -->
             <div class="extended-grid-item">
                 <span class="extended-grid-label">Location</span>
                 <span class="extended-grid-value" style="text-transform: uppercase;">
@@ -326,18 +361,16 @@
                 </span>
             </div>
 
-            <!-- 3. Salary Box -->
             <div class="extended-grid-item">
                 <span class="extended-grid-label">Salary</span>
-                <span class="extended-grid-value">Rs. @(Model.Salary?.ToString("F2") ?? "0.00")</span>
+                <span class="extended-grid-value">Rs. @(Model.Salary?.ToString("N0") ?? "0")</span>
             </div>
-
         </div>
 
         <!-- Narrative Section -->
         <h3 class="extended-section-heading">About</h3>
         <p class="extended-body-desc">
-            @(string.IsNullOrEmpty(Model.Bio) ? "Professional Servant / Maid" : Model.Bio)
+            @(string.IsNullOrEmpty(Model.Bio) ? "Professional Worker available for hire." : Model.Bio)
         </p>
 
         <!-- Dynamic Primary Tag Elements -->
@@ -367,7 +400,6 @@
                 }
                 else
                 {
-
                     <span>Secondary Stack</span>
                 }
             </div>
@@ -403,18 +435,65 @@
             }
         </div>
 
-        <!-- Verification Metrics Block -->
+        <!-- Dynamic Reviews Heading with Fixed View All Button -->
         <div class="extended-section-heading">
-            <span>Recent Reviews</span>
-            <span style="font-size: 14px; color: #1a73e8; font-weight: 600; cursor: pointer;">View all</span>
+            <span>Recent Reviews (@reviewsCount)</span>
+            <a href="@Url.Action("Reviews", "WorkerReviews", new { workerId = Model.WorkerId })" class="extended-btn-view-all">
+                View All &rarr;
+            </a>
         </div>
-        <div style="font-size: 14.5px; color: #888; font-style: italic;">
-            No reviews yet
-        </div>
+
+        <!-- Dynamic Reviews Cards fetched directly from Database -->
+        @if (workerReviews != null && workerReviews.Any())
+        {
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px; margin-bottom: 25px;">
+                @foreach (var review in workerReviews.Take(3))
+                {
+                    <div style="background: #ffffff; padding: 18px; border-radius: 16px; border: 1.5px solid #dbdbdb; box-shadow: 0px 2px 8px rgba(0,0,0,0.02); text-align: left;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <div>
+                                <h4 style="font-size: 14px; font-weight: 700; color: #000000; margin: 0;">Verified Client</h4>
+                                <span style="font-size: 11px; color: #888888; font-weight: 500;">Employer Review</span>
+                            </div>
+                            <div style="color: #FFC107; font-size: 14px; display: flex; gap: 2px;">
+                                @{
+                                    int ratingValue = review.Rating ?? 5;
+                                    for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= ratingValue)
+                                        {
+                                            <span>★</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #e0e0e0;">★</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <p style="font-size: 13px; color: #444444; line-height: 1.5; font-style: italic; margin-top: 8px; margin-bottom: 0;">
+                            "@(string.IsNullOrWhiteSpace(review.Comment) ? "No written comment provided." : review.Comment)"
+                        </p>
+
+                        <div style="text-align: right; font-size: 11px; color: #999999; margin-top: 8px;">
+                            @(review.ReviewDate.HasValue ? review.ReviewDate.Value.ToString("dd MMM yyyy") : "Recently")
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div style="font-size: 14.5px; color: #888; font-style: italic; margin-top: 10px; margin-bottom: 25px; text-align: left;">
+                No reviews available for this worker yet.
+            </div>
+        }
 
         <!-- Methodologies Standard Guidelines -->
         <h3 class="extended-section-heading">Booking Procedure</h3>
-        <div style="font-size: 14.5px; color: #555555; line-height: 2;">
+        <div style="font-size: 14.5px; color: #555555; line-height: 2; text-align: left;">
             <div>• Send a booking request with your preferred date.</div>
             <div>• Wait for the worker to accept (usually within 30m).</div>
             <div>• Confirm the location and start the service.</div>

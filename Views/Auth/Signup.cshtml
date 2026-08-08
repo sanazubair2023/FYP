@@ -5,17 +5,9 @@
     ViewBag.Title = isEditMode ? "Edit Profile" : "Create Account";
     Layout = null;
 
-    // RuntimeBinderException se bachne ke liye dynamic model ke variables
-    var mName = "";
-    var mEmail = "";
-    var mPhone = "";
-    var mAddress = "";
-    var mAge = "";
-    var mCnic = "";
-    var mSalary = "";
-    var mGender = "";
-    var mPicture = "";
-    var mId = "";
+    var mName = ""; var mEmail = ""; var mPhone = ""; var mAddress = "";
+    var mAge = ""; var mCnic = ""; var mSalary = ""; var mGender = "";
+    var mPicture = ""; var mId = "";
 
     if (Model != null)
     {
@@ -43,153 +35,228 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            background-color: #f7f9fc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        }
+            body {
+                background-color: #e5e5e5;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
 
-        .register-card {
-            background: #ffffff;
-            max-width: 420px;
-            width: 100%;
-            border-radius: 24px;
-            position: relative;
-            overflow: hidden;
-            padding: 2rem 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border: none;
-        }
+            .register-card {
+                background: #ffffff;
+                max-width: 380px;
+                width: 100%;
+                border-radius: 28px;
+                position: relative;
+                overflow: hidden;
+                padding: 1.5rem 1.25rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+                border: none;
+            }
 
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #f1f3f9;
-            padding-bottom: 10px;
-            margin-bottom: 1.5rem;
-        }
+            .header-section {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-bottom: 5px;
+                margin-bottom: 1.2rem;
+            }
 
-        .btn-back-circle {
-            background: #f1f3f9;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4a5568;
-            text-decoration: none;
-        }
+            .btn-back-circle {
+                background: #f1f5f9;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #64748b;
+                text-decoration: none;
+                font-size: 0.9rem;
+            }
 
-        .header-title {
-            color: #112663;
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0;
-        }
+            .header-title {
+                color: #0f172a;
+                font-size: 1.35rem;
+                font-weight: 800;
+                margin: 0;
+                letter-spacing: -0.3px;
+            }
 
-        .custom-input-group {
-            border: 1px solid #e2e8f0;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            padding: 4px 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-            background: white;
-        }
+            .custom-input-group {
+                border: 1px solid #e2e8f0;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                padding: 6px 14px;
+                margin-bottom: 0.85rem;
+                background: #ffffff;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+                position: relative;
+            }
 
-        .icon-circle {
-            background-color: #f1f3f9;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4a5568;
-            flex-shrink: 0;
-        }
+            .icon-circle {
+                background-color: #f1f5f9;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #475569;
+                flex-shrink: 0;
+                font-size: 0.85rem;
+            }
 
-        .custom-input-group input, .custom-input-group select {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 8px 12px;
-            font-size: 0.95rem;
-            background: transparent;
-        }
+            .custom-input-group input, .custom-input-group select {
+                border: none;
+                outline: none;
+                width: 100%;
+                padding: 6px 10px;
+                font-size: 0.9rem;
+                background: transparent;
+                color: #1e293b;
+                font-weight: 500;
+            }
 
-        .action-row {
-            display: flex;
-            gap: 15px;
-            margin-top: 1.5rem;
-        }
+                .custom-input-group input::placeholder {
+                    color: #64748b;
+                    font-weight: 500;
+                }
 
-        .btn-action-blue {
-            flex: 1;
-            background-color: #1e74ed;
-            color: white;
-            font-weight: 600;
-            border-radius: 30px;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            border: none;
-            box-shadow: 0 4px 12px rgba(30, 116, 237, 0.25);
-        }
+            .password-toggle-icon {
+                color: #000000;
+                cursor: pointer;
+                padding: 4px;
+                font-size: 0.95rem;
+            }
 
-            .btn-action-blue:hover {
-                background-color: #1663cc;
+            .current-picture-box {
+                border: 1px solid #e2e8f0;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 6px 14px;
+                margin-bottom: 0.85rem;
+                background: #ffffff;
+            }
+
+            .action-row {
+                display: flex;
+                gap: 12px;
+                margin-top: 1.25rem;
+            }
+
+            .btn-action-blue {
+                flex: 1;
+                background-color: #1d72f3;
                 color: white;
+                font-weight: 600;
+                border-radius: 25px;
+                padding: 10px;
+                text-align: center;
+                text-decoration: none;
+                border: none;
+                font-size: 0.95rem;
+                box-shadow: 0 4px 12px rgba(29, 114, 243, 0.3);
+                transition: background-color 0.2s;
             }
 
-        .step-panel {
-            display: none;
-        }
+                .btn-action-blue:hover {
+                    background-color: #155bc5;
+                    color: white;
+                }
 
-            .step-panel.active {
-                display: block;
+            .step-panel {
+                display: none;
             }
 
-        .role-section-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #1a202c;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.75rem;
-        }
+                .step-panel.active {
+                    display: block;
+                }
 
-        .role-toggle-box {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 1.5rem;
-        }
+            .role-section-title {
+                font-size: 0.8rem;
+                font-weight: 800;
+                color: #0f172a;
+                letter-spacing: 0.3px;
+                margin-bottom: 0.6rem;
+            }
 
-        .btn-role {
-            flex: 1;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            border-radius: 14px;
-            padding: 10px;
-            font-weight: 600;
-            color: #1a202c;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
-        }
+            .role-toggle-box {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 1.2rem;
+                background-color: #ffffff;
+            }
 
-            .btn-role.active {
-                background: #e2e8f0;
-                border-color: #cbd5e1;
+            .btn-role {
+                flex: 1;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                border-radius: 16px;
+                padding: 8px 12px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                color: #334155;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+                .btn-role.active {
+                    background: #cbd5e1;
+                    border-color: #94a3b8;
+                    color: #0f172a;
+                }
+
+                    .btn-role.active .icon-circle {
+                        background: #ffffff;
+                        color: #0f172a;
+                    }
+
+            .skills-group-box {
+                border: 1px solid #e2e8f0;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 6px 12px;
+                margin-bottom: 0.85rem;
+                background: #ffffff;
+                text-decoration: none;
+            }
+
+            .badge-check-green {
+                background-color: #10b981;
+                color: white;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
+            }
+
+            .badge-plus-blue {
+                background-color: #eff6ff;
+                color: #1d72f3;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.85rem;
             }
     </style>
 </head>
@@ -201,12 +268,12 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <h2 class="header-title">@(isEditMode ? "Edit Profile" : "Create Account")</h2>
-            <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
+            <img src="/Images/logo.png" alt="Logo" style="width: 24px; height: 24px;" />
         </div>
 
         @if (!Html.ViewData.ModelState.IsValid)
         {
-            <div class="alert alert-danger p-2 text-center row g-0" style="border-radius: 15px; font-size: 0.85rem; list-style: none;">
+            <div class="alert alert-danger p-2 text-center" style="border-radius: 12px; font-size: 0.85rem;">
                 @Html.ValidationSummary(true, "")
             </div>
         }
@@ -244,35 +311,35 @@
                 }
             }
 
-            @* ---------------- CLIENT PANEL (SIGNUP + EDIT) ---------------- *@
+            @* CLIENT PANEL *@
             <div id="panelClient" class="step-panel @(userRole == "Client" ? "active" : "")">
                 <div class="custom-input-group">
-                    <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
-                    <input type="text" id="clientNameInput" name="ClientName" placeholder="Full Name" value="@mName" />
+                    <div class="icon-circle"><i class="fa-solid fa-user"></i></div>
+                    <input type="text" id="clientNameInput" name="ClientName" placeholder="Full Name" value="@(isEditMode ? mName : "")" />
                 </div>
                 <div class="custom-input-group">
-                    <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
-                    <input type="email" id="clientEmailInput" name="ClientEmail" placeholder="Email" value="@mEmail" />
+                    <div class="icon-circle"><i class="fa-solid fa-envelope"></i></div>
+                    <input type="email" id="clientEmailInput" name="ClientEmail" placeholder="Email" value="@(isEditMode ? mEmail : "")" />
                 </div>
                 <div class="custom-input-group">
                     <div class="icon-circle"><i class="fa-solid fa-phone"></i></div>
-                    <input type="tel" id="clientPhoneInput" name="ClientPhone" placeholder="Phone no" value="@mPhone" />
+                    <input type="tel" id="clientPhoneInput" name="ClientPhone" placeholder="Phone no" value="@(isEditMode ? mPhone : "")" />
                 </div>
                 <div class="custom-input-group">
-                    <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                    <div class="icon-circle"><i class="fa-solid fa-image"></i></div>
                     <input type="file" name="ClientPicture" accept="image/*" style="padding: 4px;" />
                 </div>
 
                 @if (isEditMode && userRole == "Client")
                 {
-                    <div class="d-flex align-items-center justify-content-center gap-3 my-2 p-2 border rounded-pill bg-light" style="max-width: 280px; margin: 0 auto;">
+                    <div class="current-picture-box">
                         @if (!string.IsNullOrEmpty(mPicture))
                         {
-                            <img src="@mPicture" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #1e74ed;" alt="Current Profile" />
+                            <img src="@mPicture" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="Current Profile" />
                         }
                         else
                         {
-                            <div class="icon-circle border" style="width: 45px; height: 45px; font-size: 1.2rem;"><i class="fa-solid fa-user text-secondary"></i></div>
+                            <div class="icon-circle"><i class="fa-solid fa-user text-secondary"></i></div>
                         }
                         <span class="text-secondary fw-semibold" style="font-size: 0.85rem;">Current Profile Picture</span>
                     </div>
@@ -280,37 +347,36 @@
 
                 <div class="custom-input-group">
                     <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
-                    <input type="text" name="ClientAddress" placeholder="Address" value="@mAddress" />
+                    <input type="text" name="ClientAddress" placeholder="Address" value="@(isEditMode ? mAddress : "")" />
                 </div>
 
-                @if (!isEditMode)
-                {
-                    <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
-                        <input type="password" id="clientPass" name="ClientPassword" placeholder="Password" />
-                    </div>
-                    <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
-                        <input type="password" id="clientConfirmPass" name="ClientConfirmPassword" placeholder="Confirm Password" />
-                    </div>
-                }
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientPass" name="ClientPassword" placeholder="@(isEditMode ? "New Password (optional)" : "Password")" />
+                    <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('clientPass', this)"></i>
+                </div>
+                <div class="custom-input-group">
+                    <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
+                    <input type="password" id="clientConfirmPass" name="ClientConfirmPassword" placeholder="@(isEditMode ? "Confirm New Password" : "Confirm Password")" />
+                    <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('clientConfirmPass', this)"></i>
+                </div>
 
                 <div class="action-row">
-                    <a href="@(isEditMode ? Url.Action("ClientProfile", "Dashboard") : Url.Action("Login", "Auth"))" class="btn-action-blue text-center" style="line-height: 24px;">Back</a>
+                    <a href="@(isEditMode ? Url.Action("ClientProfile", "Dashboard") : Url.Action("Login", "Auth"))" class="btn-action-blue">Back</a>
                     <button type="submit" class="btn-action-blue">@(isEditMode ? "Update" : "Signup")</button>
                 </div>
             </div>
 
             @if (isEditMode && userRole == "Worker")
             {
-                @* ---------------- WORKER EDIT MODE ---------------- *@
+                @* WORKER EDIT MODE *@
                 <div id="panelWorkerEdit" class="step-panel active">
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user"></i></div>
                         <input type="text" name="WorkerName" placeholder="Full Name" value="@mName" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-calendar"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-id-card"></i></div>
                         <input type="number" name="WorkerAge" placeholder="Age" value="@mAge" />
                     </div>
                     <div class="custom-input-group">
@@ -318,7 +384,7 @@
                         <input type="tel" name="WorkerPhone" placeholder="Phone no" value="@mPhone" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-id-card"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user"></i></div>
                         <input type="text" name="WorkerCNIC" placeholder="CNIC" value="@mCnic" />
                     </div>
                     <div class="custom-input-group">
@@ -326,18 +392,18 @@
                         <input type="number" name="WorkerSalary" placeholder="Salary" value="@mSalary" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-solid fa-venus-mars"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user-plus"></i></div>
                         <select name="WorkerGender">
                             <option value="Male" selected="@(mGender == "Male" ? "selected" : null)">Male</option>
                             <option value="Female" selected="@(mGender == "Female" ? "selected" : null)">Female</option>
                         </select>
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-image"></i></div>
                         <input type="file" name="WorkerPicture" accept="image/*" style="padding: 4px;" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-envelope"></i></div>
                         <input type="email" name="WorkerEmail" placeholder="Email" value="@mEmail" />
                     </div>
                     <div class="custom-input-group">
@@ -345,55 +411,41 @@
                         <input type="text" name="WorkerAddress" placeholder="Address" value="@mAddress" />
                     </div>
 
-                    <a href="@Url.Action("AddSkills", "Auth")" class="custom-input-group text-decoration-none" style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="d-flex align-items-center" style="gap: 12px; width: 100%;">
-                            <div class="icon-circle" style="background: #e6f4ea; color: #137333;">
-                                <i class="fa-solid fa-briefcase"></i>
-                            </div>
-                            <span class="text-secondary" style="font-size: 0.95rem;">Skills & Experience Details</span>
+                    <a href="@Url.Action("AddSkills", "Auth")" class="skills-group-box">
+                        <div class="d-flex align-items-center" style="gap: 10px;">
+                            <div class="badge-check-green"><i class="fa-solid fa-check"></i></div>
+                            <span class="fw-bold" style="font-size: 0.9rem; color: #1e293b;">Add Skills</span>
                         </div>
-                        <div class="icon-circle border-0 text-primary bg-transparent" style="margin-right: -4px;">
-                            <i class="fa-solid fa-chevron-right" style="font-size: 0.85rem;"></i>
-                        </div>
+                        <div class="badge-plus-blue"><i class="fa-solid fa-plus"></i></div>
                     </a>
 
                     <div class="custom-input-group">
                         <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
-                        <input type="password" name="WorkerPassword" placeholder="Password" value="" />
+                        <input type="password" id="wEditPass" name="WorkerPassword" placeholder="New Password (optional)" />
+                        <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('wEditPass', this)"></i>
                     </div>
                     <div class="custom-input-group">
                         <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
-                        <input type="password" name="WorkerConfirmPassword" placeholder="Confirm Password" value="" />
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-center gap-3 my-2 p-2 border rounded-pill bg-light" style="max-width: 280px; margin: 0 auto;">
-                        @if (!string.IsNullOrEmpty(mPicture))
-                        {
-                            <img src="@mPicture" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #1e74ed;" alt="Profile" />
-                        }
-                        else
-                        {
-                            <div class="icon-circle border" style="width: 45px; height: 45px; font-size: 1.2rem;"><i class="fa-solid fa-user-tie text-secondary"></i></div>
-                        }
-                        <span class="text-secondary fw-semibold" style="font-size: 0.85rem;">Current Profile Picture</span>
+                        <input type="password" id="wEditConfirmPass" name="WorkerConfirmPassword" placeholder="Confirm New Password" />
+                        <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('wEditConfirmPass', this)"></i>
                     </div>
 
                     <div class="action-row">
-                        <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn-action-blue text-center" style="line-height: 24px;">Back</a>
+                        <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn-action-blue">Back</a>
                         <button type="submit" class="btn-action-blue">Update</button>
                     </div>
                 </div>
             }
             else
             {
-                @* ---------------- WORKER SIGNUP MODE (MULTI-STEP) ---------------- *@
+                @* WORKER SIGNUP MODE *@
                 <div id="panelWorkerStep1" class="step-panel @(userRole == "Worker" ? "active" : "")">
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-user"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user"></i></div>
                         <input type="text" id="wName" name="WorkerName" placeholder="Full Name" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-calendar"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-id-card"></i></div>
                         <input type="number" id="wAge" name="WorkerAge" placeholder="Age" />
                     </div>
                     <div class="custom-input-group">
@@ -401,7 +453,7 @@
                         <input type="tel" id="wPhone" name="WorkerPhone" placeholder="Phone no" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-id-card"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user"></i></div>
                         <input type="text" id="wCnic" name="WorkerCNIC" placeholder="CNIC" />
                     </div>
                     <div class="custom-input-group">
@@ -409,7 +461,7 @@
                         <input type="number" id="wSalary" name="WorkerSalary" placeholder="Salary" />
                     </div>
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-solid fa-venus-mars"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-user-plus"></i></div>
                         <select id="wGender" name="WorkerGender">
                             <option value="" disabled selected hidden>Gender</option>
                             <option value="Male">Male</option>
@@ -425,11 +477,18 @@
 
                 <div id="panelWorkerStep2" class="step-panel">
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-image"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-image"></i></div>
                         <input type="file" name="WorkerPicture" id="workerPicInput" accept="image/*" style="padding: 4px;" />
                     </div>
+
+                    <!-- Temp Image Preview Badge -->
+                    <div id="workerTempPicBox" class="current-picture-box" style="display: none;">
+                        <img id="workerTempPicImg" src="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="Uploaded Picture" />
+                        <span class="text-success fw-semibold" style="font-size: 0.85rem;">Picture Selected & Saved</span>
+                    </div>
+
                     <div class="custom-input-group">
-                        <div class="icon-circle"><i class="fa-regular fa-envelope"></i></div>
+                        <div class="icon-circle"><i class="fa-solid fa-envelope"></i></div>
                         <input type="email" id="wEmail" name="WorkerEmail" placeholder="Email" />
                     </div>
                     <div class="custom-input-group">
@@ -437,26 +496,28 @@
                         <input type="text" id="wAddress" name="WorkerAddress" placeholder="Address" />
                     </div>
 
-                    <a href="@Url.Action("AddSkills", "Auth")" onclick="saveWorkerDraft()" class="custom-input-group justify-content-between pe-1 text-decoration-none" style="cursor: pointer; display: flex;">
-                        <div class="d-flex align-items-center flex-grow-1" style="gap: 8px;">
-                            <div class="icon-circle" style="background: #e6f4ea; color: #137333;"><i class="fa-solid fa-check"></i></div>
-                            <span class="text-secondary fs-6">Add / Edit Skills</span>
+                    <a href="@Url.Action("AddSkills", "Auth")" onclick="saveWorkerDraft()" class="skills-group-box">
+                        <div class="d-flex align-items-center" style="gap: 10px;">
+                            <div class="badge-check-green"><i class="fa-solid fa-check"></i></div>
+                            <span class="fw-bold" style="font-size: 0.9rem; color: #1e293b;">Add Skills</span>
                         </div>
-                        <div class="icon-circle border-0 text-primary" style="background: #dbeafe;"><i class="fa-solid fa-plus"></i></div>
+                        <div class="badge-plus-blue"><i class="fa-solid fa-plus"></i></div>
                     </a>
 
                     <div class="custom-input-group">
                         <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
                         <input id="workerPass" name="WorkerPassword" placeholder="Password" type="password" />
+                        <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('workerPass', this)"></i>
                     </div>
                     <div class="custom-input-group">
                         <div class="icon-circle"><i class="fa-solid fa-lock"></i></div>
                         <input id="workerConfirmPass" name="WorkerConfirmPassword" placeholder="Confirm Password" type="password" />
+                        <i class="fa-solid fa-eye-slash password-toggle-icon" onclick="togglePasswordVisibility('workerConfirmPass', this)"></i>
                     </div>
 
                     <div class="action-row">
                         <button class="btn-action-blue" onclick="backToWorkerStep1()" type="button">Back</button>
-                        <button class="btn-action-blue" type="submit">Signup</button>
+                        <button class="btn-action-blue" type="submit">Submit</button>
                     </div>
                 </div>
             }
@@ -464,175 +525,240 @@
     </div>
 
     <script>
-        function switchRole(role) {
-            document.getElementById('selectedRole').value = role;
-            if (role === 'Client') {
-                document.getElementById('roleClient').classList.add('active');
-                document.getElementById('roleWorker').classList.remove('active');
-                document.getElementById('panelClient').classList.add('active');
-                if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.remove('active');
-                if (document.getElementById('panelWorkerStep2')) document.getElementById('panelWorkerStep2').classList.remove('active');
-            } else {
-                document.getElementById('roleWorker').classList.add('active');
-                document.getElementById('roleClient').classList.remove('active');
-                
-                var hasDraft = localStorage.getItem("WorkerDraftData");
-                if (hasDraft && document.getElementById('panelWorkerStep2')) {
-                    document.getElementById('panelWorkerStep2').classList.add('active');
-                    if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.remove('active');
+            function togglePasswordVisibility(inputId, iconElem) {
+                const input = document.getElementById(inputId);
+                if (input.type === "password") {
+                    input.type = "text";
+                    iconElem.classList.remove("fa-eye-slash");
+                    iconElem.classList.add("fa-eye");
                 } else {
-                    if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.add('active');
+                    input.type = "password";
+                    iconElem.classList.remove("fa-eye");
+                    iconElem.classList.add("fa-eye-slash");
+                }
+            }
+
+            function switchRole(role) {
+                document.getElementById('selectedRole').value = role;
+                if (role === 'Client') {
+                    document.getElementById('roleClient').classList.add('active');
+                    document.getElementById('roleWorker').classList.remove('active');
+                    document.getElementById('panelClient').classList.add('active');
+                    if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.remove('active');
                     if (document.getElementById('panelWorkerStep2')) document.getElementById('panelWorkerStep2').classList.remove('active');
-                }
-                document.getElementById('panelClient').classList.remove('active');
-            }
-        }
+                } else {
+                    document.getElementById('roleWorker').classList.add('active');
+                    document.getElementById('roleClient').classList.remove('active');
 
-        function nextWorkerStep() {
-            var wName = document.getElementsByName('WorkerName')[0]?.value.trim();
-            var wPhone = document.getElementsByName('WorkerPhone')[0]?.value.trim();
-            var wCnic = document.getElementsByName('WorkerCNIC')[0]?.value.trim();
+                    var isEditMode = @(isEditMode ? "true" : "false");
+                    var hasDraft = localStorage.getItem("WorkerDraftData");
 
-            if (!wName || !wPhone || !wCnic) {
-                alert('Please fill all mandatory fields (Name, Phone, CNIC) for Worker.');
-                return;
-            }
-
-            if (wCnic.replace(/[^0-9]/g, "").length !== 13) {
-                alert('Please enter a valid 13-digit CNIC number.');
-                return;
-            }
-
-            document.getElementById('panelWorkerStep1').classList.remove('active');
-            document.getElementById('panelWorkerStep2').classList.add('active');
-        }
-
-        function backToWorkerStep1() {
-            document.getElementById('panelWorkerStep2').classList.remove('active');
-            document.getElementById('panelWorkerStep1').classList.add('active');
-        }
-
-        function goToLogin() { window.location.href = '@Url.Action("Login", "Auth")'; }
-
-        function saveWorkerDraft() {
-            var draft = {
-                wName: document.getElementById('wName')?.value || '',
-                wAge: document.getElementById('wAge')?.value || '',
-                wPhone: document.getElementById('wPhone')?.value || '',
-                wCnic: document.getElementById('wCnic')?.value || '',
-                wSalary: document.getElementById('wSalary')?.value || '',
-                wGender: document.getElementById('wGender')?.value || '',
-                wEmail: document.getElementById('wEmail')?.value || '',
-                wAddress: document.getElementById('wAddress')?.value || ''
-            };
-            localStorage.setItem("WorkerDraftData", JSON.stringify(draft));
-        }
-
-        window.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const roleParam = urlParams.get('role') || urlParams.get('tab');
-            var viewBagRole = "@userRole";
-
-            if ((roleParam && roleParam.toLowerCase() === 'worker') || viewBagRole === 'Worker') {
-                switchRole('Worker');
-            }
-
-            var savedDraft = localStorage.getItem("WorkerDraftData");
-            if (savedDraft) {
-                var draft = JSON.parse(savedDraft);
-                if (draft.wName && document.getElementById('wName')) document.getElementById('wName').value = draft.wName;
-                if (draft.wAge && document.getElementById('wAge')) document.getElementById('wAge').value = draft.wAge;
-                if (draft.wPhone && document.getElementById('wPhone')) document.getElementById('wPhone').value = draft.wPhone;
-                if (draft.wCnic && document.getElementById('wCnic')) document.getElementById('wCnic').value = draft.wCnic;
-                if (draft.wSalary && document.getElementById('wSalary')) document.getElementById('wSalary').value = draft.wSalary;
-                if (draft.wGender && document.getElementById('wGender')) document.getElementById('wGender').value = draft.wGender;
-                if (draft.wEmail && document.getElementById('wEmail')) document.getElementById('wEmail').value = draft.wEmail;
-                if (draft.wAddress && document.getElementById('wAddress')) document.getElementById('wAddress').value = draft.wAddress;
-            }
-
-            var storedSkills = localStorage.getItem("workerSkillsJson");
-            if (storedSkills && document.getElementById('SessionSkillsData')) {
-                document.getElementById('SessionSkillsData').value = storedSkills;
-            }
-        });
-
-        document.getElementById('signupForm').addEventListener('submit', function (e) {
-            var role = document.getElementById('selectedRole').value;
-            var isEditMode = @(isEditMode ? "true" : "false");
-
-            if (role === 'Client') {
-                var cName = document.getElementById('clientNameInput')?.value.trim();
-                var cEmail = document.getElementById('clientEmailInput')?.value.trim();
-                var cPhone = document.getElementById('clientPhoneInput')?.value.trim();
-
-                if (!cName || !cEmail || !cPhone) {
-                    alert('Please fill all mandatory fields (Name, Email, Phone) for Client.');
-                    e.preventDefault();
-                    return;
-                }
-
-                if (!isEditMode) {
-                    var cPass = document.getElementById('clientPass')?.value;
-                    var cConfPass = document.getElementById('clientConfirmPass')?.value;
-
-                    if (!cPass || cPass.trim() === "") {
-                        alert('Password is required for Client Signup.');
-                        e.preventDefault();
-                        return;
+                    if (!isEditMode && hasDraft && document.referrer.includes("AddSkills") && document.getElementById('panelWorkerStep2')) {
+                        document.getElementById('panelWorkerStep2').classList.add('active');
+                        if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.remove('active');
+                    } else {
+                        if (document.getElementById('panelWorkerStep1')) document.getElementById('panelWorkerStep1').classList.add('active');
+                        if (document.getElementById('panelWorkerStep2')) document.getElementById('panelWorkerStep2').classList.remove('active');
                     }
-                    if (cPass !== cConfPass) {
-                        alert('Client Passwords do not match!');
-                        e.preventDefault();
-                        return;
-                    }
+                    document.getElementById('panelClient').classList.remove('active');
                 }
             }
 
-            if (role === 'Worker') {
+            function nextWorkerStep() {
                 var wName = document.getElementsByName('WorkerName')[0]?.value.trim();
                 var wPhone = document.getElementsByName('WorkerPhone')[0]?.value.trim();
                 var wCnic = document.getElementsByName('WorkerCNIC')[0]?.value.trim();
 
                 if (!wName || !wPhone || !wCnic) {
                     alert('Please fill all mandatory fields (Name, Phone, CNIC) for Worker.');
-                    e.preventDefault();
-                    if (!isEditMode) { backToWorkerStep1(); }
                     return;
                 }
 
                 if (wCnic.replace(/[^0-9]/g, "").length !== 13) {
                     alert('Please enter a valid 13-digit CNIC number.');
-                    e.preventDefault();
-                    if (!isEditMode) { backToWorkerStep1(); }
                     return;
                 }
 
-                if (!isEditMode) {
-                    var wPass = document.getElementById('workerPass') ? document.getElementById('workerPass').value : "";
-                    var wConfPass = document.getElementById('workerConfirmPass') ? document.getElementById('workerConfirmPass').value : "";
+                document.getElementById('panelWorkerStep1').classList.remove('active');
+                document.getElementById('panelWorkerStep2').classList.add('active');
+            }
 
-                    if (!wPass || !wConfPass) {
-                        alert('Password fields are required for Worker Signup.');
-                        e.preventDefault();
-                        return;
-                    }
-                    if (wPass !== wConfPass) {
-                        alert('Worker Passwords do not match!');
-                        e.preventDefault();
-                        return;
-                    }
+            function backToWorkerStep1() {
+                document.getElementById('panelWorkerStep2').classList.remove('active');
+                document.getElementById('panelWorkerStep1').classList.add('active');
+            }
+
+            function goToLogin() {
+                localStorage.removeItem("WorkerDraftData");
+                localStorage.removeItem("workerSkillsJson");
+                window.location.href = '@Url.Action("Login", "Auth")';
+            }
+
+            function saveWorkerDraft() {
+                var draft = {
+                    wName: document.getElementById('wName')?.value || '',
+                    wAge: document.getElementById('wAge')?.value || '',
+                    wPhone: document.getElementById('wPhone')?.value || '',
+                    wCnic: document.getElementById('wCnic')?.value || '',
+                    wSalary: document.getElementById('wSalary')?.value || '',
+                    wGender: document.getElementById('wGender')?.value || '',
+                    wEmail: document.getElementById('wEmail')?.value || '',
+                    wAddress: document.getElementById('wAddress')?.value || '',
+                    tempPicPath: document.getElementById('TempPicturePath')?.value || ''
+                };
+                localStorage.setItem("WorkerDraftData", JSON.stringify(draft));
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var workerPicInput = document.getElementById('workerPicInput');
+                if (workerPicInput) {
+                    workerPicInput.addEventListener('change', function () {
+                        if (this.files && this.files[0]) {
+                            var formData = new FormData();
+                            formData.append("file", this.files[0]);
+
+                            fetch('/Auth/UploadTemporaryPicture', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    document.getElementById('TempPicturePath').value = data.filePath;
+                                    document.getElementById('workerTempPicImg').src = data.filePath;
+                                    document.getElementById('workerTempPicBox').style.display = 'flex';
+                                    saveWorkerDraft();
+                                } else {
+                                    alert("Failed to upload temporary image: " + data.message);
+                                }
+                            })
+                            .catch(err => console.error("Error uploading image:", err));
+                        }
+                    });
+                }
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const roleParam = urlParams.get('role') || urlParams.get('tab');
+                var viewBagRole = "@userRole";
+                var isEditMode = @(isEditMode ? "true" : "false");
+
+                if ((roleParam && roleParam.toLowerCase() === 'worker') || viewBagRole === 'Worker') {
+                    switchRole('Worker');
+                }
+
+                if (!isEditMode && !document.referrer.includes("AddSkills")) {
                     localStorage.removeItem("WorkerDraftData");
+                    localStorage.removeItem("workerSkillsJson");
                 } else {
-                    var wPassEdit = document.getElementsByName('WorkerPassword')[0]?.value;
-                    var wConfPassEdit = document.getElementsByName('WorkerConfirmPassword')[0]?.value;
-                    if (wPassEdit && wPassEdit !== wConfPassEdit) {
-                        alert('Passwords do not match!');
-                        e.preventDefault();
-                        return;
+                    var savedDraft = localStorage.getItem("WorkerDraftData");
+                    if (savedDraft) {
+                        var draft = JSON.parse(savedDraft);
+                        if (draft.wName && document.getElementById('wName')) document.getElementById('wName').value = draft.wName;
+                        if (draft.wAge && document.getElementById('wAge')) document.getElementById('wAge').value = draft.wAge;
+                        if (draft.wPhone && document.getElementById('wPhone')) document.getElementById('wPhone').value = draft.wPhone;
+                        if (draft.wCnic && document.getElementById('wCnic')) document.getElementById('wCnic').value = draft.wCnic;
+                        if (draft.wSalary && document.getElementById('wSalary')) document.getElementById('wSalary').value = draft.wSalary;
+                        if (draft.wGender && document.getElementById('wGender')) document.getElementById('wGender').value = draft.wGender;
+                        if (draft.wEmail && document.getElementById('wEmail')) document.getElementById('wEmail').value = draft.wEmail;
+                        if (draft.wAddress && document.getElementById('wAddress')) document.getElementById('wAddress').value = draft.wAddress;
+                        if (draft.tempPicPath && document.getElementById('TempPicturePath')) {
+                            document.getElementById('TempPicturePath').value = draft.tempPicPath;
+                            document.getElementById('workerTempPicImg').src = draft.tempPicPath;
+                            document.getElementById('workerTempPicBox').style.display = 'flex';
+                        }
                     }
                 }
-            }
-        });
+
+                var storedSkills = localStorage.getItem("workerSkillsJson");
+                if (storedSkills && document.getElementById('SessionSkillsData')) {
+                    document.getElementById('SessionSkillsData').value = storedSkills;
+                }
+            });
+
+            document.getElementById('signupForm').addEventListener('submit', function (e) {
+                var role = document.getElementById('selectedRole').value;
+                var isEditMode = @(isEditMode ? "true" : "false");
+
+                if (role === 'Client') {
+                    var cName = document.getElementById('clientNameInput')?.value.trim();
+                    var cEmail = document.getElementById('clientEmailInput')?.value.trim();
+                    var cPhone = document.getElementById('clientPhoneInput')?.value.trim();
+
+                    if (!cName || !cEmail || !cPhone) {
+                        alert('Please fill all mandatory fields (Name, Email, Phone) for Client.');
+                        e.preventDefault();
+                        return;
+                    }
+
+                    var cPass = document.getElementById('clientPass')?.value;
+                    var cConfPass = document.getElementById('clientConfirmPass')?.value;
+
+                    if (!isEditMode) {
+                        if (!cPass || cPass.trim() === "") {
+                            alert('Password is required for Client Signup.');
+                            e.preventDefault();
+                            return;
+                        }
+                        if (cPass !== cConfPass) {
+                            alert('Client Passwords do not match!');
+                            e.preventDefault();
+                            return;
+                        }
+                    } else {
+                        if (cPass && cPass !== cConfPass) {
+                            alert('Passwords do not match!');
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+
+                if (role === 'Worker') {
+                    var wName = document.getElementsByName('WorkerName')[0]?.value.trim();
+                    var wPhone = document.getElementsByName('WorkerPhone')[0]?.value.trim();
+                    var wCnic = document.getElementsByName('WorkerCNIC')[0]?.value.trim();
+
+                    if (!wName || !wPhone || !wCnic) {
+                        alert('Please fill all mandatory fields (Name, Phone, CNIC) for Worker.');
+                        e.preventDefault();
+                        if (!isEditMode) { backToWorkerStep1(); }
+                        return;
+                    }
+
+                    if (wCnic.replace(/[^0-9]/g, "").length !== 13) {
+                        alert('Please enter a valid 13-digit CNIC number.');
+                        e.preventDefault();
+                        if (!isEditMode) { backToWorkerStep1(); }
+                        return;
+                    }
+
+                    if (!isEditMode) {
+                        var wPass = document.getElementById('workerPass') ? document.getElementById('workerPass').value : "";
+                        var wConfPass = document.getElementById('workerConfirmPass') ? document.getElementById('workerConfirmPass').value : "";
+
+                        if (!wPass || !wConfPass) {
+                            alert('Password fields are required for Worker Signup.');
+                            e.preventDefault();
+                            return;
+                        }
+                        if (wPass !== wConfPass) {
+                            alert('Worker Passwords do not match!');
+                            e.preventDefault();
+                            return;
+                        }
+                        localStorage.removeItem("WorkerDraftData");
+                        localStorage.removeItem("workerSkillsJson");
+                    } else {
+                        var wPassEdit = document.getElementsByName('WorkerPassword')[0]?.value;
+                        var wConfPassEdit = document.getElementsByName('WorkerConfirmPassword')[0]?.value;
+                        if (wPassEdit && wPassEdit !== wConfPassEdit) {
+                            alert('Passwords do not match!');
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+            });
     </script>
 </body>
 </html>

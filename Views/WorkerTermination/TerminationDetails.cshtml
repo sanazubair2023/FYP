@@ -1,194 +1,194 @@
-﻿@model MaidAndServantt.Controllers.TerminationDetailsViewModel
+﻿@model MaidAndServantt.Controllers.WorkerTerminationViewModel
 @{
-    Layout = null;
+    ViewData["Title"] = "Termination Status";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Worker Termination Status</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
-    <style>
-            body {
-                background-color: #f5f5f5;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-            .screen-container {
-                max-width: 380px;
-                margin: 20px auto;
-                background: #ffffff;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                overflow: hidden;
-                padding: 16px;
-            }
+<style>
+    body {
+        background-color: #F8F9FB;
+        font-family: sans-serif;
+    }
 
-            .alert-warning-custom {
-                background-color: #f1f8b8;
-                border: 1px solid #d4e172;
-                border-radius: 10px;
-                padding: 10px 15px;
-                font-weight: 800;
-                color: #222;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                font-size: 14px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            }
+    .header-container {
+        background: #FFF;
+        padding: 15px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-            .section-box {
-                border: 1px solid #d1d1d1;
-                border-radius: 4px;
-                overflow: hidden;
-                margin-bottom: 12px;
-            }
+    /* Empty State */
+    .icon-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 60px;
+        background-color: #E8F5E9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
 
-            .section-title {
-                background-color: #ffffff;
-                border-bottom: 1px solid #d1d1d1;
-                padding: 6px 12px;
-                font-size: 12px;
-                font-weight: bold;
-                color: #666;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                text-transform: uppercase;
-            }
+    .empty-title {
+        color: #2E7D32;
+        font-weight: bold;
+    }
 
-            .details-content {
-                padding: 10px 12px;
-                font-size: 13px;
-            }
+    .btn-custom {
+        background-color: #1E64D3;
+        color: #FFF;
+        border-radius: 30px;
+        padding: 10px 30px;
+        font-weight: bold;
+        border: none;
+        text-decoration: none;
+    }
 
-            .worker-img, .client-img {
-                width: 65px;
-                height: 65px;
-                border-radius: 50%;
-                object-fit: cover;
-            }
-
-            .client-box {
-                border: 1px solid #ccc;
-                border-radius: 16px;
-                padding: 12px;
-                background-color: #fff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            }
-
-            .btn-go-profile {
-                background-color: #1e75ff;
-                color: white;
-                border-radius: 20px;
-                padding: 8px 0;
-                font-weight: 600;
-                font-size: 14px;
-                border: none;
-                box-shadow: 0 3px 8px rgba(30, 117, 255, 0.4);
-            }
-
-                .btn-go-profile:hover {
-                    background-color: #0056d6;
-                    color: white;
-                }
-    </style>
-</head>
-<body>
-
-    <div class="screen-container">
-
-        @if (Model.IsTerminated)
-        {
-            <!-- Top Logo Header -->
-            <div class="text-end mb-2">
-                <img src="/Images/biit_logo.png" alt="Logo" style="height: 35px;" onerror="this.style.display='none'" />
-            </div>
-
-            <!-- Breadcrumb Title -->
-            <div class="mb-3 font-weight-normal text-secondary" style="font-size: 13px;">
-                Contract &gt; Worker <span class="text-primary fw-bold">Terminated</span>
-            </div>
-
-            <!-- Red Alert Banner -->
-            <div class="alert-warning-custom mb-3">
-                <span class="bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width:24px; height:24px; font-size: 14px;">!</span>
-                WORKER TERMINATED
-            </div>
-
-            <!-- Worker Details Box -->
-            <div class="section-box">
-                <div class="section-title">
-                    <i class="bi bi-person"></i> WORKER DETAILS
-                </div>
-                <div class="details-content">
-                    <div class="d-flex align-items-center gap-3 pb-2 border-bottom mb-2">
-                        <img src="@Model.WorkerImage" class="worker-img" onerror="this.src='/Images/default-avatar.png';" />
-                        <div style="font-size: 12px; line-height: 1.4;">
-                            <div>Name: <strong class="text-dark">@Model.WorkerName</strong></div>
-                            <div>Job Role: <span class="text-secondary">@Model.JobRole</span></div>
-                            <div>Address: <span class="text-secondary">@Model.WorkerAddress</span></div>
-                            <div>Phone: <span class="text-secondary">@Model.WorkerPhone</span></div>
-                        </div>
-                    </div>
-
-                    <!-- Termination Info inside Box -->
-                    <div style="font-size: 12px; line-height: 1.6;">
-                        <div><strong>Status :</strong> <span class="text-dark">@Model.Status</span></div>
-                        <div><strong>Date:</strong> <span class="text-dark">@Model.TerminationDate</span></div>
-                        <div><strong>Reason:</strong> <span class="text-dark">@Model.Reason</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Warning Note -->
-            <p class="text-center text-muted my-2" style="font-size: 11px;">
-                You are terminated and no longer active.
-            </p>
-
-            <!-- Bullet Points -->
-            <ul class="text-muted fst-italic ps-3 mb-3" style="font-size: 10px; line-height: 1.4;">
-                <li>No further access to service</li>
-                <li>Account deactivated and contract terminated</li>
-            </ul>
-
-            <!-- Client Details Section -->
-            <h6 class="fw-bold text-dark mb-2" style="font-size: 13px;">Client Details</h6>
-            <div class="client-box d-flex align-items-center gap-3 mb-4">
-                <img src="@Model.ClientImage" class="client-img" onerror="this.src='/Images/default-avatar.png';" />
-                <div style="font-size: 11px;">
-                    <div class="text-primary fw-bold mb-1">Client Terminated Worker</div>
-                    <div>Name: <strong class="text-dark">@Model.ClientName</strong></div>
-                </div>
-            </div>
-
-            <!-- Action Button -->
-            <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn btn-go-profile w-100 text-center text-decoration-none d-block">
-                Go To Profile
-            </a>
-        }
-        else
-        {
-            <!-- Default Active State -->
-            <div class="text-center py-4">
-                <div class="text-success mb-3">
-                    <i class="bi bi-check-circle-fill fs-1"></i>
-                </div>
-                <h5 class="fw-bold text-dark">No Termination Record</h5>
-                <p class="text-muted small">Your contract is currently active. You have not been terminated by any client.</p>
-
-                <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn btn-primary rounded-pill w-100 mt-3">
-                    Back to Dashboard
-                </a>
-            </div>
+        .btn-custom:hover {
+            background-color: #154ca3;
+            color: #FFF;
         }
 
+    /* Active Termination State */
+    .status-card {
+        background: #FFF;
+        border-radius: 20px;
+        padding: 20px;
+        border-left: 8px solid #E63917;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .alert-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        background: #FFEBEE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+
+    .reason-card {
+        background-color: #E3F2FD;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #BBDEFB;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .employer-card {
+        background: #FFF;
+        padding: 15px;
+        border-radius: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+    }
+
+    .employer-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        border: 2px solid #EEE;
+        object-fit: cover;
+    }
+
+    .info-box {
+        background: #FFF;
+        border-radius: 15px;
+        padding: 15px;
+        border: 1px solid #EEE;
+        display: flex;
+        align-items: flex-start;
+    }
+</style>
+
+<div class="container my-4" style="max-width: 600px;">
+
+    <!-- Header -->
+    <div class="header-container rounded mb-4">
+        <a href="javascript:history.back()" class="text-dark fs-4"><i class="fa-solid fa-arrow-left"></i></a>
+        <h5 class="m-0 fw-bold">Termination Status</h5>
+        <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
     </div>
 
-</body>
-</html>
+    @if (Model == null)
+    {
+        <!-- Empty / Clean State -->
+        <div class="text-center my-5 px-3">
+            <div class="icon-circle">
+                <i class="fa-solid fa-certificate text-success display-4"></i>
+            </div>
+            <h2 class="empty-title">Good News!</h2>
+            <p class="text-muted my-3">
+                You currently have no recorded terminations. Your professional record is clean.
+            </p>
+            <!-- UPDATED BUTTON URL -->
+            <a href="@Url.Action("WorkerDashboard", "WorkerDashboard")" class="btn btn-custom mt-3 d-inline-block">Return to Dashboard</a>
+        </div>
+    }
+    else
+    {
+        <!-- Active Termination State -->
+        <div>
+            <!-- Status Card -->
+            <div class="status-card">
+                <div class="d-flex align-items-center">
+                    <div class="alert-icon">
+                        <i class="fa-solid fa-triangle-exclamation fs-4 text-danger"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted fw-semibold d-block">Contract Status</small>
+                        <span class="fs-4 fw-bold text-danger">Terminated</span>
+                    </div>
+                </div>
+                <hr class="my-3 text-muted" />
+                <div class="d-flex align-items-center text-secondary">
+                    <i class="fa-regular fa-calendar-days me-2"></i>
+                    <span class="fw-medium">
+                        Terminated on: @Model.TerminatedDate.ToString("MMMM dd, yyyy")
+                    </span>
+                </div>
+            </div>
+
+            <!-- Reason Section -->
+            <h6 class="fw-bold text-dark ms-1 mb-2">Reason for Termination</h6>
+            <div class="reason-card">
+                <div class="text-start"><i class="fa-solid fa-quote-left text-primary fs-5"></i></div>
+                <p class="fst-italic text-primary fw-medium my-2 fs-6">
+                    @(string.IsNullOrEmpty(Model.TerminatedReason) ? "No specific reason provided by the client." : Model.TerminatedReason)
+                </p>
+                <div class="text-end"><i class="fa-solid fa-quote-right text-primary fs-5"></i></div>
+            </div>
+
+            <!-- Employer Info -->
+            <h6 class="fw-bold text-dark ms-1 mb-2">Employer Details</h6>
+            <div class="employer-card">
+                <img src="@(!string.IsNullOrEmpty(Model.ClientPicture) ? Model.ClientPicture : "https://cdn-icons-png.flaticon.com/512/3135/3135768.png")"
+                     alt="Client Picture"
+                     class="employer-avatar" />
+                <div class="ms-3">
+                    <h6 class="fw-bold m-0 text-dark">@Model.ClientName</h6>
+                    <small class="text-muted">Client / Employer</small>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <i class="fa-solid fa-circle-info text-primary fs-5 me-2 mt-1"></i>
+                <small class="text-muted lh-sm">
+                    Termination is a part of professional life. Don't be discouraged!
+                    Your profile is now visible for other potential employers.
+                </small>
+            </div>
+        </div>
+    }
+</div>

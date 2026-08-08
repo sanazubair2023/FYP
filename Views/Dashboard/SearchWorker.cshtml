@@ -11,10 +11,6 @@
     {
         clientPicture = "/Images/" + clientPicture;
     }
-    if (string.IsNullOrEmpty(clientPicture))
-    {
-        clientPicture = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-    }
 
     var workerRatingsMap = ViewBag.WorkerRatingsMap as Dictionary<int, double>;
     var interviewStatusMap = ViewBag.WorkerInterviewStatusMap as Dictionary<int, string>;
@@ -89,16 +85,50 @@
                 margin: 0;
             }
 
+            /* Profile Avatar & Corner Badge Icon */
             .client-avatar-container {
                 position: relative;
+                display: inline-block;
                 cursor: pointer;
             }
 
             .client-avatar {
-                width: 48px;
-                height: 48px;
+                width: 58px;
+                height: 58px;
                 border-radius: 50%;
                 object-fit: cover;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .client-avatar-placeholder {
+                width: 58px;
+                height: 58px;
+                border-radius: 50%;
+                background-color: #eff6ff;
+                color: #1d61e8;
+                border: 2px solid #3b82f6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.4rem;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .profile-badge-icon {
+                position: absolute;
+                bottom: 0px;
+                right: 0px;
+                width: 22px;
+                height: 22px;
+                background-color: #f1f5f9;
+                border: 2px solid #ffffff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #334155;
+                font-size: 0.65rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
             }
 
             /* Search Input */
@@ -171,7 +201,7 @@
                     font-weight: 600;
                 }
 
-            /* Utilities Row (Filter & Sort) */
+            /* Controls Row */
             .controls-row {
                 display: flex;
                 justify-content: space-between;
@@ -205,7 +235,7 @@
                 font-weight: 500;
             }
 
-            /* Horizontal Card Design */
+            /* Worker Card Styling */
             .worker-card-horizontal {
                 background: #ffffff;
                 border-radius: 20px;
@@ -292,7 +322,6 @@
                 font-size: 0.95rem;
             }
 
-            /* Full Width Primary Action Button */
             .btn-full-action {
                 background: #1d61e8;
                 color: #ffffff;
@@ -345,14 +374,36 @@
                     <p class="tagline">What would you like to do?</p>
                 </div>
             </div>
+
+            <!-- Profile Avatar with Corner Badge -->
             <div class="client-avatar-container">
-                <a href="@Url.Action("ClientProfile", "Dashboard")">
-                    <img src="@clientPicture" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';" alt="User Profile" class="client-avatar" />
+                <a href="@Url.Action("ClientProfile", "Dashboard", new { id = ViewBag.ClientId })" class="text-decoration-none">
+                    @if (!string.IsNullOrEmpty(clientPicture))
+                    {
+                        <img src="@clientPicture"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                             alt="User Profile"
+                             class="client-avatar" />
+                        <div class="client-avatar-placeholder" style="display: none;">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="client-avatar-placeholder">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    }
+
+                    <!-- Corner Badge Icon (as shown in design) -->
+                    <div class="profile-badge-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
                 </a>
             </div>
         </div>
 
-        <!-- Full-Width Search Input -->
+        <!-- Search Input -->
         <form action="@Url.Action("SearchWorker", "Dashboard")" method="get" class="search-container">
             <input type="hidden" name="category" value="@activeCategory" />
             <input type="text" name="searchName" class="search-input-field" placeholder="Search by Name" value="@currentSearch" />
@@ -376,7 +427,7 @@
                class="cat-pill @(activeCategory == "Cleaning" ? "active" : "")">Cleaning</a>
         </div>
 
-        <!-- Utility Action Controls (Filter / Sort / Count) -->
+        <!-- Controls Row -->
         <div class="controls-row">
             <div>
                 <a href="@Url.Action("Filter", "Filter", new { category = activeCategory, searchName = currentSearch })" class="btn-filter-sort">
@@ -395,7 +446,7 @@
             <span class="results-count-text">@(Model?.Count() ?? 0) Total Results</span>
         </div>
 
-        <!-- Horizontal Workers Cards List -->
+        <!-- Workers List -->
         <div class="workers-list-container">
             @if (Model != null && Model.Any())
             {
@@ -429,6 +480,10 @@
                         currentStatus = interviewStatusMap[worker.WorkerId];
                     }
 
+                    string fallbackCategory = !string.IsNullOrWhiteSpace(worker.Bio)
+                                                ? worker.Bio
+                                                : (activeCategory != "All" ? activeCategory : "Servant / Maid");
+
                     <div class="worker-card-horizontal">
                         <div class="card-top-info">
                             <div class="worker-details-left">
@@ -446,7 +501,7 @@
                                     }
                                     else
                                     {
-                                        <div class="worker-category-sub text-capitalize">@(activeCategory != "All" ? activeCategory : "Servant / Maid")</div>
+                                        <div class="worker-category-sub text-capitalize">@fallbackCategory</div>
                                     }
 
                                     <div class="worker-location">

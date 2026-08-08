@@ -1,17 +1,6 @@
 ﻿@{
     ViewBag.Title = "Add Skills";
     Layout = null;
-
-    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
-    var skills = ViewBag.Skills as List<Skill> ?? new List<Skill>();
-
-    string dbWorkedAt = ViewBag.WorkedAt ?? "";
-    string dbExpDetail = ViewBag.ExpDetail ?? "";
-    string dbDuration = ViewBag.Duration ?? "12";
-
-    // Database se aayi hui selected categories ki IDs
-    int primaryCatId = ViewBag.PrimaryCategoryId ?? 0;
-    int secondaryCatId = ViewBag.SecondaryCategoryId ?? 0;
 }
 
 <!DOCTYPE html>
@@ -19,687 +8,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Skills - Maid servant</title>
+    <title>Add Skills</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
             body {
-                background-color: #f7f9fc;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                margin: 0;
-                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-                padding: 20px 0;
+                background-color: #f8fafc;
+                font-family: system-ui, -apple-system, sans-serif;
+                padding: 15px 0;
             }
 
-            .skills-card {
-                background: #ffffff;
-                max-width: 460px;
-                width: 100%;
-                border-radius: 28px;
-                position: relative;
-                padding: 1.5rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-                border: none;
+            .container-box {
+                max-width: 480px;
+                margin: 0 auto;
+                padding: 0 15px;
             }
 
-            .header-section {
+            /* Image Design ke Mutabiq Updated Top Header Navigation */
+            .header-nav {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                border-bottom: 1px solid #f1f3f9;
-                padding-bottom: 12px;
-                margin-bottom: 1.25rem;
+                background: #ffffff;
+                padding: 12px 18px;
+                border-radius: 18px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                border: 1px solid #e2e8f0;
+                margin-top: 10px;
+                margin-bottom: 25px;
             }
 
-            .btn-back-circle {
-                background: #f1f3f9;
-                width: 32px;
-                height: 32px;
+            .back-btn {
+                background: #f1f5f9;
+                width: 38px;
+                height: 38px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #4a5568;
+                color: #334155;
                 text-decoration: none;
+                transition: background 0.2s;
             }
 
-            .header-title {
-                color: #1a202c;
-                font-size: 1.2rem;
-                font-weight: 700;
+                .back-btn:hover {
+                    background: #e2e8f0;
+                    color: #0f172a;
+                }
+
+            .nav-title {
+                font-size: 1.15rem;
+                font-weight: 800;
+                color: #0f172a;
                 margin: 0;
             }
 
-            .section-title {
-                font-size: 0.95rem;
-                font-weight: 700;
-                color: #1a202c;
-                margin-top: 1rem;
-                margin-bottom: 0.75rem;
+            .header-app-logo {
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
             }
 
-                .section-title span {
-                    color: #a0aec0;
-                    font-weight: 500;
-                    font-size: 0.85rem;
-                }
+            .main-heading {
+                font-size: 15px;
+                font-weight: 700;
+                margin-top: 15px;
+                margin-bottom: 12px;
+                color: #1e293b;
+            }
 
-            .skills-grid {
+            .optional {
+                font-weight: normal;
+                color: #94a3b8;
+                font-size: 12px;
+            }
+
+            .skill-row {
                 display: flex;
-                gap: 12px;
-                margin-bottom: 1rem;
                 flex-wrap: wrap;
+                gap: 12px;
+                margin-bottom: 20px;
             }
 
-            .skill-select-box {
-                flex: 1;
-                min-width: 100px;
-                border: 1px solid #e2e8f0;
-                background: #ffffff;
-                border-radius: 16px;
-                padding: 12px 6px;
-                font-size: 0.85rem;
-                font-weight: 700;
-                color: #1a202c;
-                text-align: center;
+            .skill-box {
+                width: calc(33.33% - 8px);
+                height: 105px;
+                background: #fff;
+                border-radius: 18px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
                 cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-                transition: all 0.2s ease;
+                border: 2px solid transparent;
+                transition: all 0.2s;
             }
 
-                .skill-select-box .icon-circle {
-                    background-color: #f1f3f9;
-                    width: 38px;
-                    height: 38px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: #4a5568;
-                    margin: 0 auto 8px auto;
+                .skill-box.selected {
+                    background-color: #008000;
+                    color: #fff;
                 }
 
-                .skill-select-box.primary-active {
-                    background: #e2e8f0;
-                    border-color: #cbd5e1;
-                }
-
-                .skill-select-box.secondary-active {
-                    background: #008711;
-                    color: white !important;
-                    border-color: #00700e;
-                }
-
-                    .skill-select-box.secondary-active .icon-circle {
-                        background-color: rgba(255, 255, 255, 0.2);
-                        color: white;
-                    }
-
-                .skill-select-box.disabled-selection {
+                .skill-box.disabled {
                     opacity: 0.3;
                     pointer-events: none;
-                    background: #f7f9fc;
                 }
 
-            .expertise-container {
-                border: 1px solid #e2e8f0;
-                border-radius: 24px;
-                padding: 1.25rem;
-                margin-bottom: 1.25rem;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-                background: #ffffff;
-                display: none;
+            .skill-icon-circle {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background-color: #f1f5f9;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 6px;
+                font-size: 20px;
+                color: #334155;
+            }
+
+            .skill-box.selected .skill-icon-circle {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: #fff;
+            }
+
+            .skill-label {
+                font-weight: 700;
+                font-size: 13px;
+                text-align: center;
+            }
+
+            .expertise-card {
+                background: #fff;
+                border-radius: 25px;
+                padding: 20px;
+                margin-bottom: 20px;
+                border: 1px solid #eee;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             }
 
             .expertise-header {
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                margin-bottom: 1rem;
-            }
-
-                .expertise-header .title {
-                    font-size: 0.95rem;
-                    font-weight: 700;
-                    color: #1a202c;
-                }
-
-            .tags-wrapper {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                margin-bottom: 1rem;
-            }
-
-            .tag-item {
-                background: #e2e8f0;
-                color: #4a5568;
-                padding: 4px 14px;
-                border-radius: 20px;
-                font-size: 0.8rem;
-                font-weight: 600;
-                cursor: pointer;
-                border: 1px solid transparent;
-                user-select: none;
-            }
-
-                .tag-item.active {
-                    background: #4a5568;
-                    color: white;
-                }
-
-            .meta-label {
-                font-size: 0.75rem;
-                font-weight: 700;
-                color: #718096;
-                letter-spacing: 0.5px;
-                margin-bottom: 0.5rem;
-                text-transform: uppercase;
-            }
-
-            .experience-form-block {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 16px;
-                padding: 12px;
                 margin-bottom: 15px;
             }
 
-            .custom-input-group {
-                border: 1px solid #e2e8f0;
-                border-radius: 30px;
-                display: flex;
-                align-items: center;
-                padding: 4px 12px;
-                margin-bottom: 0.5rem;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-                background: white;
-            }
-
-                .custom-input-group input {
-                    border: none;
-                    outline: none;
-                    width: 100%;
-                    padding: 6px 10px;
-                    font-size: 0.9rem;
-                    background: transparent;
-                }
-
-            .input-icon-left {
-                color: #4a5568;
-                font-size: 0.9rem;
-                background: #f1f3f9;
-                width: 28px;
-                height: 28px;
+            .header-icon-circle {
+                width: 42px;
+                height: 42px;
                 border-radius: 50%;
+                background: #d7e6ff;
+                color: #1e64d3;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                font-size: 20px;
+                margin-right: 15px;
             }
 
-            .btn-submit-exp {
-                background: #4a5568;
-                color: white;
-                border: none;
-                padding: 6px 16px;
-                font-size: 0.8rem;
-                font-weight: 600;
-                border-radius: 20px;
+            .expertise-title {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .sub-label {
+                font-size: 12px;
+                color: #666;
+                font-weight: bold;
+                margin-top: 10px;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+            }
+
+            .chip-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .chip {
+                background: #eee;
+                padding: 6px 14px;
+                border-radius: 10px;
+                font-size: 12px;
                 cursor: pointer;
-                width: 100%;
-                margin-top: 4px;
-                transition: background 0.2s;
+                user-select: none;
             }
 
-                .btn-submit-exp:hover {
-                    background: #2d3748;
+                .chip.selected {
+                    background-color: #1e64d3;
+                    color: #fff;
+                    font-weight: bold;
                 }
 
-            .added-experience-list {
-                margin-top: 10px;
+            .input-row {
                 display: flex;
-                flex-direction: column;
-                gap: 8px;
+                align-items: center;
+                background: #fff;
+                border-radius: 12px;
+                padding: 0 12px;
+                height: 45px;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
             }
 
-            .experience-chip {
-                background: #f0fdf4;
-                border: 1px solid #bbf7d0;
-                border-radius: 12px;
-                padding: 8px 12px;
+                .input-row i {
+                    color: #333;
+                    margin-right: 10px;
+                    font-size: 16px;
+                }
+
+                .input-row input {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    font-size: 14px;
+                }
+
+            .submit-exp-btn {
+                background: #1e64d3;
+                color: #fff;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 15px;
+                font-weight: bold;
+                font-size: 13px;
+                float: right;
+                margin-top: 5px;
+            }
+
+            .save-btn {
+                background: #1e64d3;
+                color: #fff;
+                height: 52px;
+                border-radius: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 16px;
+                width: 100%;
+                border: none;
+                box-shadow: 0 4px 10px rgba(30, 100, 211, 0.3);
+                margin-top: 20px;
+                margin-bottom: 30px;
+            }
+
+            .added-badge {
+                background: #e6f4ea;
+                border: 1px solid #34a853;
+                color: #137333;
+                padding: 6px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                margin-top: 8px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 0.8rem;
-            }
-
-            .experience-chip-details {
-                color: #166534;
-                font-weight: 500;
-            }
-
-            .btn-delete-chip {
-                background: none;
-                border: none;
-                color: #dc2626;
-                cursor: pointer;
-                padding: 0 4px;
-            }
-
-            .btn-continue {
-                background: #008711;
-                color: white;
-                font-weight: 700;
-                border-radius: 30px;
-                padding: 12px;
-                width: 85%;
-                display: block;
-                margin: 1.5rem auto 0 auto;
-                border: none;
-                box-shadow: 0 4px 15px rgba(0, 135, 17, 0.3);
-                text-align: center;
-                text-decoration: none;
-                cursor: pointer;
             }
     </style>
 </head>
 <body>
 
-    <div class="skills-card">
-        <div class="header-section">
-            <a href="/Auth/Signup?role=Worker" class="btn-back-circle">
+    <div class="container-box">
+        <!-- New Top Header Section matching Image Design -->
+        <div class="header-nav">
+            <a href="javascript:history.back()" class="back-btn">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h2 class="header-title">Add Skills</h2>
-            <img src="/Images/logo.png" alt="Logo" style="width: 25px; height: 25px;" />
+            <h5 class="nav-title">Add Skills</h5>
+            <div>
+                <!-- Custom App Logo or Fallback Icon -->
+                <img src="/Images/logo.png" alt="Logo" style="width: 24px; height: 24px;" />
+        
+            </div>
         </div>
 
-        <form id="skillsForm">
-            <div class="section-title">Select Your Primary Skills</div>
-            <div class="skills-grid" id="primaryGrid">
-                @foreach (var cat in categories)
-                {
-                    <div class="skill-select-box primary-box" data-type="primary" data-id="@cat.CategoryId">
-                        <div class="icon-circle">
-                            @if (cat.CategoryName.ToLower().Contains("clean"))
-                            {
-                                <i class="fa-solid fa-user"></i>
-                            }
-                            else if (cat.CategoryName.ToLower().Contains("cook"))
-                            {
-                                <i class="fa-solid fa-mug-hot"></i>
-                            }
-                            else
-                            {
-                                <i class="fa-solid fa-car"></i>
-                            }
-                        </div>
-                        @cat.CategoryName
-                    </div>
-                }
-            </div>
+        <!-- Primary Skills -->
+        <div class="main-heading">Select Your Primary Skills</div>
+        <div class="skill-row" id="primarySkillsContainer">
+            <div class="text-muted small">Loading categories...</div>
+        </div>
 
-            <div class="section-title">Select Your Secondary Skills <span>(Optional)</span></div>
-            <div class="skills-grid" id="secondaryGrid">
-                @foreach (var cat in categories)
-                {
-                    <div class="skill-select-box secondary-box" data-type="secondary" data-id="@cat.CategoryId">
-                        <div class="icon-circle">
-                            @if (cat.CategoryName.ToLower().Contains("clean"))
-                            {
-                                <i class="fa-solid fa-user"></i>
-                            }
-                            else if (cat.CategoryName.ToLower().Contains("cook"))
-                            {
-                                <i class="fa-solid fa-mug-hot"></i>
-                            }
-                            else
-                            {
-                                <i class="fa-solid fa-car"></i>
-                            }
-                        </div>
-                        @cat.CategoryName
-                    </div>
-                }
-            </div>
+        <!-- Secondary Skills -->
+        <div class="main-heading">Select Your Secondary Skills <span class="optional">(Optional)</span></div>
+        <div class="skill-row" id="secondarySkillsContainer">
+            <div class="text-muted small">Loading categories...</div>
+        </div>
 
-            <div id="expertisePanelsContainer">
-                @foreach (var cat in categories)
-                {
-                    var subSkills = skills.Where(s => s.CategoryId == cat.CategoryId).ToList();
+        <!-- Primary Expertise Card -->
+        <div id="primaryExpertiseCard" style="display:none;"></div>
 
-                    <div class="expertise-container" id="panel-@cat.CategoryId" data-category-id="@cat.CategoryId">
-                        <div class="expertise-header">
-                            <div class="icon-circle bg-primary-subtle text-primary" style="width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                                @if (cat.CategoryName.ToLower().Contains("clean"))
-                                {
-                                    <i class="fa-solid fa-user"></i>
-                                }
-                                else if (cat.CategoryName.ToLower().Contains("cook"))
-                                {
-                                    <i class="fa-solid fa-mug-hot"></i>
-                                }
-                                else
-                                {
-                                    <i class="fa-solid fa-car"></i>
-                                }
-                            </div>
-                            <div class="title">@cat.CategoryName Expertise</div>
-                        </div>
+        <!-- Secondary Expertise Card -->
+        <div id="secondaryExpertiseCard" style="display:none;"></div>
 
-                        <div class="meta-label">Sub Categories</div>
-                        <div class="tags-wrapper">
-                            @foreach (var subSkill in subSkills)
-                            {
-                                <div class="tag-item subskill-tag" data-skill-id="@subSkill.SkillsId">@subSkill.SkillName</div>
-                            }
-                        </div>
+        <!-- List of added experiences preview -->
+        <div id="experienceSummaryList"></div>
 
-                        <div class="meta-label">Add Experience</div>
-                        <div class="experience-form-block" id="form-block-@cat.CategoryId">
-                            <div class="custom-input-group">
-                                <input type="date" class="exp-date-input" value="2026-06-21" />
-                            </div>
-                            <div class="custom-input-group">
-                                <div class="input-icon-left"><i class="fa-regular fa-building"></i></div>
-                                <input type="text" class="exp-place-input" placeholder="Where did you work?" value="@dbWorkedAt" />
-                            </div>
-                            <div class="custom-input-group">
-                                <div class="input-icon-left"><i class="fa-regular fa-file-text"></i></div>
-                                <input type="text" class="exp-desc-input" placeholder="What did you do there?" value="@dbExpDetail" />
-                            </div>
-                            <button type="button" class="btn-submit-exp" onclick="submitSingleExperience('@cat.CategoryId')">
-                                <i class="fa-solid fa-check"></i> Submit Experience
-                            </button>
-                        </div>
-
-                        <div class="meta-label">Submitted Experiences</div>
-                        <div class="added-experience-list" id="exp-list-@cat.CategoryId">
-                        </div>
-                    </div>
-                }
-            </div>
-
-            <button type="submit" class="btn-continue">Save and Continue</button>
-        </form>
+        <button type="button" class="save-btn" onclick="handleFinalSave()">Save and Continue</button>
     </div>
 
     <script>
-            let globalExperienceState = {};
-            const dbDurationValue = "@dbDuration";
+            let dbCategories = [];
+            let primaryCat = null;
+            let secondaryCat = null;
+            let experienceList = [];
+            // Dynamic Icon mapping logic
+            function getIconName(name) {
+                const norm = (name || '').toLowerCase().trim();
+                if (norm.includes('clean')) return 'fa-broom';
+                if (norm.includes('driv')) return 'fa-car';
+                if (norm.includes('cook')) return 'fa-utensils'; // 'fa-hat-chef' ki jagah 'fa-utensils' lagayein
+                return 'fa-briefcase';
+            }
 
-            function submitSingleExperience(categoryId) {
-                const formBlock = document.getElementById(`form-block-${categoryId}`);
-                const dateInput = formBlock.querySelector('.exp-date-input');
-                const placeInput = formBlock.querySelector('.exp-place-input');
-                const descInput = formBlock.querySelector('.exp-desc-input');
+            // On Page Load: Fetch Categories (GetCategories Endpoint)
+            document.addEventListener("DOMContentLoaded", function () {
+                fetch('/Auth/GetCategories')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            dbCategories = data;
+                            renderCategoryGrids();
+                        }
+                    })
+                    .catch(err => console.error("Error loading categories:", err));
+            });
 
-                const placeVal = placeInput.value.trim();
-                const descVal = descInput.value.trim();
-                const dateVal = dateInput.value;
+            // Render Primary & Secondary Category Boxes
+            function renderCategoryGrids() {
+                const primaryGrid = document.getElementById('primarySkillsContainer');
+                const secondaryGrid = document.getElementById('secondarySkillsContainer');
 
-                if (!placeVal || !descVal) {
-                    alert("Please fill 'Where did you work' and 'Description' before submitting this experience.");
+                primaryGrid.innerHTML = '';
+                secondaryGrid.innerHTML = '';
+
+                dbCategories.forEach(cat => {
+                    const iconClass = getIconName(cat.categoryName);
+
+                    // Primary Box
+                    const pBox = document.createElement('div');
+                    pBox.className = `skill-box primary-box-${cat.categoryId}`;
+                    pBox.onclick = () => selectPrimaryCategory(cat);
+                    pBox.innerHTML = `
+                        <div class="skill-icon-circle"><i class="fa-solid ${iconClass}"></i></div>
+                        <div class="skill-label">${cat.categoryName}</div>
+                    `;
+                    primaryGrid.appendChild(pBox);
+
+                    // Secondary Box
+                    const sBox = document.createElement('div');
+                    sBox.className = `skill-box secondary-box-${cat.categoryId}`;
+                    sBox.onclick = () => selectSecondaryCategory(cat);
+                    sBox.innerHTML = `
+                        <div class="skill-icon-circle"><i class="fa-solid ${iconClass}"></i></div>
+                        <div class="skill-label">${cat.categoryName}</div>
+                    `;
+                    secondaryGrid.appendChild(sBox);
+                });
+            }
+
+            function selectPrimaryCategory(cat) {
+                primaryCat = cat;
+
+                document.querySelectorAll('#primarySkillsContainer .skill-box').forEach(b => b.classList.remove('selected'));
+                document.querySelector(`.primary-box-${cat.categoryId}`).classList.add('selected');
+
+                // Disable same category in secondary box
+                document.querySelectorAll('#secondarySkillsContainer .skill-box').forEach(b => b.classList.remove('disabled'));
+                document.querySelector(`.secondary-box-${cat.categoryId}`).classList.add('disabled');
+
+                renderExpertiseCard('primaryExpertiseCard', cat);
+            }
+
+            function selectSecondaryCategory(cat) {
+                if (primaryCat && primaryCat.categoryId === cat.categoryId) return;
+
+                secondaryCat = cat;
+
+                document.querySelectorAll('#secondarySkillsContainer .skill-box').forEach(b => b.classList.remove('selected'));
+                document.querySelector(`.secondary-box-${cat.categoryId}`).classList.add('selected');
+
+                renderExpertiseCard('secondaryExpertiseCard', cat);
+            }
+
+            // Dynamic Expertise Section rendering matching ExpertiseSection component
+            function renderExpertiseCard(containerId, cat) {
+                const container = document.getElementById(containerId);
+                container.style.display = 'block';
+
+                const iconClass = getIconName(cat.categoryName);
+
+                container.innerHTML = `
+                    <div class="expertise-card">
+                        <div class="expertise-header">
+                            <div class="header-icon-circle"><i class="fa-solid ${iconClass}"></i></div>
+                            <h6 class="expertise-title">${cat.categoryName} Expertise</h6>
+                        </div>
+
+                        <div class="sub-label">SUB CATEGORIES (Tap to select)</div>
+                        <div class="chip-container" id="chips-${cat.categoryId}">
+                            <small class="text-muted">Loading sub categories...</small>
+                        </div>
+
+                        <div class="sub-label">WORKING SINCE</div>
+                        <div class="input-row">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="date" id="date-${cat.categoryId}">
+                        </div>
+
+                        <div class="input-row">
+                            <i class="fa-solid fa-building-user"></i>
+                            <input type="text" id="work-${cat.categoryId}" placeholder="Where did you work?">
+                        </div>
+
+                        <div class="input-row">
+                            <i class="fa-regular fa-file-lines"></i>
+                            <input type="text" id="desc-${cat.categoryId}" placeholder="Describe your role">
+                        </div>
+
+                        <button type="button" class="submit-exp-btn" onclick="handleLocalAdd(${cat.categoryId})">+ Add Experience</button>
+                        <div style="clear:both;"></div>
+                    </div>
+                `;
+
+                // Fetch skills from endpoint (GetSkillsByCategory)
+                fetch(`/Auth/GetSkillsByCategory?categoryId=${cat.categoryId}`)
+                    .then(res => res.json())
+                    .then(skills => {
+                        const chipsDiv = document.getElementById(`chips-${cat.categoryId}`);
+                        chipsDiv.innerHTML = '';
+
+                        if (skills && skills.length > 0) {
+                            skills.forEach(s => {
+                                const chip = document.createElement('div');
+                                chip.className = 'chip';
+                                chip.innerText = s.skillName;
+                                chip.dataset.id = s.skillsId;
+                                chip.onclick = function() { this.classList.toggle('selected'); };
+                                chipsDiv.appendChild(chip);
+                            });
+                        } else {
+                            chipsDiv.innerHTML = '<small class="text-muted">No sub-skills found</small>';
+                        }
+                    });
+            }
+
+            // Calculate duration logic
+            function calculateDuration(startDateStr) {
+                const start = new Date(startDateStr);
+                const end = new Date();
+                let years = end.getFullYear() - start.getFullYear();
+                let months = end.getMonth() - start.getMonth();
+                if (months < 0) { years--; months += 12; }
+
+                if (years > 0 && months > 0) return `${years} Years, ${months} Months`;
+                if (years > 0) return `${years} ${years === 1 ? 'Year' : 'Years'}`;
+                return `${months} ${months === 1 ? 'Month' : 'Months'}`;
+            }
+
+            // Handle Local Add Button Click
+            function handleLocalAdd(catId) {
+                const workAt = document.getElementById(`work-${catId}`).value.trim();
+                const desc = document.getElementById(`desc-${catId}`).value.trim();
+                const dateVal = document.getElementById(`date-${catId}`).value;
+                const selectedChips = document.querySelectorAll(`#chips-${catId} .chip.selected`);
+
+                if (!workAt || !desc || !dateVal || selectedChips.length === 0) {
+                    alert("Please select at least one sub-category and fill all fields.");
                     return;
                 }
 
-                const year = dateVal ? dateVal.split('-')[0] : new Date().getFullYear().toString();
-                const slotId = Date.now().toString();
+                const durationStr = calculateDuration(dateVal);
 
-                addExperienceToStateAndUI(categoryId, slotId, year, placeVal, descVal, dbDurationValue);
+                selectedChips.forEach(chip => {
+                    experienceList.push({
+                        WorkAt: workAt,
+                        ExpDetail: desc,
+                        Duration: durationStr,
+                        CategoryId: parseInt(catId, 10),
+                        SkillsId: parseInt(chip.dataset.id, 10)
+                    });
+                });
 
-                placeInput.value = "";
-                descInput.value = "";
+                document.getElementById(`work-${catId}`).value = '';
+                document.getElementById(`desc-${catId}`).value = '';
+                document.getElementById(`date-${catId}`).value = '';
+                selectedChips.forEach(c => c.classList.remove('selected'));
+
+                alert("Experience(s) added to your submission list.");
+                renderSummary();
             }
 
-            function addExperienceToStateAndUI(categoryId, slotId, year, placeVal, descVal, duration) {
-                if (!globalExperienceState[categoryId]) {
-                    globalExperienceState[categoryId] = [];
+            function renderSummary() {
+                const container = document.getElementById('experienceSummaryList');
+                if (experienceList.length > 0) {
+                    container.innerHTML = `<div class="sub-label">ADDED EXPERIENCES (${experienceList.length})</div>`;
+                    experienceList.forEach((exp, idx) => {
+                        container.innerHTML += `
+                            <div class="added-badge">
+                                <span><b>${exp.WorkAt}</b> (${exp.Duration}) - ${exp.ExpDetail}</span>
+                                <i class="fa-solid fa-xmark text-danger cursor-pointer" onclick="removeExp(${idx})"></i>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '';
                 }
-
-                globalExperienceState[categoryId].push({
-                    id: slotId,
-                    workingSince: year,
-                    workedAt: placeVal,
-                    description: descVal,
-                    monthsDuration: duration || "12"
-                });
-
-                const listContainer = document.getElementById(`exp-list-${categoryId}`);
-                const chipHtml = `
-                    <div class="experience-chip" id="chip-${slotId}">
-                        <div class="experience-chip-details">
-                            <strong>${placeVal}</strong> (${year}) - <span>${descVal}</span>
-                        </div>
-                        <button type="button" class="btn-delete-chip" onclick="removeExperienceChip('${categoryId}', '${slotId}')">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                `;
-                listContainer.insertAdjacentHTML('beforeend', chipHtml);
             }
 
-            function removeExperienceChip(categoryId, slotId) {
-                if (globalExperienceState[categoryId]) {
-                    globalExperienceState[categoryId] = globalExperienceState[categoryId].filter(slot => slot.id !== slotId);
-                }
-                const chip = document.getElementById('chip-' + slotId);
-                if (chip) chip.remove();
+            function removeExp(index) {
+                experienceList.splice(index, 1);
+                renderSummary();
             }
 
-            document.addEventListener("DOMContentLoaded", function () {
-                const primaryBoxes = document.querySelectorAll('.primary-box');
-                const secondaryBoxes = document.querySelectorAll('.secondary-box');
-                const subSkillTags = document.querySelectorAll('.subskill-tag');
-                const form = document.getElementById('skillsForm');
-
-                // Database se aayi hui selected sub-skills ki IDs ko read karna
-                const dbSavedSkillIds = @Html.Raw(Json.Serialize(ViewBag.SavedSkillIds ?? new List<int>()));
-
-                // Agar database mein sub-skills save hain toh unhe active (highlight) karein
-                if (dbSavedSkillIds && dbSavedSkillIds.length > 0) {
-                    subSkillTags.forEach(tag => {
-                        const skillId = parseInt(tag.getAttribute('data-skill-id'));
-                        if (dbSavedSkillIds.includes(skillId)) {
-                            tag.classList.add('active');
-                        }
-                    });
+            function handleFinalSave() {
+                if (experienceList.length === 0) {
+                    alert("Please add at least one experience before saving.");
+                    return;
                 }
 
-                // Database dynamically loaded selection parameters
-                const dbPrimaryCatId = parseInt("@primaryCatId") || 0;
-                const dbSecondaryCatId = parseInt("@secondaryCatId") || 0;
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
 
-                // Pre-populating database values into UI nodes
-                if (dbPrimaryCatId > 0) {
-                    primaryBoxes.forEach(box => {
-                        if (parseInt(box.getAttribute('data-id')) === dbPrimaryCatId) {
-                            box.classList.add('primary-active');
-                        }
-                    });
+                if (tokenInput) {
+                    headers['RequestVerificationToken'] = tokenInput.value;
                 }
 
-                if (dbSecondaryCatId > 0) {
-                    secondaryBoxes.forEach(box => {
-                        if (parseInt(box.getAttribute('data-id')) === dbSecondaryCatId) {
-                            box.classList.add('secondary-active');
-                        }
-                    });
-                }
+                const payloadJson = JSON.stringify(experienceList);
 
-                // Initial load: Dynamic experience populator for pre-filled DB values
-                const initialPlace = "@dbWorkedAt";
-                const initialDesc = "@dbExpDetail";
-                if (dbPrimaryCatId > 0 && initialPlace.trim() !== "" && initialDesc.trim() !== "") {
-                    const slotId = Date.now().toString();
-                    addExperienceToStateAndUI(dbPrimaryCatId.toString(), slotId, "2026", initialPlace, initialDesc, dbDurationValue);
-                }
+                fetch('/Auth/SaveWorkerSkills', {
+                    method: 'POST',
+                    headers: headers,
+                    body: payloadJson
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem("workerSkillsJson", payloadJson);
 
-                function updateUI() {
-                    let selectedPrimaryId = null;
-                    let selectedSecondaryId = null;
-
-                    primaryBoxes.forEach(box => {
-                        if (box.classList.contains('primary-active')) {
-                            selectedPrimaryId = box.getAttribute('data-id');
-                        }
-                    });
-
-                    secondaryBoxes.forEach(box => {
-                        if (box.classList.contains('secondary-active')) {
-                            selectedSecondaryId = box.getAttribute('data-id');
-                        }
-                    });
-
-                    secondaryBoxes.forEach(box => {
-                        if (box.getAttribute('data-id') === selectedPrimaryId) {
-                            box.classList.add('disabled-selection');
-                            box.classList.remove('secondary-active');
+                        if (data.isSignupFlow) {
+                            window.location.href = '/Auth/Signup?role=Worker';
                         } else {
-                            box.classList.remove('disabled-selection');
+                            window.location.href = data.redirectUrl || '/WorkerDashboard/WorkerDashboard';
                         }
-                    });
-
-                    primaryBoxes.forEach(box => {
-                        if (box.getAttribute('data-id') === selectedSecondaryId) {
-                            box.classList.add('disabled-selection');
-                            box.classList.remove('primary-active');
-                        } else {
-                            box.classList.remove('disabled-selection');
-                        }
-                    });
-
-                    document.querySelectorAll('.expertise-container').forEach(panel => {
-                        const panelId = panel.getAttribute('data-category-id');
-                        if (panelId === selectedPrimaryId || panelId === selectedSecondaryId) {
-                            panel.style.display = "block";
-                        } else {
-                            panel.style.display = "none";
-                        }
-                    });
-                }
-
-                primaryBoxes.forEach(box => {
-                    box.addEventListener('click', function () {
-                        if (this.classList.contains('primary-active')) {
-                            this.classList.remove('primary-active');
-                        } else {
-                            primaryBoxes.forEach(b => b.classList.remove('primary-active'));
-                            this.classList.add('primary-active');
-                        }
-                        updateUI();
-                    });
-                });
-
-                secondaryBoxes.forEach(box => {
-                    box.addEventListener('click', function () {
-                        if (this.classList.contains('secondary-active')) {
-                            this.classList.remove('secondary-active');
-                        } else {
-                            secondaryBoxes.forEach(b => b.classList.remove('secondary-active'));
-                            this.classList.add('secondary-active');
-                        }
-                        updateUI();
-                    });
-                });
-
-                subSkillTags.forEach(tag => {
-                    tag.addEventListener('click', function () {
-                        this.classList.toggle('active');
-                    });
-                });
-
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    let primaryCategory = null;
-                    let secondaryCategory = null;
-                    let activePanelsData = [];
-
-                    const activePrimary = document.querySelector('.primary-box.primary-active');
-                    if (activePrimary) primaryCategory = activePrimary.getAttribute('data-id');
-
-                    const activeSecondary = document.querySelector('.secondary-box.secondary-active');
-                    if (activeSecondary) secondaryCategory = activeSecondary.getAttribute('data-id');
-
-                    if (!primaryCategory) {
-                        alert('Please select your Primary Skill before continuing.');
-                        return;
+                    } else {
+                        alert(data.message || "Error saving skills.");
                     }
-
-                    let hasErrors = false;
-                    document.querySelectorAll('.expertise-container').forEach(panel => {
-                        if (panel.style.display === "block") {
-                            const catId = panel.getAttribute('data-category-id');
-
-                            let selectedSubSkills = [];
-                            panel.querySelectorAll('.subskill-tag.active').forEach(tag => {
-                                selectedSubSkills.push(tag.getAttribute('data-skill-id'));
-                            });
-
-                            let slotsData = globalExperienceState[catId] || [];
-
-                            if(slotsData.length === 0) {
-                                const placeVal = panel.querySelector('.exp-place-input').value.trim();
-                                const descVal = panel.querySelector('.exp-desc-input').value.trim();
-                                const dateVal = panel.querySelector('.exp-date-input').value;
-                                if(placeVal && descVal) {
-                                    const year = dateVal ? dateVal.split('-')[0] : "2026";
-                                    slotsData.push({
-                                        workingSince: year,
-                                        workedAt: placeVal,
-                                        description: descVal,
-                                        duration: dbDurationValue
-                                    });
-                                }
-                            }
-
-                            if (selectedSubSkills.length === 0) {
-                                alert('Please select at least one sub-skill for the selected category.');
-                                hasErrors = true;
-                                return;
-                            }
-
-                            if (slotsData.length === 0) {
-                                alert('Please add or submit at least one experience.');
-                                hasErrors = true;
-                                return;
-                            }
-
-                            activePanelsData.push({
-                                categoryId: catId,
-                                subSkills: selectedSubSkills,
-                                slots: slotsData.map(s => ({
-                                    workingSince: s.workingSince,
-                                    workedAt: s.workedAt,
-                                    description: s.description,
-                                    duration: s.duration || s.monthsDuration
-                                }))
-                            });
-                        }
-                    });
-
-                    if (hasErrors) return;
-
-                    let currentSignupData = JSON.parse(sessionStorage.getItem('WorkerSignupData')) || {};
-                    currentSignupData.skillsData = {
-                        primaryCategory: primaryCategory,
-                        secondaryCategory: secondaryCategory,
-                        expertiseDetails: activePanelsData
-                    };
-sessionStorage.setItem('WorkerSignupData', JSON.stringify(currentSignupData));
-// step=worker pass karne se Signup page direct Worker tab open karega
-window.location.href = '/Auth/Signup?role=Worker&tab=worker';
+                })
+                .catch(err => {
+                    console.error("Save skills error:", err);
+                    alert("Something went wrong while saving skills.");
                 });
-
-                // Update configuration instantly to respect base model binding values
-                updateUI();
-            });
+            }
     </script>
 </body>
 </html>

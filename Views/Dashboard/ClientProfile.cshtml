@@ -354,6 +354,7 @@
                                     else
                                     {
                                         <span class="badge-status text-success border-success bg-light">On Work</span>
+                                        <!-- GALAT (Pehle wala) -->
                                         <button class="btn btn-primary btn-action" onclick="terminateContract(@worker.WorkerId)">Terminate</button>
                                     }
                                 </div>
@@ -396,6 +397,7 @@
         }
         }
 
+        // GALAT (Pehle wala)
         function terminateContract(workerId) {
         window.location.href = '/Termination/Terminate?interviewId=' + workerId;
         }

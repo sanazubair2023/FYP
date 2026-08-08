@@ -208,7 +208,9 @@
 
     <form asp-controller="Termination" asp-action="Terminate" method="post" id="terminationForm">
         @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="InterviewId" />
+
+        <!-- YAHAN AYEGI NAYI LINE -->
+        <input type="hidden" name="InterviewId" value="@Model.InterviewId" />
 
         <!-- HIDDEN TARGET FOR STAR RATING VALUES -->
         <input type="hidden" asp-for="Rating" id="ratingInput" value="5" />
